@@ -18,6 +18,10 @@
           100 % local
         </span>
       </div>
+      <label class="flex items-center">
+        <span class="sr-only">Language</span>
+        <select id="locale-select" class="rounded-sm border px-2 py-1.5 text-label hairline bg-transparent text-zinc-600 dark:text-zinc-400"></select>
+      </label>
       <button id="theme-toggle" type="button" class="btn" aria-label="Changer de thème">
         <span id="theme-label" class="text-label">Sombre</span>
       </button>
@@ -68,6 +72,7 @@
               <span id="score-value" class="font-mono text-score font-semibold tabular-nums text-zinc-900 dark:text-zinc-50">0</span>
               <span class="font-mono text-ui text-zinc-400">%</span>
             </div>
+            <p id="score-complement" class="mt-1 font-mono text-label text-zinc-500"></p>
             <div id="gauge" class="gauge mt-3" role="img" aria-label="Jauge de probabilité IA"></div>
             <p id="verdict-reason" class="mt-3 text-body text-zinc-500">En attente de texte.</p>
             <div class="mt-3 flex items-center justify-between border-t pt-2.5 hairline">
@@ -226,6 +231,7 @@
               <span id="img-score" class="font-mono text-score font-semibold tabular-nums text-zinc-900 dark:text-zinc-50">0</span>
               <span class="font-mono text-ui text-zinc-400">%</span>
             </div>
+            <p id="img-score-complement" class="mt-1 font-mono text-label text-zinc-500"></p>
             <div id="img-gauge" class="gauge mt-3" role="img" aria-label="Jauge de probabilité IA"></div>
             <p id="img-verdict-reason" class="mt-3 text-body text-zinc-500">En attente d'image.</p>
           </div>

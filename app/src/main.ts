@@ -1,3 +1,5 @@
+import './style.css';
+
 /**
  * Interface controller.
  *
@@ -16,6 +18,7 @@ import { splitSentences } from './segments';
 import { fingerprint, FINGERPRINT_DISCLAIMER } from './modelFingerprinter';
 import { analyseImageFile, type ImageVerdict } from './imageAnalyzer';
 import { compressionEntropy } from './compression';
+import { initI18n, setLocale, onLocaleChange, translateDom, t, type LocaleCode } from './i18n';
 import type { AnalysisResult, Band, SentenceScore, WorkerRequest, WorkerResponse } from './types';
 
 const MODEL_ID = 'onnx-community/e5-small-lora-ai-generated-detector-ONNX';
@@ -73,6 +76,7 @@ const ui = {
   modelProgressLabel: el<HTMLParagraphElement>('model-progress-label'),
   modelResult: el<HTMLDivElement>('model-result'),
   modelScore: el<HTMLSpanElement>('model-score'),
+  scoreComplement: el<HTMLSpanElement>('score-complement'),
   componentsList: el<HTMLUListElement>('components-list'),
   mesMattr: el<HTMLElement>('mes-mattr'),
   mesShannon: el<HTMLElement>('mes-shannon'),
@@ -86,7 +90,7 @@ const ui = {
   benfordBars: el<HTMLDivElement>('benford-bars'),
 };
 
-const BAND_LABEL: Record<Band, string> = { human: 'Humain', mixed: 'Mixte', ai: 'IA' };
+const BAND_KEY = { human: 'band.human', mixed: 'band.mixed', ai: 'band.ai' } as const;
 
 /* -------------------------------------------------------------- examples */
 
@@ -267,7 +271,14 @@ function renderStats(res: AnalysisResult): void {
 
 function render(res: AnalysisResult): void {
   ui.score.textContent = String(res.score);
-  ui.bandBadge.textContent = BAND_LABEL[res.band];
+  // A bare "4 %" reads as a failure when the answer is "human". State the
+  // reading in both directions.
+  ui.scoreComplement.textContent = res.band === 'human'
+    ? t('score.humanSuffix', { n: 100 - res.score })
+    : res.band === 'mixed'
+      ? t('score.mixedSuffix')
+      : t('score.aiSuffix', { n: res.score });
+  ui.bandBadge.textContent = t(BAND_KEY[res.band]);
   ui.bandBadge.className = `rounded-[3px] border px-1.5 py-0.5 text-micro font-semibold uppercase tracking-[0.08em] hairline ${
     res.band === 'ai'
       ? 'text-rose-700 dark:text-rose-300'
@@ -289,6 +300,7 @@ function render(res: AnalysisResult): void {
   renderStats(res);
   renderFingerprint(editor.value);
   renderOverlay(editor.value, res.sentences);
+  translateDom(document);
 }
 
 /* --------------------------------------------------------------- analyse */
@@ -844,6 +856,7 @@ function renderImage(res: Awaited<ReturnType<typeof analyseImageFile>>): void {
   }
 }
 
+let lastImage: Awaited<ReturnType<typeof analyseImageFile>> | null = null;
 let imageMode: 'original' | 'heat' = 'original';
 
 function applyImageMode(): void {
@@ -886,6 +899,7 @@ async function handleImageFile(file: File): Promise<void> {
       img.heat.width = 0;
       img.heat.height = 0;
     }
+    lastImage = res;
     renderImage(res);
     applyImageMode();
   } catch (error) {
@@ -951,3 +965,19 @@ tabImage.addEventListener('click', () => showTab('image'));
 renderGaugeCells();
 imageGaugeCells();
 applyImageMode();
+
+/* --------------------------------------------------------------- locale */
+
+const localeSelect = el<HTMLSelectElement>('locale-select');
+initI18n(localeSelect);
+localeSelect.addEventListener('change', () => {
+  setLocale(localeSelect.value as LocaleCode);
+  if (result) render(result);
+  if (lastImage) renderImage(lastImage);
+  translateDom(document);
+});
+// The theme button label changes with the language too.
+onLocaleChange(() => {
+  applyTheme(document.documentElement.dataset.theme === 'dark' ? 'dark' : 'light');
+});
+translateDom(document);

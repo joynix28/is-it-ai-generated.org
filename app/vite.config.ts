@@ -5,13 +5,6 @@ export default defineConfig({
     target: 'es2022',
     // Transformers.js ships its own wasm assets; do not inline anything large.
     assetsInlineLimit: 0,
-    rollupOptions: {
-      output: {
-        manualChunks: {
-          transformers: ['@huggingface/transformers'],
-        },
-      },
-    },
   },
   worker: {
     format: 'es',
