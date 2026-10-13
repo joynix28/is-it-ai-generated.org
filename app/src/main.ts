@@ -996,8 +996,12 @@ for (const [path, mod] of Object.entries(faqModules)) {
 function renderFaq(): void {
   const list = document.getElementById('faq-list');
   if (!list) return;
-  const items = FAQS[getLocale()] ?? FAQS.en ?? FAQS.fr ?? [];
+  // Never leak English into another language: if the FAQ is not translated yet,
+  // the disclaimer above (translated everywhere) explains it and the list stays
+  // empty. Silence beats the wrong language.
+  const items = FAQS[getLocale()] ?? [];
   list.replaceChildren();
+  if (!items.length) return;
   for (const item of items) {
     const details = document.createElement('details');
     details.className = 'border-b hairline';
