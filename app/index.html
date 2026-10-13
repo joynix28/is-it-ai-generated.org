@@ -32,10 +32,10 @@
       <button id="tab-image" type="button" role="tab" aria-selected="false" aria-controls="pane-image" class="tab" data-i18n="tabs.image">Inspection d'image</button>
     </nav>
 
-    <main class="h-[calc(100vh-5.5rem)]">
+    <main class="min-h-[calc(100vh-5.5rem)] lg:h-[calc(100vh-5.5rem)]">
       <!-- ================================================== TEXT ========== -->
       <div id="pane-text" role="tabpanel" aria-labelledby="tab-text" class="grid grid-cols-1 lg:h-full lg:grid-cols-[minmax(0,60fr)_minmax(0,40fr)]">
-        <section class="flex flex-col border-b lg:min-h-0 lg:border-b-0 lg:border-r hairline">
+        <section class="flex min-w-0 flex-col border-b lg:min-h-0 lg:border-b-0 lg:border-r hairline">
           <div class="flex shrink-0 flex-wrap items-center justify-between gap-2 border-b px-4 py-2.5 hairline">
             <span class="metric-label" data-i18n="editor.label">Éditeur</span>
             <div class="flex items-center gap-1.5">
@@ -64,7 +64,7 @@
           </div>
         </section>
 
-        <aside class="min-h-0 overflow-y-auto bg-white px-4 py-4 dark:bg-[#0A0A0A]">
+        <aside class="min-w-0 bg-white px-4 py-4 dark:bg-[#0A0A0A] lg:min-h-0 lg:overflow-y-auto">
           <div class="panel p-4">
             <div class="flex items-start justify-between">
               <span class="metric-label" data-i18n="score.title">Probabilité IA</span>
@@ -186,7 +186,7 @@
 
       <!-- ================================================= IMAGE ========== -->
       <div id="pane-image" role="tabpanel" aria-labelledby="tab-image" class="hidden grid-cols-1 lg:h-full lg:grid-cols-[minmax(0,60fr)_minmax(0,40fr)]">
-        <section class="flex flex-col border-b lg:min-h-0 lg:border-b-0 lg:border-r hairline">
+        <section class="flex min-w-0 flex-col border-b lg:min-h-0 lg:border-b-0 lg:border-r hairline">
           <div class="flex shrink-0 flex-wrap items-center justify-between gap-2 border-b px-4 py-2.5 hairline">
             <span class="metric-label" data-i18n="image.label">Image</span>
             <div class="flex items-center gap-1.5">
@@ -225,7 +225,7 @@
           </div>
         </section>
 
-        <aside class="min-h-0 overflow-y-auto bg-white px-4 py-4 dark:bg-[#0A0A0A]">
+        <aside class="min-w-0 bg-white px-4 py-4 dark:bg-[#0A0A0A] lg:min-h-0 lg:overflow-y-auto">
           <div class="panel p-4">
             <div class="flex items-start justify-between">
               <span class="metric-label" data-i18n="image.verdict">Verdict</span>
@@ -284,7 +284,7 @@
       </div>
     </main>
 
-    <section class="mt-16 border-t px-4 py-12 hairline bg-white dark:bg-[#0A0A0A]">
+    <section class="border-t px-4 py-14 hairline bg-white dark:bg-[#0A0A0A]">
       <div class="mx-auto max-w-3xl">
         <div class="flex flex-wrap items-center gap-3">
           <a href="https://github.com/joynix28/is-it-ai-generated.org" target="_blank" rel="noopener" class="btn h-10 gap-2 px-4">
@@ -300,7 +300,7 @@
         <h2 class="mt-10 text-xl font-semibold tracking-tight" data-i18n="faq.title">Questions fréquentes</h2>
         <p class="mt-1 text-body text-zinc-500" data-i18n="faq.lead">Tout ce qu'on nous demande, expliqué simplement.</p>
         <p class="mt-2 text-label text-zinc-400" data-i18n="faq.disclaimer">Cette FAQ est disponible en français et en anglais.</p>
-        <div id="faq-list" class="mt-6"></div>
+        <div id="faq-list" class="mt-6 divide-y hairline"></div>
       </div>
     </section>
 

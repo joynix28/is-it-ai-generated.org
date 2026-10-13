@@ -1004,12 +1004,12 @@ function renderFaq(): void {
   if (!items.length) return;
   for (const item of items) {
     const details = document.createElement('details');
-    details.className = 'border-b hairline';
+    details.className = 'group py-1';
     const summary = document.createElement('summary');
-    summary.className = 'cursor-pointer py-3 text-body font-medium marker:text-zinc-400';
+    summary.className = 'cursor-pointer list-none py-3 pr-8 text-body font-medium marker:content-none';
     summary.textContent = item.q;
     const answer = document.createElement('p');
-    answer.className = 'pb-4 text-body leading-relaxed text-zinc-600 dark:text-zinc-400';
+    answer.className = 'max-w-2xl pb-4 pr-8 text-body leading-relaxed text-zinc-600 dark:text-zinc-400';
     answer.textContent = item.a;
     details.append(summary, answer);
     list.append(details);
