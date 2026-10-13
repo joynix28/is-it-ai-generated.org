@@ -25,6 +25,16 @@ Use a long random string. The anonymous unique-visitor hash depends on it.
 
 Skip this whole step if you do not want statistics. Without the `STATS` binding the counter stores nothing and `/api/stats` returns `available: false`.
 
+## 1b. Optional: OpenAI Content Provenance
+
+To enable the "Check with OpenAI provenance" button and the provenance results in `POST /api/provenance`:
+
+```bash
+wrangler pages secret put OPENAI_API_KEY --project-name is-it-ai-generated
+```
+
+Leave it unset to keep everything local; the endpoint then reports `configured: false` and still returns the local C2PA parse.
+
 ## 2. Build and deploy
 
 ```bash

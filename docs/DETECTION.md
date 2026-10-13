@@ -2,6 +2,19 @@
 
 This page explains what the numbers mean and where they stop being trustworthy.
 
+## Layers
+
+Four independent layers run over text and the response reports which fired.
+
+| Layer | What it finds | Needs |
+| --- | --- | --- |
+| Unicode forensics | Invisible/zero-width characters, Unicode tag smuggling (decoded), variation selectors, exotic spaces, homoglyph and mixed-script substitution | nothing |
+| Watermarks | SynthID-Text (g-values, mean/weighted-mean, z-score, p-value) and green-list detectors | the provider key, or your own key |
+| Slop catalogue | 20+ named AI writing patterns with quotes and fixes | nothing |
+| Stylometry | 16 weighted style features | nothing |
+
+Unicode and watermark results are treated as *evidence*: they raise the score when present and never penalise a clean text. Stylometry is averaged on its own.
+
 ## The text index
 
 The score is a heuristic blend of stylometric features and named writing patterns. It answers "how much does this read like a language model's default style", not "who wrote it".
@@ -18,15 +31,19 @@ Each feature is mapped to `[0,1]` where 1 means "more machine-like", then combin
 | Transition density | 1.2 | higher |
 | Sentence-start entropy | 1.0 | lower |
 | Personal pronoun rate | 1.0 | lower |
+| Compressibility (LZW ratio) | 0.8 | higher |
 | Trigram repetition | 0.9 | higher |
 | Paragraph length uniformity | 0.8 | lower |
 | Hedge density | 0.8 | higher |
 | Contraction rate | 0.8 | lower |
 | Em dash density | 0.7 | higher |
+| Lexical smoothness (root-TTR) | 0.6 | lower |
+| Structured answer shape (lists/headings) | 0.6 | higher |
 | Punctuation entropy | 0.5 | lower |
+| Colon density | 0.4 | higher |
 | Lexical variety (TTR) | 0.4 | higher |
 
-Weights are in `DEFAULT_WEIGHTS` in `src/core/textDetector.js`.
+Weights are in `DEFAULT_WEIGHTS` in `src/core/textDetector.js`. The calibration pivot is 0.45 with slope 9, tuned so a strongly-marked AI sample lands above 80 and casual human writing below 20.
 
 ### Calibration
 

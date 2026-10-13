@@ -31,6 +31,7 @@ export async function onRequestPost({ request, env }) {
 
   return json({
     ok: true,
+    version: report.version,
     score: report.score,
     verdict: report.verdict,
     confidence: report.confidence,
@@ -40,6 +41,8 @@ export async function onRequestPost({ request, env }) {
     fingerprint: report.fingerprint,
     wordCount: report.wordCount,
     reasons: report.reasons,
+    evidence: report.evidence,
+    modules: report.modules,
     aiPhrases: report.aiPhrases,
     slop: { score: report.slop.score, findings: report.slop.findings },
     counts: report.counts,

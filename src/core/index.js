@@ -22,7 +22,15 @@ export { detectLanguage, isRTL, LANGUAGE_NAMES } from './langdetect.js';
 export { splitSentences, tokenizeWords, splitParagraphs } from './tokenize.js';
 export { readMetadata, detectFormat } from './exif.js';
 
-export const VERSION = '0.1.0';
+// New in v0.2: Unicode forensics, C2PA, statistical watermarks, hashing.
+export { scanUnicode, decodeTagPayload, INVISIBLE_RANGES } from './unicode.js';
+export { analyzeC2pa, verifyC2pa, c2paSummary, findJumbfStore } from './c2pa.js';
+export { detectSynthid, detectGreenList, hashIV, WATERMARK_NOTE } from './watermark.js';
+export { compressibility, compressibilityScore } from './compress.js';
+export { sha256Hex, sha256Bytes } from './hash.js';
+export { decodeCbor, toPlain } from './cbor.js';
+
+export const VERSION = '0.2.0';
 
 /**
  * One-call convenience wrapper: AI index + slop findings + word statistics.

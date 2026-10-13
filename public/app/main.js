@@ -10,39 +10,52 @@ import { setupSlopTool } from './slop.js';
 import { setupCompareTool } from './compare.js';
 import { setupStatsTool } from './stats.js';
 
-/* ---- Theme ------------------------------------------------------------- */
+const TABS = ['text', 'image', 'counter', 'slop', 'compare', 'stats', 'api', 'about'];
+const THEME_KEY = 'isitai.theme';
+
+/* ---- Theme: explicit, persisted, honours the system default first. ------- */
 function initTheme() {
-  const stored = localStorage.getItem('isitai.theme');
-  if (stored) document.documentElement.dataset.theme = stored;
+  const stored = localStorage.getItem(THEME_KEY);
+  document.documentElement.dataset.theme = stored
+    || (matchMedia('(prefers-color-scheme: light)').matches ? 'light' : 'dark');
+
   $('#theme-toggle').addEventListener('click', () => {
-    const current = document.documentElement.dataset.theme
-      || (matchMedia('(prefers-color-scheme: dark)').matches ? 'dark' : 'light');
-    const next = current === 'dark' ? 'light' : 'dark';
+    const next = document.documentElement.dataset.theme === 'dark' ? 'light' : 'dark';
     document.documentElement.dataset.theme = next;
-    localStorage.setItem('isitai.theme', next);
+    localStorage.setItem(THEME_KEY, next);
   });
 }
 
-/* ---- Tabs -------------------------------------------------------------- */
-const TABS = ['text', 'image', 'counter', 'slop', 'compare', 'stats', 'api', 'about'];
-
+/* ---- Tabs. --------------------------------------------------------------- */
 function showTab(name, { push = true } = {}) {
   if (!TABS.includes(name)) name = 'text';
   for (const tab of TABS) {
     const btn = $(`#tab-${tab}`);
     const panel = $(`#panel-${tab}`);
-    const active = tab === name;
-    if (btn) btn.setAttribute('aria-selected', String(active));
-    if (panel) panel.hidden = !active;
+    if (btn) btn.setAttribute('aria-selected', String(tab === name));
+    if (panel) panel.hidden = tab !== name;
   }
   if (push && location.hash !== `#${name}`) history.replaceState(null, '', `#${name}`);
   window.scrollTo({ top: 0, behavior: 'auto' });
 }
 
+function tabFromHash() {
+  const raw = location.hash.replace('#', '');
+  const m = /^panel-(.+)$/.exec(raw);
+  return m ? m[1] : raw;
+}
+
 function initTabs() {
   for (const tab of TABS) {
     const btn = $(`#tab-${tab}`);
-    if (btn) btn.addEventListener('click', () => { showTab(tab); track('tab', { tab }); });
+    if (btn) {
+      btn.addEventListener('click', () => { showTab(tab); track('tab', { tab }); });
+      btn.addEventListener('keydown', (e) => {
+        const i = TABS.indexOf(tab);
+        if (e.key === 'ArrowRight') { e.preventDefault(); const n = TABS[(i + 1) % TABS.length]; showTab(n); $(`#tab-${n}`).focus(); }
+        if (e.key === 'ArrowLeft') { e.preventDefault(); const n = TABS[(i - 1 + TABS.length) % TABS.length]; showTab(n); $(`#tab-${n}`).focus(); }
+      });
+    }
   }
   for (const link of $$('[data-tab-link]')) {
     link.addEventListener('click', (e) => {
@@ -51,21 +64,13 @@ function initTabs() {
       track('tab', { tab: link.dataset.tabLink });
     });
   }
-  const hash = location.hash.replace('#', '');
-  const panelMatch = /^panel-(.+)$/.exec(hash);
-  showTab(panelMatch ? panelMatch[1] : (TABS.includes(hash) ? hash : 'text'), { push: false });
-  window.addEventListener('hashchange', () => {
-    const h = location.hash.replace('#', '');
-    const m = /^panel-(.+)$/.exec(h);
-    showTab(m ? m[1] : h, { push: false });
-  });
+  window.addEventListener('hashchange', () => showTab(tabFromHash(), { push: false }));
 }
 
-/* ---- Boot -------------------------------------------------------------- */
 async function boot() {
   initTheme();
   await initI18n();
-  showTab((location.hash.replace('#', '').replace(/^panel-/, '') || 'text'), { push: false });
+  showTab(TABS.includes(tabFromHash()) ? tabFromHash() : 'text', { push: false });
   initTabs();
   setupTextTool();
   setupImageTool();
@@ -80,6 +85,6 @@ async function boot() {
 
 boot().catch((err) => {
   console.error(err);
-  const main = $('#main');
-  if (main) main.insertAdjacentHTML('afterbegin', `<p class="note">Failed to start: ${err.message}</p>`);
+  const main = $('#workbench');
+  if (main) main.prepend(Object.assign(document.createElement('p'), { className: 'note', textContent: `Failed to start: ${err.message}` }));
 });

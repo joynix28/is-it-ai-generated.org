@@ -6,37 +6,34 @@ import { isOptedOut, setOptOut } from './analytics.js';
 
 export async function setupStatsTool() {
   const optout = $('#stats-optout');
-  const syncButton = () => {
-    optout.textContent = isOptedOut() ? 'Enable anonymous statistics' : 'Disable anonymous statistics';
+  const sync = () => {
+    optout.textContent = isOptedOut() ? t('stats.optoutOff') : t('stats.optoutOn');
   };
-  syncButton();
-  optout.addEventListener('click', () => {
-    setOptOut(!isOptedOut());
-    syncButton();
-  });
+  sync();
+  optout.addEventListener('click', () => { setOptOut(!isOptedOut()); sync(); });
 
   const grid = $('#stats-grid');
   try {
     const res = await fetch('/api/stats');
     const data = await res.json();
     clear(grid);
-    const cards = [
+    for (const [label, value] of [
       [t('stats.today'), data.viewsToday],
       [t('stats.visits'), data.views30d],
       [t('stats.uniques'), data.uniques30d],
-    ];
-    for (const [label, value] of cards) {
+    ]) {
       grid.append(h('div', { class: 'stat' }, [
-        h('div', { class: 'stat-label', text: label }),
-        h('div', { class: 'stat-value', text: value == null ? '—' : String(value) }),
+        h('div', { class: 'stat__label', text: label }),
+        h('div', { class: 'stat__value', text: value == null ? '—' : String(value) }),
       ]));
     }
-    renderTable($('#stats-pages'), (data.topPages || []).map((p) => [p.key, p.count]), { head: ['', t('counter.count')] });
-    renderTable($('#stats-langs'), (data.topLanguages || []).map((p) => [p.key, p.count]), { head: ['', t('counter.count')] });
-    renderTable($('#stats-countries'), (data.topCountries || []).map((p) => [p.key, p.count]), { head: ['', t('counter.count')] });
-    renderTable($('#stats-devices'), (data.topDevices || []).map((p) => [p.key, p.count]), { head: ['', t('counter.count')] });
+    const pairs = (rows) => rows.map((p) => [p.key, p.count]);
+    renderTable($('#stats-pages'), pairs(data.topPages || []), { head: ['', t('counter.count')] });
+    renderTable($('#stats-langs'), pairs(data.topLanguages || []), { head: ['', t('counter.count')] });
+    renderTable($('#stats-countries'), pairs(data.topCountries || []), { head: ['', t('counter.count')] });
+    renderTable($('#stats-devices'), pairs(data.topDevices || []), { head: ['', t('counter.count')] });
   } catch {
     clear(grid);
-    grid.append(h('p', { class: 'note', text: t('common.error') }));
+    grid.append(h('p', { class: 'hint', text: t('common.error') }));
   }
 }

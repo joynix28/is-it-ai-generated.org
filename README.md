@@ -10,32 +10,31 @@ Live site: **https://is-it-ai-generated.org**
 
 | Tool | What you get |
 | --- | --- |
-| **Text detector** | A 0-100 AI index, a verdict, a fingerprint, per-sentence scores and highlighted spans, and the exact phrases that pushed the score up. |
-| **Image detector** | Provenance metadata (EXIF, XMP, PNG chunks, C2PA), pixel statistics (frequency spectrum, noise, channel correlation, JPEG blockiness), perceptual hashes. |
+| **Text detector** | A 0-100 AI index, a verdict, a fingerprint, per-sentence scores and highlighted spans. Plus Unicode forensics: invisible and zero-width characters, Unicode tag smuggling (with the decoded payload), variation selectors, homoglyph and mixed-script substitution. Optional SynthID-Text / green-list watermark reading when you supply a key. |
+| **Image detector** | **C2PA Content Credentials** parsed from JPEG, PNG, WebP and ISOBMFF: claim, generator, issuer, signer, actions, `trainedAlgorithmicMedia`, hard binding. Plus EXIF/XMP, generator signatures, pixel statistics (FFT spectrum, noise, channel correlation, JPEG blockiness) and perceptual hashes. |
 | **Word counter** | Words, characters, sentences, paragraphs, syllables, reading and speaking time, keyword and phrase frequency, readability scores. |
 | **Slop detector** | 20+ named AI writing patterns with quotes and a suggested fix, plus a safe automatic cleanup. |
 | **Compare** | Near-duplicate wording between two passages. |
 | **Stats** | Anonymous aggregate usage of the site, stored on Cloudflare KV. |
-| **API** | The same engine as a REST endpoint, an npm package and a CLI. |
+| **API** | The same engine as a REST endpoint, an npm package and a CLI. Optional OpenAI Content Provenance forwarding. |
 
 Nothing is sent anywhere for analysis. The only network request the site makes is the anonymous aggregate counter, which respects Do Not Track and Global Privacy Control and can be turned off.
 
 ## How detection works
 
-The text score is an explainable weighted blend of 13 stylometric features and a catalogue of 20+ slop patterns. Nothing is a black box: the response lists every component, its value and its weight, so you can see what moved the score.
+Four layers run, and the response says which ones fired.
 
-Features include:
+**1. Unicode forensics.** Invisible and zero-width characters (soft hyphen, ZWSP/ZWNJ/ZWJ, word joiners, bidi controls, Hangul fillers), Unicode tag characters (U+E0000–E007F) which smuggle hidden ASCII through "invisible" text, variation selectors, non-ASCII spaces, and homoglyph / mixed-script substitution. A hidden payload or a mixed-script token is reported with its exact position and code point.
 
-- **Burstiness** — the coefficient of variation of sentence length. Human writing varies more.
-- **AI phrase density** — a curated multilingual list (`delve into`, `a testament to`, `il est important de noter`).
-- **Transition and hedge density** — `furthermore`, `moreover`, `it is worth noting`.
-- **Personal voice** — first and second person pronouns, contractions.
-- **Sentence-start entropy** — how varied the openings are.
-- **Paragraph uniformity, repetition, punctuation entropy, em dashes, lexical variety.**
+**2. Statistical watermarks.** A faithful implementation of the SynthID-Text detector (keyed g-values from an LCG over a SHA-256 state, mean / weighted-mean statistic, one-sided z-score and p-value) plus a green-list detector. These need the provider key. Google, OpenAI and Anthropic do not publish theirs, and the g-values are a keyed PRF output independent of the visible text, so no statistic on the text alone can recover them. The module therefore reports `no-key` instead of inventing a number, and is genuinely useful for text you watermarked yourself.
 
-The weights live in `src/core/textDetector.js` (`DEFAULT_WEIGHTS`) and you can override them.
+**3. Slop catalogue.** 20+ named patterns from the no-ai-slop and stop-slop rules, each with a quote and a fix.
 
-The image score combines provenance metadata with pixel statistics: an FFT of a downscaled grayscale image, Laplacian variance for surface noise, mean RGB channel correlation, edge uniformity, saturation and JPEG blockiness. A matching generator signature (`Stable Diffusion`, `Midjourney`, `DALL·E`, …) or a C2PA manifest pushes the score to the top.
+**4. Stylometry.** 16 weighted features: AI phrase density, burstiness, transition and hedge density, personal voice, compressibility (an LZW measurement), repetition, paragraph uniformity, lexical diversity (root-TTR, hapax, Yule's K), structure density, colon density, em dashes, punctuation entropy.
+
+The style layer is averaged on its own; the specific evidence (Unicode, watermark) raises the score when present instead of dragging a clean text down. Weights live in `DEFAULT_WEIGHTS` in `src/core/textDetector.js` and every component is returned with its value and weight.
+
+For images, the strongest signal is C2PA: a manifest whose actions carry `trainedAlgorithmicMedia` (or `compositeWithTrainedAlgorithmicMedia`) pins the score to AI, and the claim generator, issuer and signer are read out. Signatures are verified with WebCrypto where the container allows it. Without a manifest, the pixel statistics take over.
 
 ### Be honest about limits
 
@@ -53,12 +52,18 @@ These are heuristic indices, not proof. They measure style, not authorship. Shor
 
 ```
 src/core/          Detection engine (dependency-free ESM, shared by everything)
-  textDetector.js  Text scoring and per-sentence analysis
+  textDetector.js  Text scoring, evidence, per-sentence analysis
   textFeatures.js  Stylometric feature extraction
+  unicode.js       Invisible-character, tag-smuggling and homoglyph forensics
+  watermark.js     SynthID-Text and green-list statistical detectors
+  c2pa.js          Content Credentials: JUMBF walk, claim, actions, COSE verify
+  cbor.js          Minimal CBOR decoder
   slop.js          AI writing pattern catalogue (no-ai-slop + stop-slop rules)
   langdetect.js    Language identification (~60 languages)
   wordCounter.js   Word and readability statistics
   imageDetector.js Image metadata and pixel forensics
+  compress.js      LZW compressibility signal
+  hash.js          Synchronous SHA-256
   fft.js, exif.js  FFT and metadata parsers
   lexicons.js      Phrase, stopword and script tables
 public/            Static site served by Cloudflare Pages
@@ -79,15 +84,18 @@ npm install is-it-ai-generated
 ```
 
 ```js
-import { detectText, countText, analyzeImage, detectLanguage } from 'is-it-ai-generated';
+import { detectText, countText, analyzeImage, detectLanguage, scanUnicode, analyzeC2pa } from 'is-it-ai-generated';
 
 const report = detectText('Some text to check.');
 console.log(report.score, report.verdict, report.confidence);
-console.log(report.reasons);          // why the score is what it is
-console.log(report.sentences);        // per-sentence scores
+console.log(report.reasons);                    // why the score is what it is
+console.log(report.modules.unicode.findings);   // invisible chars, homoglyphs
+console.log(report.modules.watermark);          // watermark reading, or why it abstains
 
-countText('Hello world.').words;      // 2
-detectLanguage('Bonjour tout le monde').lang; // 'fr'
+countText('Hello world.').words;                // 2
+detectLanguage('Bonjour tout le monde').lang;   // 'fr'
+scanUnicode('a\u200Bb').invisibleCount;         // 1
+analyzeC2pa(pngBytes, 'png').aiGenerated;       // true when the manifest declares it
 ```
 
 Uses only Web APIs available in Node 18+, browsers and Cloudflare Workers.
@@ -107,6 +115,7 @@ npx is-it-ai-generated --image photo.png
 POST /api/detect   { text, language?, sensitivity?, sentences? }
 POST /api/count    { text, language? }
 POST /api/image    { base64, mime? }  or  { data, width, height }
+POST /api/provenance { base64, mime? }   C2PA + SynthID + OpenAI
 GET  /api/health
 GET  /api/stats
 ```

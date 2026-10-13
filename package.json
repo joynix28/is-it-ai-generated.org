@@ -1,6 +1,6 @@
 {
   "name": "is-it-ai-generated",
-  "version": "0.1.0",
+  "version": "0.2.0",
   "description": "Privacy-first, fully client-side AI text & image detector, word counter and language toolkit. No ads, no tracking, no data leaves the browser.",
   "type": "module",
   "license": "MIT",
@@ -33,7 +33,12 @@
     "./text": "./src/core/textDetector.js",
     "./image": "./src/core/imageDetector.js",
     "./lang": "./src/core/langdetect.js",
-    "./counter": "./src/core/wordCounter.js"
+    "./counter": "./src/core/wordCounter.js",
+    "./unicode": "./src/core/unicode.js",
+    "./c2pa": "./src/core/c2pa.js",
+    "./watermark": "./src/core/watermark.js",
+    "./cbor": "./src/core/cbor.js",
+    "./hash": "./src/core/hash.js"
   },
   "bin": {
     "isitai": "./bin/isitai.mjs"

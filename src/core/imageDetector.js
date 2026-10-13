@@ -14,6 +14,7 @@
  */
 
 import { readMetadata } from './exif.js';
+import { analyzeC2pa, c2paSummary } from './c2pa.js';
 import { fft2dMagnitude, highFrequencyRatio, floorPow2 } from './fft.js';
 import { clamp, mapLinear, mapInverse, mean, correlation, round } from './math.js';
 
@@ -202,6 +203,17 @@ export function analyzeImage(input = {}, options = {}) {
   const hasCamera = Boolean(metadata.camera);
   const hasExif = Boolean(metadata.hasMetadata);
 
+  // C2PA / Content Credentials: the strongest provenance signal when present.
+  let c2pa = { present: false };
+  if (input.bytes) {
+    try {
+      c2pa = c2paSummary(analyzeC2pa(input.bytes, metadata.format));
+    } catch (err) {
+      c2pa = { present: false, error: err.message };
+    }
+  }
+  const c2paAI = Boolean(c2pa.aiGenerated);
+
   const add = (id, label, value, weight, detail) =>
     signals.push({ id, label, value: clamp(value, 0, 1), weight, detail });
 
@@ -211,7 +223,10 @@ export function analyzeImage(input = {}, options = {}) {
       `Matched: ${metadata.generatorSignatures.join(', ')}`);
   }
   if (metadata.c2pa) {
-    add('c2pa', 'C2PA / Content Credentials', 0.8, 3, 'A provenance manifest is embedded.');
+    add('c2pa', 'C2PA / Content Credentials', c2paAI ? 1 : 0.5, c2paAI ? 6 : 2,
+      c2pa.present
+        ? `${c2pa.aiGenerated ? 'AI generation declared' : 'Manifest present'}${c2pa.issuer ? ` — ${c2pa.issuer}` : ''}`
+        : 'Manifest bytes detected but not parsed.');
   }
   add('no-camera', 'No camera metadata', hasCamera ? 0 : hasExif ? 0.3 : 0.6, 1,
     hasCamera ? `Camera: ${metadata.camera}` : hasExif ? 'EXIF present without camera fields.' : 'No EXIF block found.');
@@ -262,7 +277,10 @@ export function analyzeImage(input = {}, options = {}) {
   if (!pixelSignals) score = 40; // metadata-only: stay neutral.
 
   let verdict = 'uncertain';
-  if (generatorFound) {
+  if (c2paAI) {
+    score = Math.max(score, 96);
+    verdict = 'ai';
+  } else if (generatorFound) {
     score = Math.max(score, 93);
     verdict = 'ai';
   } else if (metadata.c2pa && !hasCamera) {
@@ -282,7 +300,7 @@ export function analyzeImage(input = {}, options = {}) {
 
   return {
     ok: true,
-    version: 1,
+    version: 2,
     score: clamp(score, 0, 100),
     verdict,
     confidence,
@@ -297,6 +315,27 @@ export function analyzeImage(input = {}, options = {}) {
       c2pa: metadata.c2pa,
       fields: metadata.fields || [],
       exif: metadata.exif || {},
+    },
+    c2pa: {
+      present: Boolean(c2pa.present),
+      aiGenerated: c2paAI,
+      container: c2pa.container || null,
+      claimGenerator: c2pa.claimGenerator || null,
+      issuer: c2pa.issuer || null,
+      signer: c2pa.signer || null,
+      algorithm: c2pa.algorithm || null,
+      chainLength: c2pa.chainLength || 0,
+      signaturePresent: Boolean(c2pa.signaturePresent),
+      actions: c2pa.actions || [],
+      digitalSourceTypes: c2pa.digitalSourceTypes || [],
+      assertions: c2pa.assertions || [],
+      hardBinding: c2pa.hardBinding || null,
+      error: c2pa.error || null,
+    },
+    watermark: {
+      available: false,
+      reason: 'needs-decoder',
+      note: 'SynthID-image and Stable Signature (Content Seal) need a neural decoder. Content Seal ships public extractor weights and can run through onnxruntime-web; SynthID-image does not distribute its model.',
     },
     hashes,
     dimensions: input.width ? { width: input.width, height: input.height } : null,

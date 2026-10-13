@@ -115,6 +115,22 @@ Anonymous aggregate usage. Query `?days=30` (1-90).
 
 Internal endpoint for the anonymous counter. Accepts `{ type, path, lang, referrer, device, screen, tool, verdict, tab }`; discards anything else. Returns `{ "ok": true, "stored": true }`. Send `DNT: 1` or `Sec-GPC: 1` to opt out server-side.
 
+## POST /api/provenance
+
+Provenance on one file: local C2PA parse, a SynthID note, and OpenAI Content Provenance when the deployment has an `OPENAI_API_KEY` secret.
+
+```json
+{ "base64": "<image or audio bytes>", "mime": "image/png" }
+```
+
+```bash
+curl -s https://is-it-ai-generated.org/api/provenance \
+  -H 'content-type: application/json' \
+  -d "{\"base64\":\"$(base64 -w0 photo.png)\"}"
+```
+
+Returns `local` (the C2PA summary), `synthid`, and `openai` with `configured`, `available` and the raw `results` array (`type: c2pa | synthid`, `outcome`, `validation_state`, `issuer`, `model`). Without a key, `openai.configured` is `false` and the local result is still returned. The key stays server-side.
+
 ## Node and browser parity
 
 The REST responses come from the same `src/core` modules the browser uses, so a report fetched from the API matches what the site would compute locally.

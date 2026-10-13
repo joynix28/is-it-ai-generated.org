@@ -12,6 +12,7 @@ export async function onRequestGet() {
       'POST /api/detect': 'AI text detection: { text, language?, sensitivity?, sentences? }',
       'POST /api/count': 'Text statistics: { text, language? }',
       'POST /api/image': 'Image provenance metadata: { base64, mime? } or { data, width, height }',
+      'POST /api/provenance': 'C2PA + SynthID + OpenAI content provenance: { base64, mime? }',
       'GET /api/health': 'Liveness check',
       'GET /api/stats': 'Anonymous aggregate site statistics',
       'POST /api/collect': 'Internal anonymous analytics endpoint',

@@ -9,6 +9,7 @@
 import { splitSentences, tokenizeWords, splitParagraphs, countWords } from './tokenize.js';
 import { STOPWORDS, AI_PHRASES, TRANSITIONS, HEDGES, PERSONAL_PRONOUNS } from './lexicons.js';
 import { mean, std, cv, entropy, correlation } from './math.js';
+import { compressibility, compressibilityScore } from './compress.js';
 
 const AI_PHRASE_RE = AI_PHRASES.map((e) => ({ ...e, re: new RegExp(escapeRe(e.p), 'gi') }));
 const HEDGE_RE = HEDGES.map((h) => new RegExp(escapeRe(h), 'gi'));
@@ -131,6 +132,27 @@ export function extractFeatures(text, opts = {}) {
   const burstiness = cv(sentenceLengths);
   const ttr = unique.size / denom;
 
+  // Lexical diversity measures from sloptotal (MIT): root-TTR, hapax ratio,
+  // Yule's K. All are length-robust enough to compare across documents.
+  const freq = new Map();
+  for (const t of tokens) freq.set(t, (freq.get(t) || 0) + 1);
+  let hapax = 0;
+  let sumSq = 0;
+  for (const c of freq.values()) {
+    if (c === 1) hapax += 1;
+    sumSq += c * c;
+  }
+  const rootTtr = unique.size / Math.sqrt(denom);
+  const hapaxRatio = unique.size ? hapax / unique.size : 0;
+  const yulesK = denom ? (10000 * (sumSq - denom)) / (denom * denom) : 0;
+
+  const colonCount = (src.match(/[:：]/g) || []).length;
+  const headingLines = (src.match(/^#{1,6}\s+/gm) || []).length;
+  const listLinesAll = (src.match(/^\s*(?:[-*•]|\d+[.)])\s+/gm) || []).length;
+  const lines = src ? src.split(/\n/).length : 0;
+
+  const comp = compressibility(src);
+
   const features = {
     language: lang,
     counts: {
@@ -157,6 +179,9 @@ export function extractFeatures(text, opts = {}) {
     },
     lexical: {
       typeTokenRatio: ttr,
+      rootTtr,
+      hapaxRatio,
+      yulesK,
       longWordRatio: longWords / denom,
     },
     style: {
@@ -166,12 +191,20 @@ export function extractFeatures(text, opts = {}) {
     },
     punctuation: {
       emDashPer100: per100(emDashes),
+      emDashPer1000Words: (emDashes / Math.max(1, countWords(src))) * 1000,
+      colonPer100: per100(colonCount),
       semicolonPer100: per100(semicolons),
       commaPer100: per100(commas),
       questionPer100: per100(questions),
       exclamationPer100: per100(exclamations),
       emojiPer100: per100(emoji),
       entropy: punctuationEntropy(src),
+    },
+    compressibility: {
+      ratio: comp.ratio,
+      score: compressibilityScore(comp.ratio),
+      bytes: comp.bytes,
+      compressedBytes: comp.compressedBytes,
     },
     repetition: {
       trigramRepeatRate: repeatedNgramRate(tokens, 3),
@@ -188,6 +221,9 @@ export function extractFeatures(text, opts = {}) {
     hedges: { per100: per100(hedgeHits) },
     formatting: {
       listLineRatio: listLines / Math.max(1, paragraphs.length + listLines),
+      listLineCount: listLinesAll,
+      headingCount: headingLines,
+      structuredRatio: (listLinesAll + headingLines) / Math.max(1, lines),
     },
   };
 
