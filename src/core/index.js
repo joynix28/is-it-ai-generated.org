@@ -14,7 +14,7 @@ import { detectText } from './textDetector.js';
 import { countText } from './wordCounter.js';
 
 export { detectText, compareTexts, fingerprint, DEFAULT_WEIGHTS, VERDICTS } from './textDetector.js';
-export { detectSlop, slopScore, deslop, SLOP_PATTERNS } from './slop.js';
+export { detectSlop, slopScore, deslop, SLOP_PATTERNS, catalogScan, catalogScore } from './slop.js';
 export { extractFeatures, extractSentenceFeatures } from './textFeatures.js';
 export { countText, countWords, estimateSyllables } from './wordCounter.js';
 export { analyzeImage, perceptualHashes } from './imageDetector.js';
@@ -30,7 +30,7 @@ export { compressibility, compressibilityScore } from './compress.js';
 export { sha256Hex, sha256Bytes } from './hash.js';
 export { decodeCbor, toPlain } from './cbor.js';
 
-export const VERSION = '0.2.0';
+export const VERSION = '0.3.0';
 
 /**
  * One-call convenience wrapper: AI index + slop findings + word statistics.

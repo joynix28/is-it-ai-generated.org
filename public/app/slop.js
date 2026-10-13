@@ -67,4 +67,32 @@ function render(r, changes = 0) {
     ]));
   }
   if (changes) list.append(h('p', { class: 'hint', text: `${changes} × ${t('slop.applied')}` }));
+
+  // ai-slop-detect catalogue, reported separately from the pattern score.
+  const cat = r.catalog;
+  const block = $('#slop-catalog-block');
+  if (!cat) { block.hidden = true; return; }
+  block.hidden = false;
+  const stats = $('#slop-catalog-stats');
+  clear(stats);
+  const stat = (label, value) => h('div', { class: 'stat' }, [
+    h('div', { class: 'stat__label', text: label }),
+    h('div', { class: 'stat__value', text: String(value) }),
+  ]);
+  stats.append(
+    stat(t('slop.catalogScore'), `${cat.score}/100`),
+    stat(t('slop.catalogVerdict'), cat.verdict.replace('_', ' ').toLowerCase()),
+    stat(t('slop.catalogDensity'), cat.stats.density),
+    stat(t('slop.catalogKinds'), cat.stats.kinds),
+  );
+  const chips = $('#slop-catalog-chips');
+  clear(chips);
+  const seen = new Set();
+  for (const hit of cat.hits) {
+    if (seen.has(hit.match)) continue;
+    seen.add(hit.match);
+    chips.append(h('span', { class: 'chip', text: hit.match }));
+    if (seen.size > 40) break;
+  }
+  if (!seen.size) chips.append(h('span', { class: 'chip', text: '—' }));
 }

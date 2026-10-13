@@ -61,14 +61,37 @@ test('analyzeImage scores a generator-tagged file as AI', () => {
   assert.ok(r.score >= 90);
 });
 
-test('analyzeImage accepts raw pixels and returns signals + hashes', () => {
+test('analyzeImage accepts raw pixels and returns surface stats + hashes', () => {
   const width = 64;
   const height = 64;
   const data = makePixels(width, height, (x, y) => [(x * 4) % 255, (y * 4) % 255, ((x + y) * 2) % 255]);
   const r = analyzeImage({ data, width, height });
-  assert.ok(r.signals.length > 0);
+  assert.ok(r.surface, 'surface stats missing');
+  assert.equal(r.surface.highFrequencyRatio >= 0 && r.surface.highFrequencyRatio <= 1, true);
   assert.ok(r.hashes && r.hashes.aHash.length > 0);
-  assert.ok(r.score >= 0 && r.score <= 100);
+  // Pixel statistics must NOT decide a verdict.
+  assert.equal(r.score, null);
+  assert.equal(r.verdict, 'unknown');
+});
+
+test('a real camera photo is not called AI', () => {
+  // Synthetic JPEG bytes with a camera Make/Model in EXIF is out of scope here;
+  // the contract is: no evidence and no model means no verdict at all.
+  const data = makePixels(48, 48, (x, y) => [x * 5, y * 5, 128]);
+  const r = analyzeImage({ data, width: 48, height: 48, mime: 'image/jpeg' });
+  assert.equal(r.score, null);
+  assert.equal(r.verdict, 'unknown');
+  assert.equal(r.evidence.some((e) => e.id === 'none'), true);
+});
+
+test('the model result, when supplied, decides the verdict', () => {
+  const data = makePixels(32, 32, () => [10, 20, 30]);
+  const r = analyzeImage({ data, width: 32, height: 32 }, {
+    model: { pAI: 0.91, verdict: 'ai', model: { id: 'test' }, views: ['official'], logit: 2.3 },
+  });
+  assert.equal(r.verdict, 'ai');
+  assert.equal(r.score, 91);
+  assert.equal(r.source, 'model');
 });
 
 test('perceptual hash is stable', () => {

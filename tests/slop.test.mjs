@@ -1,6 +1,6 @@
 import { test } from 'node:test';
 import assert from 'node:assert/strict';
-import { detectSlop, slopScore, deslop, SLOP_PATTERNS } from '../src/core/slop.js';
+import { detectSlop, slopScore, deslop, SLOP_PATTERNS, catalogScan, catalogScore } from '../src/core/slop.js';
 
 test('flags throat-clearing and binary contrasts', () => {
   const r = detectSlop("Here's the thing: the plan isn't the problem. The people are. Let that sink in.", { language: 'en' });
@@ -45,4 +45,25 @@ test('deslop removes safe filler and reports changes', () => {
   assert.ok(!/important to note/i.test(text));
   assert.ok(changes.length > 0);
   assert.match(text, /^The build works\.$/i);
+});
+
+test('catalog scan finds phrases, characters and scoring', () => {
+  const text = 'Furthermore, in conclusion, let me know if this helps — it is worth noting 🚀 that we delve into the realm of possibilities.';
+  const r = catalogScore(text);
+  assert.ok(r.hits.length >= 5, `hits ${r.hits.length}`);
+  assert.ok(r.stats.kinds >= 3, `kinds ${r.stats.kinds}`);
+  assert.ok(r.score > 20, `score ${r.score}`);
+  assert.ok(r.hits.every((x) => x.line >= 1 && x.col >= 1));
+});
+
+test('catalog does not fire on plain prose with French typography', () => {
+  const text = "Le train partait à huit heures. J'ai pris un café, puis je suis rentré chez moi.";
+  const r = catalogScore(text);
+  assert.ok(r.score < 15, `score ${r.score}`);
+});
+
+test('detectSlop exposes the catalogue separately from the pattern score', () => {
+  const r = detectSlop('In conclusion, we delve into the realm of possibilities and unlock the potential.', { language: 'en' });
+  assert.ok(r.catalog && typeof r.catalog.score === 'number');
+  assert.ok(r.catalog.verdict);
 });

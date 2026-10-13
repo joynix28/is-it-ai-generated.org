@@ -1,6 +1,6 @@
 {
   "name": "is-it-ai-generated",
-  "version": "0.2.0",
+  "version": "0.3.0",
   "description": "Privacy-first, fully client-side AI text & image detector, word counter and language toolkit. No ads, no tracking, no data leaves the browser.",
   "type": "module",
   "license": "MIT",
@@ -52,6 +52,7 @@
   ],
   "scripts": {
     "build": "node scripts/build.mjs",
+    "fetch:assets": "node scripts/fetch-assets.mjs",
     "dev": "node scripts/dev.mjs",
     "test": "node --test \"tests/*.test.mjs\"",
     "deploy": "npm run build && wrangler pages deploy public --project-name=is-it-ai-generated",

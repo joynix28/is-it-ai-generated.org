@@ -65,7 +65,7 @@ Returns `words`, `characters`, `charactersNoSpaces`, `sentences`, `paragraphs`, 
 
 ## POST /api/image
 
-Image provenance analysis.
+Image provenance analysis: metadata, generator signatures and C2PA Content Credentials.
 
 ```json
 { "base64": "<raw image bytes, base64>", "mime": "image/png" }
@@ -83,9 +83,9 @@ curl -s https://is-it-ai-generated.org/api/image \
   -d "{\"base64\":\"$(base64 -w0 photo.png)\"}"
 ```
 
-Server-side analysis is metadata-only. Pixel statistics need an image decoder, which browsers have and Workers do not; pass `data`/`width`/`height` to get them server-side.
+Response includes `score` (null when there is no evidence), `verdict` (`ai`, `likely-ai`, `unsure`, `real`, `no-evidence`, `unknown`), `source`, `evidence`, `metadata`, `c2pa`, `surface` and `hashes`.
 
-Response includes `score`, `verdict`, `confidence`, `metadata` (format, camera, software, generator signatures, C2PA, EXIF fields), `signals` and `hashes` when pixels were provided.
+The neural image model runs in the browser only. Pass `data`, `width` and `height` to get the surface statistics server-side.
 
 ## GET /api/health
 
@@ -117,19 +117,7 @@ Internal endpoint for the anonymous counter. Accepts `{ type, path, lang, referr
 
 ## POST /api/provenance
 
-Provenance on one file: local C2PA parse, a SynthID note, and OpenAI Content Provenance when the deployment has an `OPENAI_API_KEY` secret.
-
-```json
-{ "base64": "<image or audio bytes>", "mime": "image/png" }
-```
-
-```bash
-curl -s https://is-it-ai-generated.org/api/provenance \
-  -H 'content-type: application/json' \
-  -d "{\"base64\":\"$(base64 -w0 photo.png)\"}"
-```
-
-Returns `local` (the C2PA summary), `synthid`, and `openai` with `configured`, `available` and the raw `results` array (`type: c2pa | synthid`, `outcome`, `validation_state`, `issuer`, `model`). Without a key, `openai.configured` is `false` and the local result is still returned. The key stays server-side.
+Removed. It proxied OpenAI's Content Provenance API, which needs a key this project does not ship. The local C2PA parser in `POST /api/image` covers the same provenance ground without a third party.
 
 ## Node and browser parity
 

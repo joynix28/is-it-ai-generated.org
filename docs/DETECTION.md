@@ -76,19 +76,15 @@ The catalogue contributes to the AI score *and* is surfaced on its own tab.
 
 ## The image index
 
-Two layers.
+Provenance first, model second, and nothing invented.
 
-**Provenance.** EXIF (make, model, software, dates), XMP, PNG text chunks, and C2PA / Content Credentials. A signature from a known generator, or a C2PA manifest with no camera, pins the score near the top. A camera tag pulls it down hard.
+**Provenance.** EXIF (make, model, software, dates), XMP, PNG text chunks, and C2PA / Content Credentials. A signature from a known generator, or a C2PA manifest whose actions carry `trainedAlgorithmicMedia`, decides the verdict outright. A camera tag is noted as counter-evidence.
 
-**Pixels.** For a downscaled grayscale image:
+**Neural classifier.** Community Forensics ViT-S/16 @384, an int8 ONNX model trained across ~4,800 generators, run locally through onnxruntime-web. It is evaluated on two views (the official resize-440/centre-crop-384 transform, and the whole frame squashed to 384) and the mean logit is passed through a sigmoid. Thresholds: below 0.35 real, above 0.65 likely AI, above 0.85 AI. Reported accuracy on the authors' benchmarks is 0.86-0.88 balanced accuracy across unseen generators.
 
-- High-frequency energy ratio from a 2D FFT.
-- Laplacian variance, a surface-noise and sharpness proxy.
-- Mean pairwise RGB channel correlation.
-- Mean Sobel edge magnitude.
-- Saturation, and JPEG blockiness from 8×8 boundary gradients.
+**Surface statistics.** FFT high-frequency ratio, Laplacian variance, channel correlation, edge magnitude, saturation and JPEG blockiness. These are shown for reference and do **not** contribute to the verdict.
 
-These are statistical tendencies, not proof. Heavy denoising, resizing, or a second-generation re-upload erases most of them.
+**Known failure modes of the model.** False positives on real camera photos run around 20% in the authors' own measurement on Wikimedia originals, so a positive is a signal, not a fact. Small or heavily re-encoded images lose the resampling artefacts it reads. Illustrations and line art can be flagged. A `real` verdict is likewise not proof.
 
 ## Where it is wrong
 

@@ -202,9 +202,21 @@
                 <div class="ring" id="image-gauge" role="img" aria-label="AI score"></div>
                 <div class="scoreband__meta">
                   <p class="verdict" id="image-verdict">—</p>
+                  <p class="verdict__desc" id="image-verdict-desc"></p>
                   <dl class="facts-kv" id="image-kv"></dl>
                 </div>
               </div>
+
+              <div class="actions">
+                <button class="btn btn--primary" id="image-model" data-i18n="model.run">Run the on-device model</button>
+                <progress id="image-model-progress" class="progress" max="100" value="0" hidden></progress>
+                <span class="hint" id="image-model-status" data-i18n="model.hint">Cross-generator ViT, 23 MB, downloaded once and cached.</span>
+              </div>
+
+              <section class="block">
+                <h2 class="block__title" data-i18n="evidence.title">Evidence</h2>
+                <div id="image-evidence" class="evidence"></div>
+              </section>
               <section class="block">
                 <h2 class="block__title" data-i18n="c2pa.title">Content Credentials (C2PA)</h2>
                 <div id="image-c2pa"></div>
@@ -213,18 +225,15 @@
                 <h2 class="block__title" data-i18n="image.metadata">Provenance metadata</h2>
                 <div class="table-wrap"><table class="table" id="image-metadata"></table></div>
               </section>
-              <section class="block">
-                <h2 class="block__title" data-i18n="image.signals">Pixel signals</h2>
-                <div class="bars" id="image-signals"></div>
+              <section class="block" id="image-surface-block" hidden>
+                <h2 class="block__title" data-i18n="image.surface">Surface statistics</h2>
+                <p class="note" data-i18n="image.surfaceNote">Informational only. These do not decide the verdict.</p>
+                <div class="table-wrap"><table class="table" id="image-surface"></table></div>
               </section>
               <section class="block">
                 <h2 class="block__title" data-i18n="image.hashes">Perceptual hashes</h2>
                 <div class="chips" id="image-hashes"></div>
               </section>
-              <div class="actions">
-                <button class="btn" id="image-provenance" data-i18n="provenance.check">Check with OpenAI provenance</button>
-                <span class="hint" id="image-provenance-status"></span>
-              </div>
             </div>
           </div>
         </div>
@@ -281,6 +290,12 @@
                 </div>
               </div>
               <section class="block"><h2 class="block__title" data-i18n="slop.findings">Findings</h2><div class="findings" id="slop-findings"></div></section>
+              <section class="block" id="slop-catalog-block" hidden>
+                <h2 class="block__title" data-i18n="slop.catalogTitle">Pattern catalogue</h2>
+                <p class="note" data-i18n="slop.catalogNote">Phrase, character and emoji tells, scored by density and variety. Kept separate because curly quotes and non-breaking spaces are normal in many languages.</p>
+                <div class="stat-grid" id="slop-catalog-stats"></div>
+                <div class="chips" id="slop-catalog-chips"></div>
+              </section>
               <section class="block" id="slop-cleaned-wrap" hidden><h2 class="block__title" data-i18n="slop.cleaned">Cleaned text</h2><textarea class="editor" id="slop-cleaned" readonly></textarea></section>
             </div>
           </div>

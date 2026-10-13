@@ -71,8 +71,9 @@ export function scoreColor(score) {
  * and the number counts up. Under reduced motion both settle instantly.
  */
 export function renderRing(container, value, opts = {}) {
-  const target = clamp(Number(value) || 0);
-  const color = opts.color || scoreColor(target);
+  const known = value != null && Number.isFinite(Number(value));
+  const target = known ? clamp(Number(value)) : 0;
+  const color = opts.color || (known ? scoreColor(target) : 'var(--text-4)');
   const size = 116;
   const stroke = 10;
   const r = (size - stroke) / 2;
@@ -102,10 +103,15 @@ export function renderRing(container, value, opts = {}) {
   svg.append(bg, arc);
 
   const label = h('div', { class: 'ring__value' });
-  const num = h('span', { text: '0' });
-  label.append(num, h('small', { text: '/100' }));
+  const num = h('span', { text: known ? '0' : '—' });
+  label.append(num, known ? h('small', { text: '/100' }) : null);
 
   container.append(svg, label);
+
+  if (!known) {
+    arc.setAttribute('stroke-dashoffset', c.toFixed(2));
+    return;
+  }
 
   const reduced = matchMedia('(prefers-reduced-motion: reduce)').matches;
   const offset = c * (1 - target / 100);

@@ -7,6 +7,7 @@ dist/
 public/core/
 public/i18n/
 public/vendor/
+public/models/
 public/version.json
 *.log
 .DS_Store

@@ -11,12 +11,12 @@ Live site: **https://is-it-ai-generated.org**
 | Tool | What you get |
 | --- | --- |
 | **Text detector** | A 0-100 AI index, a verdict, a fingerprint, per-sentence scores and highlighted spans. Plus Unicode forensics: invisible and zero-width characters, Unicode tag smuggling (with the decoded payload), variation selectors, homoglyph and mixed-script substitution. Optional SynthID-Text / green-list watermark reading when you supply a key. |
-| **Image detector** | **C2PA Content Credentials** parsed from JPEG, PNG, WebP and ISOBMFF: claim, generator, issuer, signer, actions, `trainedAlgorithmicMedia`, hard binding. Plus EXIF/XMP, generator signatures, pixel statistics (FFT spectrum, noise, channel correlation, JPEG blockiness) and perceptual hashes. |
+| **Image detector** | **C2PA Content Credentials** parsed from JPEG, PNG, WebP and ISOBMFF (claim, generator, issuer, signer, actions, `trainedAlgorithmicMedia`, hard binding), EXIF/XMP, generator signatures, a **cross-generator neural classifier running on your device**, and pixel statistics. |
 | **Word counter** | Words, characters, sentences, paragraphs, syllables, reading and speaking time, keyword and phrase frequency, readability scores. |
 | **Slop detector** | 20+ named AI writing patterns with quotes and a suggested fix, plus a safe automatic cleanup. |
 | **Compare** | Near-duplicate wording between two passages. |
 | **Stats** | Anonymous aggregate usage of the site, stored on Cloudflare KV. |
-| **API** | The same engine as a REST endpoint, an npm package and a CLI. Optional OpenAI Content Provenance forwarding. |
+| **API** | The same engine as a REST endpoint, an npm package and a CLI. |
 
 Nothing is sent anywhere for analysis. The only network request the site makes is the anonymous aggregate counter, which respects Do Not Track and Global Privacy Control and can be turned off.
 
@@ -34,7 +34,17 @@ Four layers run, and the response says which ones fired.
 
 The style layer is averaged on its own; the specific evidence (Unicode, watermark) raises the score when present instead of dragging a clean text down. Weights live in `DEFAULT_WEIGHTS` in `src/core/textDetector.js` and every component is returned with its value and weight.
 
-For images, the strongest signal is C2PA: a manifest whose actions carry `trainedAlgorithmicMedia` (or `compositeWithTrainedAlgorithmicMedia`) pins the score to AI, and the claim generator, issuer and signer are read out. Signatures are verified with WebCrypto where the container allows it. Without a manifest, the pixel statistics take over.
+For images the verdict comes from provenance first (C2PA, then a generator signature in the metadata), and from a **neural classifier** when you ask for one. The classifier is **Community Forensics ViT-S/16 @384** (`buildborderless/CommunityForensics-DeepfakeDet-ViT`, MIT, upstream `OwensLab/commfor-model-384`), trained across roughly 4,800 generators, so it generalises to models it never saw. It runs through onnxruntime-web WASM on this origin: nothing about your image leaves the device, and the model file is downloaded once and cached.
+
+Surface statistics (FFT spectrum, noise, channel correlation, edges, blockiness) are shown for reference and **do not decide the verdict**. An earlier version let them score, which produced false positives on ordinary photos; that was wrong and it is gone. With no metadata and no model run, the verdict is `unknown`, not a number pulled from nowhere.
+
+### Run the model locally
+
+The two binaries are not committed (they would bury the repository). Fetch them once:
+
+```bash
+npm run fetch:assets   # 23 MB model + 15 MB onnxruntime-web, hash-verified
+```
 
 ### Be honest about limits
 
@@ -115,10 +125,11 @@ npx is-it-ai-generated --image photo.png
 POST /api/detect   { text, language?, sensitivity?, sentences? }
 POST /api/count    { text, language? }
 POST /api/image    { base64, mime? }  or  { data, width, height }
-POST /api/provenance { base64, mime? }   C2PA + SynthID + OpenAI
 GET  /api/health
 GET  /api/stats
 ```
+
+The neural image model runs in the browser only: a Worker does not have the memory budget for it. `POST /api/image` returns provenance (metadata + C2PA).
 
 ```bash
 curl -s https://is-it-ai-generated.org/api/detect \

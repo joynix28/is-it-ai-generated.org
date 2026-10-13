@@ -55,4 +55,12 @@ await copy(join(root, 'src', 'core'), join(publicDir, 'core'));
 await copy(join(root, 'src', 'i18n'), join(publicDir, 'i18n'));
 await validateLocales();
 await writeVersion();
+
+const model = join(publicDir, 'models', 'community-forensics-int8.onnx');
+if (!existsSync(model)) {
+  console.warn('\n  ! public/models/community-forensics-int8.onnx is missing.');
+  console.warn('  ! The image model will be unavailable. Run: npm run fetch:assets\n');
+} else {
+  console.log('  image model present');
+}
 console.log('Done. Deploy `public/` with: wrangler pages deploy public');

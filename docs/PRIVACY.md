@@ -24,11 +24,11 @@ Unique visitors are counted with an HMAC-SHA256 of `date + IP + user agent` and 
 - The Stats tab has a button that stores an opt-out flag in `localStorage` and stops all beacons.
 - Self-hosters can simply not bind the KV namespace; the counter then returns `available: false` and stores nothing.
 
-## OpenAI Content Provenance (optional)
+## The on-device model
 
-The image tool has a button that forwards a file to `POST /api/provenance`. That endpoint calls OpenAI's Content Provenance API **only when the deployment has an `OPENAI_API_KEY` secret configured**. Until then it returns `configured: false` and the local C2PA result, and nothing is forwarded.
+The image classifier is downloaded from this site when you first ask for it and cached by your browser. The model never sees your image as a request: the image is decoded in a canvas and fed to the network in memory.
 
-When it is configured, the file is sent to OpenAI for the duration of the request and is not stored by this site. The API key never reaches the browser. If you would rather nothing ever leave the device, leave the secret unset; the local C2PA parse, Unicode scan and pixel analysis are unaffected.
+When the model is running, no request leaves the device at all.
 
 ## What the statistics are not
 

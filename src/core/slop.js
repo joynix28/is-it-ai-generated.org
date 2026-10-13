@@ -239,10 +239,133 @@ export const SLOP_PATTERNS = [
 ];
 
 /**
- * Run the catalogue over a text.
+ * AI slop catalogue.
+ *
+ * Ported from antydizajn/ai-slop-detect (MIT): English and Polish phrase tells,
+ * character-level tells (em dash, curly quotes, ellipsis, non-breaking space),
+ * decorative emoji, weak openers, and its density-times-breadth scoring
+ * (hits per 100 words * 8 + distinct kinds * 5, capped at 100).
+ *
+ * Reported separately from the main pattern score on purpose. Character tells
+ * such as curly quotes and non-breaking spaces are correct typography in French
+ * and would otherwise push legitimate writing toward "AI".
+ */
+
+export const CATALOG_PHRASES_EN = [
+  'let me know if', 'i hope this helps', 'i hope you find this helpful', 'as an ai',
+  'as a large language model', "i don't have personal", 'i cannot assist with',
+  'feel free to ask', 'in conclusion', 'in summary', 'to summarize', 'in the realm of',
+  'it is worth noting', "it's important to note", "it's worth mentioning", 'delve into',
+  'delving into', 'navigating the', 'embark on', 'embarking on', 'harness the power',
+  'unlock the potential', 'unleash the potential', 'transform your workflow',
+  'revolutionize', 'groundbreaking', 'cutting-edge', 'state-of-the-art solution',
+  'ai-powered', 'supercharge', 'tapestry', 'vibrant', 'thrives in', 'moreover,',
+  'furthermore,', 'additionally,', 'consequently,', "however it's important",
+  'pivotal role', "in today's fast-paced world", "in today's digital landscape",
+  'on the other hand,', 'to put it simply',
+];
+
+export const CATALOG_PHRASES_PL = [
+  'ponadto', 'co więcej', 'w związku z tym', 'dodatkowo', 'kluczowym aspektem', 'warto zauważyć',
+  'należy podkreślić', 'jest to istotne', 'podsumowując', 'na koniec chciałabym',
+  'mam nadzieję, że ten post', 'razem zbudujemy', 'razem osiągniemy', 'wspólna podróż',
+  'rewolucjonizuje', 'rewolucyjny', 'rewolucyjna', 'rewolucyjne', 'przełomowy', 'przełomowa',
+  'przełomowe', 'innowacyjny', 'innowacyjna', 'innowacyjne', 'cześć wszystkim',
+  'pozdrawiam serdecznie', 'co o tym myślicie', 'z pewnością', 'zdecydowanie', 'w dobie',
+  'u progu', 'warto pamiętać', 'kluczowe znaczenie', 'stanowi to', 'przyczynia się do',
+  'synergia', 'świat się zmienia',
+];
+
+export const CATALOG_CHARS = {
+  em_dash: { ch: '\u2014', label: 'Em dash' },
+  en_dash: { ch: '\u2013', label: 'En dash' },
+  curly_open_dq: { ch: '\u201C', label: 'Curly opening quote' },
+  curly_close_dq: { ch: '\u201D', label: 'Curly closing quote' },
+  curly_apos: { ch: '\u2019', label: 'Curly apostrophe' },
+  horizontal_ellipsis: { ch: '\u2026', label: 'Horizontal ellipsis' },
+  non_breaking_space: { ch: '\u00A0', label: 'Non-breaking space' },
+};
+
+export const CATALOG_EMOJI = ['🚀', '✨', '💡', '💪', '🎉', '🔥', '🌟', '🎊', '🌈', '💫', '⭐', '🎯', '💯'];
+
+export const CATALOG_OPENERS = [
+  /\bcertainly[,!.]/i,
+  /\bof course[,!.]/i,
+  /\babsolutely[,!.]/i,
+  /\bgreat (question|point)[,!. ]/i,
+  /\bi'd be happy to/i,
+  /\bi understand (your|that)/i,
+  /\bthat's a (great|fantastic|wonderful)/i,
+];
+
+/**
+ * Scan text for catalogue tells.
+ * @param {string} text
+ * @returns {{line:number, col:number, kind:string, match:string}[]}
+ */
+export function catalogScan(text) {
+  const hits = [];
+  const lines = String(text || '').split(/\r?\n/);
+  const lows = lines.map((l) => l.toLowerCase());
+
+  const phrases = [...CATALOG_PHRASES_EN, ...CATALOG_PHRASES_PL];
+  phrases.forEach((p) => {
+    lows.forEach((ln, i) => {
+      let s = 0;
+      let c = ln.indexOf(p, s);
+      while (c >= 0) {
+        hits.push({ line: i + 1, col: c + 1, kind: 'phrase', match: p });
+        s = c + p.length;
+        c = ln.indexOf(p, s);
+      }
+    });
+  });
+
+  lines.forEach((ln, i) => {
+    for (const [kind, def] of Object.entries(CATALOG_CHARS)) {
+      const c = ln.indexOf(def.ch);
+      if (c >= 0) hits.push({ line: i + 1, col: c + 1, kind: `char:${kind}`, match: def.ch });
+    }
+  });
+
+  lines.forEach((ln, i) => {
+    for (const e of CATALOG_EMOJI) {
+      const c = ln.indexOf(e);
+      if (c >= 0) hits.push({ line: i + 1, col: c + 1, kind: 'emoji:decorative', match: e });
+    }
+  });
+
+  lines.forEach((ln, i) => {
+    for (const rx of CATALOG_OPENERS) {
+      const m = rx.exec(ln);
+      if (m) hits.push({ line: i + 1, col: m.index + 1, kind: 'opener', match: m[0] });
+    }
+  });
+
+  return hits.sort((a, b) => a.line - b.line || a.col - b.col);
+}
+
+/** Density * 8 + distinct kinds * 5, capped at 100. */
+export function catalogScore(text, hits = catalogScan(text)) {
+  const words = String(text || '').split(/\s+/).filter(Boolean).length;
+  if (!words) return { score: 0, verdict: 'empty', hits: [], stats: { words: 0, hits: 0, density: 0, kinds: 0 } };
+  const density = hits.length / Math.max(words / 100, 0.01);
+  const kinds = new Set(hits.map((h) => h.kind)).size;
+  const score = Math.min(100, Math.trunc(density * 8 + kinds * 5));
+  const verdict = score >= 70 ? 'STRONG_AI' : score >= 40 ? 'LIKELY_AI' : score >= 15 ? 'TRACES' : 'HUMAN_LIKE';
+  return {
+    score,
+    verdict,
+    hits,
+    stats: { words, hits: hits.length, density: Math.round(density * 100) / 100, kinds },
+  };
+}
+
+/**
+ * Run the pattern catalogue and the ai-slop-detect catalogue over a text.
  * @param {string} text
  * @param {{language?: string}} [opts]
- * @returns {{score:number, findings:Array, counts:Object, total:number}}
+ * @returns {{score:number, findings:Array, counts:Object, total:number, catalog:Object}}
  */
 export function detectSlop(text, opts = {}) {
   const src = text || '';
@@ -275,7 +398,7 @@ export function detectSlop(text, opts = {}) {
   const density = (total / words) * 100;
   const score = clamp(mapLinear(density, 0, 12, 0, 100), 0, 100);
 
-  return { score: Math.round(score), findings, counts, total };
+  return { score: Math.round(score), findings, counts, total, catalog: catalogScore(src) };
 }
 
 /** Convenience wrapper returning just the 0..100 density metric. */
