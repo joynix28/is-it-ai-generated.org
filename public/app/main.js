@@ -67,24 +67,35 @@ function initTabs() {
   window.addEventListener('hashchange', () => showTab(tabFromHash(), { push: false }));
 }
 
+/** Run a tool's setup without letting it take the whole app down. A stale or
+ *  mismatched DOM should degrade one panel, never the page. */
+function safely(name, fn) {
+  try {
+    const out = fn();
+    if (out && typeof out.catch === 'function') out.catch((err) => console.error(`[${name}]`, err));
+  } catch (err) {
+    console.error(`[${name}]`, err);
+  }
+}
+
 async function boot() {
   initTheme();
   await initI18n();
   showTab(TABS.includes(tabFromHash()) ? tabFromHash() : 'text', { push: false });
   initTabs();
-  setupTextTool();
-  setupImageTool();
-  setupCounterTool();
-  setupSlopTool();
-  setupCompareTool();
-  await setupStatsTool();
-  initAnalytics();
   document.documentElement.dataset.ready = 'true';
   track('boot', { locale: getLocale() });
+
+  // Each tool is independent: one failure must not stop the others.
+  safely('text', setupTextTool);
+  safely('image', setupImageTool);
+  safely('counter', setupCounterTool);
+  safely('slop', setupSlopTool);
+  safely('compare', setupCompareTool);
+  safely('stats', () => setupStatsTool());
+  safely('analytics', initAnalytics);
 }
 
 boot().catch((err) => {
-  console.error(err);
-  const main = $('#workbench');
-  if (main) main.prepend(Object.assign(document.createElement('p'), { className: 'note', textContent: `Failed to start: ${err.message}` }));
+  console.error('[boot]', err);
 });

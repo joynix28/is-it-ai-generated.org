@@ -233,3 +233,17 @@ export function debounce(fn, ms = 200) {
 export function setHidden(el, hidden) {
   if (el) el.hidden = Boolean(hidden);
 }
+
+/**
+ * Bind an event, tolerating a missing element. Prefer this over a bare
+ * addEventListener: a stale document should dim a control, not throw.
+ * @param {string|Element} target selector or element
+ */
+export function on(target, type, handler, opts) {
+  const el = typeof target === 'string' ? $(target) : target;
+  if (el && typeof el.addEventListener === 'function') {
+    el.addEventListener(type, handler, opts);
+    return el;
+  }
+  return null;
+}

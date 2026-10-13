@@ -2,7 +2,7 @@
 
 import { analyzeImage } from '../core/index.js';
 import { classifyImage, loadClassifier, MODEL_INFO, classifierReady } from './classifier.js';
-import { $, h, icon, clear, renderRing, renderChips, renderTable, toast } from './dom.js';
+import { $, h, icon, on, clear, renderRing, renderChips, renderTable, toast } from './dom.js';
 import { t, onLocaleChange } from './i18n.js';
 import { track } from './analytics.js';
 
@@ -13,25 +13,25 @@ export function setupImageTool() {
   const file = $('#image-file');
 
   const open = () => file.click();
-  drop.addEventListener('click', open);
-  drop.addEventListener('keydown', (e) => {
+  on(drop, 'click', open);
+  on(drop, 'keydown', (e) => {
     if (e.key === 'Enter' || e.key === ' ') { e.preventDefault(); open(); }
   });
   for (const ev of ['dragenter', 'dragover']) {
-    drop.addEventListener(ev, (e) => { e.preventDefault(); drop.classList.add('is-active'); });
+    on(drop, ev, (e) => { e.preventDefault(); drop.classList.add('is-active'); });
   }
   for (const ev of ['dragleave', 'drop']) {
-    drop.addEventListener(ev, (e) => { e.preventDefault(); drop.classList.remove('is-active'); });
+    on(drop, ev, (e) => { e.preventDefault(); drop.classList.remove('is-active'); });
   }
-  drop.addEventListener('drop', (e) => {
+  on(drop, 'drop', (e) => {
     const f = e.dataTransfer?.files?.[0];
     if (f) handleFile(f);
   });
-  file.addEventListener('change', () => {
+  on(file, 'change', () => {
     if (file.files?.[0]) handleFile(file.files[0]);
   });
 
-  $('#image-model').addEventListener('click', runModel);
+  on('#image-model', 'click', runModel);
 
   onLocaleChange(() => { if (current) render(current.result); });
 }
