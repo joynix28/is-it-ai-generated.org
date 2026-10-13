@@ -36,7 +36,7 @@ function showTab(name, { push = true } = {}) {
     if (panel) panel.hidden = !active;
   }
   if (push && location.hash !== `#${name}`) history.replaceState(null, '', `#${name}`);
-  window.scrollTo({ top: 0, behavior: 'instant' in window ? 'instant' : 'auto' });
+  window.scrollTo({ top: 0, behavior: 'auto' });
 }
 
 function initTabs() {
