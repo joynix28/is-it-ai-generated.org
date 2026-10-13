@@ -241,3 +241,53 @@ aside::-webkit-scrollbar-thumb {
     transition-duration: 0.01ms !important;
   }
 }
+
+
+/* ---------------------------------------------------------------- FAQ */
+/* Each question is a disclosure widget: a visible affordance, a hover state,
+   and a clear rule between entries so a long list stays readable. */
+.faq-item {
+  border-bottom: 1px solid var(--hair);
+}
+.faq-item summary {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 1rem;
+  padding: 0.9rem 0;
+  cursor: pointer;
+  list-style: none;
+  font-size: 0.9375rem;
+  font-weight: 510;
+  color: var(--text);
+  transition: color var(--dur-fast) var(--ease);
+}
+.faq-item summary::-webkit-details-marker,
+.faq-item summary::marker {
+  display: none;
+  content: '';
+}
+.faq-item summary:hover {
+  color: var(--accent);
+}
+.faq-item summary::after {
+  content: '+';
+  flex: none;
+  font-family: var(--font-mono);
+  font-size: 1.1rem;
+  line-height: 1;
+  color: var(--text-3);
+}
+.faq-item[open] summary::after {
+  content: '\2212';
+}
+.faq-item[open] summary {
+  color: var(--text);
+}
+.faq-answer {
+  max-width: 68ch;
+  padding: 0 2rem 1.1rem 0;
+  font-size: 0.875rem;
+  line-height: 1.7;
+  color: var(--text-2);
+}

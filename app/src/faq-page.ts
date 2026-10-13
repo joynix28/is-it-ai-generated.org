@@ -40,12 +40,12 @@ function renderFaq(): void {
   if (note) note.hidden = items.length > 0;
   for (const item of items) {
     const details = document.createElement('details');
-    details.className = 'group py-1';
+    details.className = 'faq-item';
     const summary = document.createElement('summary');
-    summary.className = 'cursor-pointer list-none py-3 pr-8 text-body font-medium marker:content-none';
+    summary.className = '';
     summary.textContent = item.q;
     const answer = document.createElement('p');
-    answer.className = 'max-w-[68ch] pb-4 pr-8 text-body leading-relaxed text-zinc-600 dark:text-zinc-400';
+    answer.className = 'faq-answer';
     answer.textContent = item.a;
     details.append(summary, answer);
     list.append(details);
