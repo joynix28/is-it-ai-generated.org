@@ -1,3 +1,0 @@
-# Local development secrets (never commit this file).
-# Copy to .dev.vars and fill in for `wrangler pages dev`.
-STATS_SECRET=change-me-to-a-long-random-string
