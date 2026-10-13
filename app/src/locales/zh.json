@@ -173,5 +173,8 @@
   "faq.title": "常见问题",
   "faq.lead": "大家常问的问题，用最直白的话讲。",
   "faq.disclaimer": "本 FAQ 目前提供法语和英语，其他语言随后补充。",
-  "image.newImage": "换一张图片"
+  "image.newImage": "换一张图片",
+  "nav.faq": "常见问题",
+  "nav.back": "返回工具",
+  "nav.tool": "打开工具"
 }

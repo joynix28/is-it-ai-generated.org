@@ -173,5 +173,8 @@
   "faq.title": "Frequently asked questions",
   "faq.lead": "Everything people ask us, explained plainly.",
   "faq.disclaimer": "This FAQ is available in French and English. Other languages will follow.",
-  "image.newImage": "New image"
+  "image.newImage": "New image",
+  "nav.faq": "Frequently asked questions",
+  "nav.back": "Back to the tool",
+  "nav.tool": "Open the tool"
 }

@@ -173,5 +173,8 @@
   "faq.title": "Veelgestelde vragen",
   "faq.lead": "Alles wat ons gevraagd wordt, zonder jargon uitgelegd.",
   "faq.disclaimer": "Deze FAQ is beschikbaar in het Frans en Engels. Andere talen volgen.",
-  "image.newImage": "Nieuwe afbeelding"
+  "image.newImage": "Nieuwe afbeelding",
+  "nav.faq": "Veelgestelde vragen",
+  "nav.back": "Terug naar de tool",
+  "nav.tool": "Tool openen"
 }

@@ -1,7 +1,14 @@
 import { defineConfig } from 'vite';
+import { resolve } from 'node:path';
 
 export default defineConfig({
   build: {
+    rollupOptions: {
+      input: {
+        main: resolve(__dirname, 'index.html'),
+        faq: resolve(__dirname, 'faq/index.html'),
+      },
+    },
     target: 'es2022',
     // Transformers.js ships its own wasm assets; do not inline anything large.
     assetsInlineLimit: 0,

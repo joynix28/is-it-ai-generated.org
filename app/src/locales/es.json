@@ -173,5 +173,8 @@
   "faq.title": "Preguntas frecuentes",
   "faq.lead": "Todo lo que nos preguntan, explicado sin jerga.",
   "faq.disclaimer": "Esta FAQ está disponible en francés e inglés. Los demás idiomas llegarán después.",
-  "image.newImage": "Nueva imagen"
+  "image.newImage": "Nueva imagen",
+  "nav.faq": "Preguntas frecuentes",
+  "nav.back": "Volver a la herramienta",
+  "nav.tool": "Abrir la herramienta"
 }
