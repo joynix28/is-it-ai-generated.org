@@ -1,0 +1,53 @@
+<!doctype html>
+<html lang="fr" data-theme="light">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Statistiques — Détecteur IA</title>
+    <meta name="description" content="Statistiques agrégées et anonymes du site : visites, langues, pays, appareils. Aucun cookie, aucun identifiant, aucune donnée personnelle." />
+    <meta name="robots" content="noindex, follow" />
+    <link rel="icon" href="/icon.svg" type="image/svg+xml" />
+  </head>
+  <body class="min-h-full">
+    <header class="sticky top-0 z-10 flex h-12 items-center justify-between border-b px-4 hairline bg-white/90 backdrop-blur dark:bg-[#0A0A0A]/90">
+      <a href="/" class="flex items-center gap-2.5 no-underline">
+        <img src="/icon.svg" width="24" height="24" alt="" />
+        <span class="text-ui font-semibold tracking-tight" data-i18n="app.name">Détecteur IA</span>
+      </a>
+      <div class="flex items-center gap-2">
+        <label class="flex items-center"><span class="sr-only">Language</span>
+          <select id="locale-select" class="rounded-sm border px-2 py-1.5 text-label hairline bg-transparent text-zinc-600 dark:text-zinc-400"></select>
+        </label>
+        <button id="theme-toggle" type="button" class="btn" aria-label="Thème"><span id="theme-label" class="text-label" data-i18n="app.theme.toDark">Sombre</span></button>
+      </div>
+    </header>
+
+    <main class="mx-auto max-w-3xl px-4 py-10">
+      <a href="/" class="inline-flex items-center gap-1.5 text-label text-zinc-500 no-underline hover:text-zinc-900 dark:hover:text-zinc-100"><span aria-hidden="true">←</span><span data-i18n="nav.back">Retour à l'outil</span></a>
+      <h1 class="mt-4 text-2xl font-semibold tracking-tight" data-i18n="stats.title">Statistiques</h1>
+      <p class="mt-2 max-w-[68ch] text-body leading-relaxed text-zinc-600 dark:text-zinc-400" data-i18n="stats.intro"></p>
+      <div id="stats-grid" class="mt-8 grid grid-cols-2 gap-3 sm:grid-cols-3"></div>
+      <div class="mt-8 grid grid-cols-1 gap-3 sm:grid-cols-2">
+        <section><h2 class="metric-label" data-i18n="stats.pages">Pages</h2><div id="s-pages" class="mt-2"></div></section>
+        <section><h2 class="metric-label" data-i18n="stats.languages">Langues</h2><div id="s-langs" class="mt-2"></div></section>
+        <section><h2 class="metric-label" data-i18n="stats.countries">Pays</h2><div id="s-countries" class="mt-2"></div></section>
+        <section><h2 class="metric-label" data-i18n="stats.devices">Appareils</h2><div id="s-devices" class="mt-2"></div></section>
+      </div>
+      <section class="mt-10 border-t pt-6 hairline">
+        <h2 class="text-body font-semibold" data-i18n="stats.privacyTitle">Votre vie privée</h2>
+        <p class="mt-2 max-w-[68ch] text-body leading-relaxed text-zinc-600 dark:text-zinc-400" data-i18n="stats.privacyBody"></p>
+        <button id="optout" type="button" class="btn mt-4"></button>
+      </section>
+    </main>
+
+    <footer class="border-t px-4 py-10 hairline">
+      <div class="mx-auto flex max-w-3xl flex-wrap items-center gap-3">
+        <a href="/" class="btn h-10 gap-2 px-4"><span data-i18n="nav.tool">Ouvrir l'outil</span></a>
+        <a href="/faq/" class="btn h-10 gap-2 px-4"><span data-i18n="nav.faq">Questions fréquentes</span></a>
+        <a href="/legal/" class="btn h-10 gap-2 px-4"><span data-i18n="nav.legal">Mentions légales</span></a>
+      </div>
+    </footer>
+
+    <script type="module" src="/src/stats-page.ts"></script>
+  </body>
+</html>

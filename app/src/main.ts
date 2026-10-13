@@ -19,6 +19,7 @@ import { fingerprint, FINGERPRINT_DISCLAIMER } from './modelFingerprinter';
 import { analyseImageFile, type ImageVerdict } from './imageAnalyzer';
 import { compressionEntropy } from './compression';
 import { initI18n, setLocale, onLocaleChange, translateDom, t, getLocale } from './i18n';
+import { track, initAnalytics } from './analytics';
 import type { AnalysisResult, Band, SentenceScore, WorkerRequest, WorkerResponse } from './types';
 
 const MODEL_ID = 'onnx-community/e5-small-lora-ai-generated-detector-ONNX';
@@ -327,8 +328,10 @@ function render(res: AnalysisResult): void {
   renderStats(res);
   renderFingerprint(editor.value);
   renderOverlay(editor.value, res.sentences);
+  if (res.stats.words >= 40) track('tool', { tool: 'text', verdict: res.band, lang: getLocale() });
   renderFaq();
 translateDom(document);
+initAnalytics();
 }
 
 /* --------------------------------------------------------------- analyse */
@@ -1061,3 +1064,4 @@ onLocaleChange(() => {
 });
 renderFaq();
 translateDom(document);
+initAnalytics();

@@ -188,5 +188,20 @@
   "legal.code.title": "Broncode",
   "legal.code.body": "Alle code is openbaar en te controleren op GitHub. Het enige uitgaande verzoek is de eenmalige download van het analyseprogramma, dat daarna in de browsercache blijft.",
   "legal.contact.title": "Contact",
-  "legal.contact.body": "Om een probleem te melden, een correctie of vertaling voor te stellen: open een issue op GitHub of schrijf op Discord."
+  "legal.contact.body": "Om een probleem te melden, een correctie of vertaling voor te stellen: open een issue op GitHub of schrijf op Discord.",
+  "nav.stats": "Statistieken",
+  "stats.title": "Statistieken",
+  "stats.intro": "Deze cijfers zijn totalen, geen profielen. We tellen bezoeken, geen personen: geen naam, geen adres, geen geschiedenis van wat je analyseert.",
+  "stats.privacyTitle": "Je privacy",
+  "stats.privacyBody": "Geen cookies, geen identificatie, geen vingerafdruk. Je IP-adres wordt nooit bewaard: het dient één keer om een unieke bezoeker van de dag te tellen en wordt daarna weggegooid. De tekst en afbeeldingen die je analyseert worden nooit gemeten of verzonden.",
+  "stats.optoutOn": "Anonieme statistieken weigeren",
+  "stats.optoutOff": "Anonieme statistieken toestaan",
+  "stats.today": "Vandaag",
+  "stats.views": "Paginaweergaven (30 d)",
+  "stats.uniques": "Unieke bezoekers (30 d)",
+  "stats.pages": "Pagina's",
+  "stats.languages": "Talen",
+  "stats.countries": "Landen",
+  "stats.devices": "Toestellen",
+  "stats.empty": "Nog geen gegevens."
 }

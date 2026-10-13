@@ -188,5 +188,20 @@
   "legal.code.title": "源代码",
   "legal.code.body": "所有代码都是公开的，可在 GitHub 上核对。唯一的对外请求是一次性下载分析程序，之后保存在浏览器缓存中。",
   "legal.contact.title": "联系",
-  "legal.contact.body": "如需报告问题、提交修正或翻译：在 GitHub 上开 issue，或在 Discord 留言。"
+  "legal.contact.body": "如需报告问题、提交修正或翻译：在 GitHub 上开 issue，或在 Discord 留言。",
+  "nav.stats": "统计",
+  "stats.title": "统计",
+  "stats.intro": "这些是总数，不是用户画像。我们统计访问次数，不统计人：没有姓名、没有地址、也不记录你分析了什么。",
+  "stats.privacyTitle": "你的隐私",
+  "stats.privacyBody": "没有 Cookie，没有标识符，没有浏览器指纹。你的 IP 地址从不保存：只用于当天统计一次独立访客，随后立即丢弃。你分析的文本和图片从不被统计或传输。",
+  "stats.optoutOn": "拒绝匿名统计",
+  "stats.optoutOff": "允许匿名统计",
+  "stats.today": "今天",
+  "stats.views": "页面浏览量（30 天）",
+  "stats.uniques": "独立访客（30 天）",
+  "stats.pages": "页面",
+  "stats.languages": "语言",
+  "stats.countries": "国家",
+  "stats.devices": "设备",
+  "stats.empty": "暂无数据。"
 }

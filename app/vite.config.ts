@@ -8,6 +8,7 @@ export default defineConfig({
         main: resolve(__dirname, 'index.html'),
         faq: resolve(__dirname, 'faq/index.html'),
         legal: resolve(__dirname, 'legal/index.html'),
+        stats: resolve(__dirname, 'stats/index.html'),
       },
     },
     target: 'es2022',

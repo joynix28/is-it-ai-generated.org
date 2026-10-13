@@ -1,0 +1,16 @@
+# Cloudflare Pages configuration for the AI detector.
+#
+# Deploy:  npm run build && wrangler pages deploy dist
+# The Functions in functions/ serve the anonymous counter and its summary.
+
+name = "ai-text-detector"
+compatibility_date = "2026-10-01"
+pages_build_output_dir = "dist"
+
+# Anonymous aggregate statistics. The namespace id is not a secret.
+[[kv_namespaces]]
+binding = "STATS"
+id = "0818488675384b509070c8a9f6084619"
+
+[vars]
+STATS_ENABLED = "true"

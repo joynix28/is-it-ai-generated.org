@@ -188,5 +188,20 @@
   "legal.code.title": "Codice sorgente",
   "legal.code.body": "Tutto il codice è pubblico e verificabile su GitHub. L'unica richiesta in uscita è il download una tantum del programma di analisi, poi conservato nella cache del browser.",
   "legal.contact.title": "Contatti",
-  "legal.contact.body": "Per segnalare un problema, proporre una correzione o una traduzione: apri una issue su GitHub o scrivi sul Discord."
+  "legal.contact.body": "Per segnalare un problema, proporre una correzione o una traduzione: apri una issue su GitHub o scrivi sul Discord.",
+  "nav.stats": "Statistiche",
+  "stats.title": "Statistiche",
+  "stats.intro": "Questi numeri sono totali, non profili. Contiamo visite, non persone: nessun nome, nessun indirizzo, nessuno storico di ciò che analizzi.",
+  "stats.privacyTitle": "La tua privacy",
+  "stats.privacyBody": "Nessun cookie, nessun identificatore, nessuna impronta digitale. Il tuo indirizzo IP non viene mai salvato: serve una volta per contare un visitatore unico della giornata, poi viene scartato. Il testo e le immagini che analizzi non vengono mai misurati né trasmessi.",
+  "stats.optoutOn": "Rifiuta le statistiche anonime",
+  "stats.optoutOff": "Accetta le statistiche anonime",
+  "stats.today": "Oggi",
+  "stats.views": "Visualizzazioni (30 gg)",
+  "stats.uniques": "Visitatori unici (30 gg)",
+  "stats.pages": "Pagine",
+  "stats.languages": "Lingue",
+  "stats.countries": "Paesi",
+  "stats.devices": "Dispositivi",
+  "stats.empty": "Nessun dato per ora."
 }

@@ -188,5 +188,20 @@
   "legal.code.title": "Code source",
   "legal.code.body": "Tout le code est public et vérifiable sur GitHub. La seule requête sortante est le téléchargement du programme d'analyse, une fois, puis conservé dans le cache de votre navigateur.",
   "legal.contact.title": "Contact",
-  "legal.contact.body": "Pour signaler un problème, proposer une correction ou une traduction : ouvrez une « issue » sur GitHub ou écrivez sur le Discord."
+  "legal.contact.body": "Pour signaler un problème, proposer une correction ou une traduction : ouvrez une « issue » sur GitHub ou écrivez sur le Discord.",
+  "nav.stats": "Statistiques",
+  "stats.title": "Statistiques",
+  "stats.intro": "Ces chiffres sont des totaux, pas des profils. Nous comptons des visites, pas des personnes : aucun nom, aucune adresse, aucun historique de ce que vous analysez.",
+  "stats.privacyTitle": "Votre vie privée",
+  "stats.privacyBody": "Pas de cookie, pas d'identifiant, pas d'empreinte numérique. Votre adresse IP n'est jamais enregistrée : elle sert une fois, le temps de compter un visiteur unique pour la journée, puis elle est jetée. Le texte et les images que vous analysez ne sont jamais mesurés ni transmis.",
+  "stats.optoutOn": "Refuser les statistiques anonymes",
+  "stats.optoutOff": "Accepter les statistiques anonymes",
+  "stats.today": "Aujourd'hui",
+  "stats.views": "Pages vues (30 j)",
+  "stats.uniques": "Visiteurs uniques (30 j)",
+  "stats.pages": "Pages",
+  "stats.languages": "Langues",
+  "stats.countries": "Pays",
+  "stats.devices": "Appareils",
+  "stats.empty": "Aucune donnée pour le moment."
 }
