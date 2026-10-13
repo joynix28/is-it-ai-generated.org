@@ -18,7 +18,7 @@ import { splitSentences } from './segments';
 import { fingerprint, FINGERPRINT_DISCLAIMER } from './modelFingerprinter';
 import { analyseImageFile, type ImageVerdict } from './imageAnalyzer';
 import { compressionEntropy } from './compression';
-import { initI18n, setLocale, onLocaleChange, translateDom, t } from './i18n';
+import { initI18n, setLocale, onLocaleChange, translateDom, t, getLocale } from './i18n';
 import type { AnalysisResult, Band, SentenceScore, WorkerRequest, WorkerResponse } from './types';
 
 const MODEL_ID = 'onnx-community/e5-small-lora-ai-generated-detector-ONNX';
@@ -300,7 +300,8 @@ function render(res: AnalysisResult): void {
   renderStats(res);
   renderFingerprint(editor.value);
   renderOverlay(editor.value, res.sentences);
-  translateDom(document);
+  renderFaq();
+translateDom(document);
 }
 
 /* --------------------------------------------------------------- analyse */
@@ -904,6 +905,21 @@ async function handleImageFile(file: File): Promise<void> {
   }
 }
 
+// Clear the current image without reloading the page.
+document.getElementById('img-reset')?.addEventListener('click', () => {
+  lastImage = null;
+  img.loaded.classList.add('hidden');
+  img.footer.classList.add('hidden');
+  img.footer.classList.remove('flex');
+  img.empty.classList.remove('hidden');
+  img.canvas.width = 0;
+  img.canvas.height = 0;
+  img.heat.width = 0;
+  img.heat.height = 0;
+  img.input.value = '';
+  img.reason.textContent = t('image.waiting');
+});
+
 img.dropzone.addEventListener('click', () => img.input.click());
 // A visible control, in case the dashed zone is not read as a button.
 document.getElementById('img-browse')?.addEventListener('click', (event) => {
@@ -966,6 +982,36 @@ renderGaugeCells();
 imageGaugeCells();
 applyImageMode();
 
+/* ------------------------------------------------------------------- faq */
+
+interface FaqItem { q: string; a: string }
+
+const faqModules = import.meta.glob<{ default: FaqItem[] }>('./faq/*.json', { eager: true });
+const FAQS: Record<string, FaqItem[]> = {};
+for (const [path, mod] of Object.entries(faqModules)) {
+  FAQS[path.slice(path.lastIndexOf('/') + 1).replace(/\.json$/, '')] = mod.default;
+}
+
+/** Plain-language FAQ. Falls back to English, then French, then nothing. */
+function renderFaq(): void {
+  const list = document.getElementById('faq-list');
+  if (!list) return;
+  const items = FAQS[getLocale()] ?? FAQS.en ?? FAQS.fr ?? [];
+  list.replaceChildren();
+  for (const item of items) {
+    const details = document.createElement('details');
+    details.className = 'border-b hairline';
+    const summary = document.createElement('summary');
+    summary.className = 'cursor-pointer py-3 text-body font-medium marker:text-zinc-400';
+    summary.textContent = item.q;
+    const answer = document.createElement('p');
+    answer.className = 'pb-4 text-body leading-relaxed text-zinc-600 dark:text-zinc-400';
+    answer.textContent = item.a;
+    details.append(summary, answer);
+    list.append(details);
+  }
+}
+
 /* --------------------------------------------------------------- locale */
 
 const localeSelect = el<HTMLSelectElement>('locale-select');
@@ -974,10 +1020,12 @@ localeSelect.addEventListener('change', () => {
   setLocale(localeSelect.value);
   if (result) render(result);
   if (lastImage) renderImage(lastImage);
+  renderFaq();
   translateDom(document);
 });
 // The theme button label changes with the language too.
 onLocaleChange(() => {
   applyTheme(document.documentElement.dataset.theme === 'dark' ? 'dark' : 'light');
 });
+renderFaq();
 translateDom(document);

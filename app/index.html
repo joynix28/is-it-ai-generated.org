@@ -8,7 +8,7 @@
     <meta name="robots" content="index, follow" />
     <link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 32 32'%3E%3Crect width='32' height='32' fill='%2318181B'/%3E%3Ctext x='16' y='22' font-family='monospace' font-size='14' font-weight='700' fill='%23FAFAFA' text-anchor='middle'%3EAT%3C/text%3E%3C/svg%3E" />
   </head>
-  <body class="h-full">
+  <body class="min-h-full">
     <header class="flex h-12 shrink-0 items-center justify-between border-b px-4 hairline bg-white dark:bg-[#0A0A0A]">
       <div class="flex items-center gap-2.5">
         <span class="grid h-6 w-6 place-items-center rounded-[3px] bg-zinc-900 font-mono text-[11px] font-bold text-white dark:bg-zinc-100 dark:text-zinc-900">AT</span>
@@ -32,7 +32,7 @@
       <button id="tab-image" type="button" role="tab" aria-selected="false" aria-controls="pane-image" class="tab" data-i18n="tabs.image">Inspection d'image</button>
     </nav>
 
-    <main class="h-[calc(100%-5.5rem)]">
+    <main class="h-[calc(100vh-5.5rem)]">
       <!-- ================================================== TEXT ========== -->
       <div id="pane-text" role="tabpanel" aria-labelledby="tab-text" class="grid grid-cols-1 lg:h-full lg:grid-cols-[minmax(0,60fr)_minmax(0,40fr)]">
         <section class="flex flex-col border-b lg:min-h-0 lg:border-b-0 lg:border-r hairline">
@@ -159,7 +159,7 @@
               <span class="metric-label" data-i18n="model.title">Couche 2 · modèle neuronal</span>
               <span id="model-state" class="font-mono text-label text-zinc-400">inactif</span>
             </div>
-            <p id="model-note" class="mt-2 text-[11px] leading-tight text-zinc-400">Classifieur ONNX quantifié exécuté dans un Web Worker. Téléchargé depuis le CDN à la première analyse, puis mis en cache. Modèle anglophone : la couche 1 reste la référence pour le français.</p>
+            <p id="model-note" class="mt-2 text-[11px] leading-tight text-zinc-400" data-i18n="model.note">Classifieur ONNX quantifié exécuté dans un Web Worker. Téléchargé depuis le CDN à la première analyse, puis mis en cache. Modèle anglophone : la couche 1 reste la référence pour le français.</p>
             <div id="model-progress-wrap" class="mt-2 hidden">
               <div class="bar"><div id="model-progress" class="bar__fill"></div></div>
               <p id="model-progress-label" class="mt-1 font-mono text-[11px] text-zinc-400"></p>
@@ -176,7 +176,7 @@
               <span id="privacy-caret" class="font-mono text-zinc-400" aria-hidden="true">+</span>
             </button>
             <div id="privacy-body" class="hidden border-t px-4 py-3 hairline">
-              <p class="text-label leading-relaxed text-zinc-500">Votre texte et vos images ne sont jamais envoyés à un serveur. Couche 1 en TypeScript pur, couche 2 dans un Web Worker, forensique d'image via FileReader et Canvas. Aucun cookie, aucun identifiant, aucune requête analytique. La seule requête sortante est le téléchargement du modèle depuis le CDN, une fois, puis mis en cache.</p>
+              <p class="text-label leading-relaxed text-zinc-500" data-i18n="privacy.body">Votre texte et vos images ne sont jamais envoyés à un serveur. Couche 1 en TypeScript pur, couche 2 dans un Web Worker, forensique d'image via FileReader et Canvas. Aucun cookie, aucun identifiant, aucune requête analytique. La seule requête sortante est le téléchargement du modèle depuis le CDN, une fois, puis mis en cache.</p>
             </div>
           </div>
 
@@ -220,6 +220,7 @@
               <span class="text-zinc-500">Opacité artefacts</span>
               <input id="img-opacity" type="range" min="0" max="100" value="70" class="w-32 accent-zinc-900 dark:accent-zinc-100" />
             </label>
+            <button id="img-reset" type="button" class="btn h-7 px-2 text-[11px]" data-i18n="image.newImage">Nouvelle image</button>
             <span id="img-ms">—</span>
           </div>
         </section>
@@ -277,11 +278,31 @@
 
           <div class="panel mt-3 p-4">
             <span class="metric-label" data-i18n="image.scope">Portée</span>
-            <p class="mt-2 text-[11px] leading-relaxed text-zinc-400">Un manifeste C2PA signé ou une signature de générateur dans le binaire sont des preuves. L'analyse de pixels ne l'est pas : elle donne une tendance, et un recadrage ou une recompression l'efface. Rien ne quitte votre navigateur.</p>
+            <p class="mt-2 text-[11px] leading-relaxed text-zinc-400" data-i18n="image.scopeBody">Un manifeste C2PA signé ou une signature de générateur dans le binaire sont des preuves. L'analyse de pixels ne l'est pas : elle donne une tendance, et un recadrage ou une recompression l'efface. Rien ne quitte votre navigateur.</p>
           </div>
         </aside>
       </div>
     </main>
+
+    <section class="mt-16 border-t px-4 py-12 hairline bg-white dark:bg-[#0A0A0A]">
+      <div class="mx-auto max-w-3xl">
+        <div class="flex flex-wrap items-center gap-3">
+          <a href="https://github.com/joynix28/is-it-ai-generated.org" target="_blank" rel="noopener" class="btn h-10 px-4">
+            <svg width="18" height="18" viewBox="0 0 16 16" aria-hidden="true"><path fill="currentColor" d="M8 0C3.58 0 0 3.58 0 8c0 3.54 2.29 6.53 5.47 7.59.4.07.55-.17.55-.38 0-.19-.01-.82-.01-1.49-2.01.37-2.53-.49-2.69-.94-.09-.23-.48-.94-.82-1.13-.28-.15-.68-.52-.01-.53.63-.01 1.08.58 1.23.82.72 1.21 1.87.87 2.33.66.07-.52.28-.87.51-1.07-1.78-.2-3.64-.89-3.64-3.95 0-.87.31-1.59.82-2.15-.08-.2-.36-1.02.08-2.12 0 0 .67-.21 2.2.82a7.4 7.4 0 0 1 2-.27c.68 0 1.36.09 2 .27 1.53-1.04 2.2-.82 2.2-.82.44 1.1.16 1.92.08 2.12.51.56.82 1.27.82 2.15 0 3.07-1.87 3.75-3.65 3.95.29.25.54.73.54 1.48 0 1.07-.01 1.93-.01 2.2 0 .21.15.46.55.38A8.01 8.01 0 0 0 16 8c0-4.42-3.58-8-8-8Z"/></svg>
+            <span data-i18n="link.github">Voir le code sur GitHub</span>
+          </a>
+          <a href="https://discord.gg/rueWrg9X" target="_blank" rel="noopener" class="btn h-10 px-4">
+            <svg width="20" height="20" viewBox="0 0 24 24" aria-hidden="true"><path fill="#5865F2" d="M20.317 4.3698a19.7913 19.7913 0 0 0-4.8851-1.5152.0741.0741 0 0 0-.0785.0371c-.211.3753-.4447.8648-.6083 1.2495-1.8447-.2762-3.68-.2762-5.4868 0-.1636-.3933-.4058-.8742-.6177-1.2495a.077.077 0 0 0-.0785-.037 19.7363 19.7363 0 0 0-4.8852 1.515.0699.0699 0 0 0-.0321.0277C.5334 9.0458-.319 13.5799.0992 18.0578a.0824.0824 0 0 0 .0312.0561c2.0528 1.5076 4.0413 2.4228 5.9929 3.0294a.0777.0777 0 0 0 .0842-.0276c.4616-.6304.8731-1.2952 1.226-1.9942a.076.076 0 0 0-.0416-.1057c-.6528-.2476-1.2743-.5495-1.8722-.8923a.077.077 0 0 1-.0076-.1277c.1258-.0943.2517-.1923.3718-.2914a.0743.0743 0 0 1 .0776-.0105c3.9278 1.7933 8.18 1.7933 12.0614 0a.0739.0739 0 0 1 .0785.0095c.1202.099.246.1981.3728.2924a.077.077 0 0 1-.0066.1276 12.2986 12.2986 0 0 1-1.873.8914.0766.0766 0 0 0-.0407.1067c.3604.698.7719 1.3628 1.225 1.9932a.076.076 0 0 0 .0842.0286c1.961-.6067 3.9495-1.5219 6.0023-3.0294a.077.077 0 0 0 .0313-.0552c.5004-5.177-.8382-9.6739-3.5485-13.6604a.061.061 0 0 0-.0312-.0286ZM8.02 15.3312c-1.1825 0-2.1569-1.0857-2.1569-2.419 0-1.3332.9555-2.4189 2.157-2.4189 1.2108 0 2.1757 1.0952 2.1568 2.419 0 1.3332-.9555 2.4189-2.1569 2.4189Zm7.9748 0c-1.1825 0-2.1569-1.0857-2.1569-2.419 0-1.3332.9554-2.4189 2.1569-2.4189 1.2108 0 2.1757 1.0952 2.1568 2.419 0 1.3332-.946 2.4189-2.1568 2.4189Z"/></svg>
+            <span data-i18n="link.discord">Rejoindre le Discord</span>
+          </a>
+        </div>
+
+        <h2 class="mt-10 text-xl font-semibold tracking-tight" data-i18n="faq.title">Questions fréquentes</h2>
+        <p class="mt-1 text-body text-zinc-500" data-i18n="faq.lead">Tout ce qu'on nous demande, expliqué simplement.</p>
+        <p class="mt-2 text-label text-zinc-400" data-i18n="faq.disclaimer">Cette FAQ est disponible en français et en anglais.</p>
+        <div id="faq-list" class="mt-6"></div>
+      </div>
+    </section>
 
     <script type="module" src="/src/main.ts"></script>
   </body>
