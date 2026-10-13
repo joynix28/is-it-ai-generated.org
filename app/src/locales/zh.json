@@ -176,5 +176,17 @@
   "image.newImage": "换一张图片",
   "nav.faq": "常见问题",
   "nav.back": "返回工具",
-  "nav.tool": "打开工具"
+  "nav.tool": "打开工具",
+  "nav.legal": "法律声明",
+  "legal.title": "法律声明",
+  "legal.publisher.title": "发布者",
+  "legal.publisher.body": "本站是开源项目。联系方式见页面底部的 GitHub 仓库或 Discord。",
+  "legal.host.title": "托管方",
+  "legal.host.body": "Cloudflare Pages — Cloudflare, Inc., 101 Townsend St, San Francisco, CA 94107, 美国。",
+  "legal.data.title": "个人数据",
+  "legal.data.body": "不收集、不传输、不保存任何数据。你的文本和图片不会离开设备。没有账号、没有 Cookie、没有统计、没有广告。",
+  "legal.code.title": "源代码",
+  "legal.code.body": "所有代码都是公开的，可在 GitHub 上核对。唯一的对外请求是一次性下载分析程序，之后保存在浏览器缓存中。",
+  "legal.contact.title": "联系",
+  "legal.contact.body": "如需报告问题、提交修正或翻译：在 GitHub 上开 issue，或在 Discord 留言。"
 }

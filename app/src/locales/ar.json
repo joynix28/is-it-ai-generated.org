@@ -176,5 +176,17 @@
   "image.newImage": "صورة أخرى",
   "nav.faq": "الأسئلة الشائعة",
   "nav.back": "العودة إلى الأداة",
-  "nav.tool": "افتح الأداة"
+  "nav.tool": "افتح الأداة",
+  "nav.legal": "إشعار قانوني",
+  "legal.title": "إشعار قانوني",
+  "legal.publisher.title": "الناشر",
+  "legal.publisher.body": "هذا الموقع مشروع مفتوح المصدر. للتواصل استخدم مستودع GitHub أو Discord المذكورين في أسفل الصفحة.",
+  "legal.host.title": "الاستضافة",
+  "legal.host.body": "Cloudflare Pages — Cloudflare, Inc., 101 Townsend St, San Francisco, CA 94107, الولايات المتحدة.",
+  "legal.data.title": "البيانات الشخصية",
+  "legal.data.body": "لا يتم جمع أي بيانات أو إرسالها أو حفظها. نصك وصورك لا تغادر جهازك. بلا حساب، بلا كوكيز، بلا إحصاءات، بلا إعلانات.",
+  "legal.code.title": "الشيفرة المصدرية",
+  "legal.code.body": "كل الشيفرة عامة ويمكن التحقق منها على GitHub. الطلب الخارجي الوحيد هو تنزيل برنامج التحليل مرة واحدة، ثم يبقى في ذاكرة المتصفح.",
+  "legal.contact.title": "اتصال",
+  "legal.contact.body": "للإبلاغ عن مشكلة أو اقتراح تصحيح أو ترجمة: افتح issue على GitHub أو اكتب على Discord."
 }

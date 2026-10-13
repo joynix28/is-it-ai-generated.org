@@ -94,26 +94,53 @@ const BAND_KEY = { human: 'band.human', mixed: 'band.mixed', ai: 'band.ai' } as 
 
 /* -------------------------------------------------------------- examples */
 
-const EXAMPLES = {
-  ai: [
-    "À l'ère du numérique, il est important de noter que les solutions innovantes jouent un rôle crucial dans les organisations modernes.",
-    "De plus, une approche globale facilite des résultats robustes et mesurables.",
-    "Par ailleurs, les équipes doivent naviguer dans les complexités d'un environnement en constante évolution.",
-    "En outre, il convient de souligner que la synergie entre les équipes est primordiale.",
-    "En conclusion, l'innovation témoigne de la maturité de l'organisation et ouvre la voie à un avenir prometteur.",
-  ].join('\n\n'),
-  human: [
-    "Le train de 7h12 était encore en retard ce matin. J'ai poireauté vingt minutes sur le quai, sous la flotte, avec un café tiède qui fuyait.",
-    "Ma voisine de palier m'a prêté son parapluie. Elle a soixante-douze ans, elle jure comme un charretier, et elle m'appelle « petit » alors que j'en ai quarante.",
-    "Je suis arrivé au bureau trempé. Personne n'a rien remarqué. J'ai bossé jusqu'à midi, mangé un sandwich, et je suis reparti.",
-  ].join('\n\n'),
-  // Same AI paragraph, but weaponised: zero-width spaces between letters and
-  // Cyrillic lookalikes swapped in for Latin ones.
-  tampered: '',
+const EXAMPLES: Record<string, { ai: string; human: string }> = {
+  fr: {
+    ai: "À l'ère du numérique, il est important de noter que les solutions innovantes jouent un rôle crucial dans les organisations modernes.\n\nDe plus, une approche globale facilite des résultats robustes et mesurables. Par ailleurs, les équipes doivent naviguer dans les complexités d'un environnement en constante évolution.\n\nEn conclusion, l'innovation témoigne de la maturité de l'organisation et ouvre la voie à un avenir prometteur.",
+    human: "Le train de 7h12 était encore en retard ce matin. J'ai poiroté vingt minutes sur le quai, sous la flotte, avec un café tiède qui fuyait.\n\nMa voisine de palier m'a prêté son parapluie. Elle a soixante-douze ans, elle jure comme un charretier, et elle m'appelle « petit » alors que j'en ai quarante.\n\nJe suis arrivé au bureau trempé. Personne n'a rien remarqué.",
+  },
+  en: {
+    ai: "In today's fast-paced world, it is important to note that leveraging cutting-edge solutions plays a crucial role in modern organizations.\n\nFurthermore, a comprehensive approach facilitates robust and measurable outcomes. Moreover, teams must navigate the complexities of an ever-evolving environment.\n\nIn conclusion, embracing innovation is a testament to organizational maturity and paves the way for a promising future.",
+    human: "The 7:12 train was late again this morning. I stood on the platform for twenty minutes in the rain with a lukewarm coffee leaking through the cup.\n\nMy neighbour lent me her umbrella. She is seventy-two, swears like a trooper, and calls me kid even though I am forty.\n\nI got to the office soaked. Nobody noticed.",
+  },
+  es: {
+    ai: "En la era digital, es importante señalar que las soluciones innovadoras desempeñan un papel crucial en las organizaciones modernas.\n\nAdemás, un enfoque integral facilita resultados sólidos y medibles. Asimismo, los equipos deben navegar por las complejidades de un entorno en constante evolución.\n\nEn conclusión, la innovación es un testimonio de la madurez de la organización.",
+    human: "El tren de las 7:12 volvía a llegar tarde. Esperé veinte minutos en el andén, bajo la lluvia, con un café tibio que se salía del vaso.\n\nMi vecina me dejó su paraguas. Tiene setenta y dos años, blasfema como un carretero y me llama «chaval» aunque tengo cuarenta.\n\nLlegué a la oficina empapado. Nadie se dio cuenta.",
+  },
+  de: {
+    ai: "In der digitalen Ära ist es wichtig zu beachten, dass innovative Lösungen eine entscheidende Rolle in modernen Organisationen spielen.\n\nDarüber hinaus ermöglicht ein ganzheitlicher Ansatz robuste und messbare Ergebnisse. Zudem müssen Teams die Komplexität eines sich ständig wandelnden Umfelds bewältigen.\n\nZusammenfassend ist Innovation ein Beleg für die Reife der Organisation.",
+    human: "Der Zug um 7:12 hatte wieder Verspätung. Ich stand zwanzig Minuten im Regen auf dem Bahnsteig, mit einem lauwarmen Kaffee, der durch den Becher lief.\n\nMeine Nachbarin hat mir ihren Schirm geliehen. Sie ist zweiundsiebzig, flucht wie ein Kutscher und nennt mich «Kleiner», obwohl ich vierzig bin.\n\nIm Büro war ich durchnässt. Es hat niemand gemerkt.",
+  },
+  it: {
+    ai: "Nell'era digitale, è importante notare che le soluzioni innovative svolgono un ruolo cruciale nelle organizzazioni moderne.\n\nInoltre, un approccio globale facilita risultati solidi e misurabili. Le squadre devono inoltre affrontare le complessità di un ambiente in continua evoluzione.\n\nIn conclusione, l'innovazione testimonia la maturità dell'organizzazione.",
+    human: "Il treno delle 7:12 era di nuovo in ritardo. Ho aspettato venti minuti sul binario, sotto la pioggia, con un caffè tiepido che perdeva dal bicchiere.\n\nLa vicina mi ha prestato l'ombrello. Ha settantadue anni, impreca come un carrettiere e mi chiama «ragazzo» anche se ne ho quaranta.\n\nSono arrivato in ufficio fradicio. Nessuno se n'è accorto.",
+  },
+  pt: {
+    ai: "Na era digital, é importante notar que as soluções inovadoras desempenham um papel crucial nas organizações modernas.\n\nAlém disso, uma abordagem abrangente facilita resultados sólidos e mensuráveis. As equipas devem ainda navegar pelas complexidades de um ambiente em constante evolução.\n\nEm conclusão, a inovação é um testemunho da maturidade da organização.",
+    human: "O comboio das 7h12 voltou a atrasar-se. Fiquei vinte minutos na plataforma, à chuva, com um café morno a escapar do copo.\n\nA vizinha emprestou-me o guarda-chuva. Tem setenta e dois anos, pragueja como um carroceiro e chama-me «miúdo» apesar de eu ter quarenta.\n\nCheguei ao escritório encharcado. Ninguém reparou.",
+  },
+  nl: {
+    ai: "In het digitale tijdperk is het belangrijk op te merken dat innovatieve oplossingen een cruciale rol spelen in moderne organisaties.\n\nBovendien maakt een holistische aanpak robuuste en meetbare resultaten mogelijk. Teams moeten bovendien de complexiteit van een voortdurend veranderende omgeving het hoofd bieden.\n\nSamenvattend getuigt innovatie van de volwassenheid van de organisatie.",
+    human: "De trein van 7.12 was weer te laat. Ik stond twintig minuten in de regen op het perron met een lauwe koffie die door de beker lekte.\n\nMijn buurvrouw leende me haar paraplu. Ze is tweeënzeventig, vloekt als een ketellapper en noemt me «jochie», ook al ben ik veertig.\n\nIk kwam doorweekt op kantoor. Niemand merkte het.",
+  },
+  ru: {
+    ai: "В цифровую эпоху важно отметить, что инновационные решения играют ключевую роль в современных организациях.\n\nКроме того, комплексный подход обеспечивает устойчивые и измеримые результаты. Командам также приходится преодолевать сложности постоянно меняющейся среды.\n\nВ заключение, инновации свидетельствуют о зрелости организации.",
+    human: "Поезд в 7:12 снова опоздал. Я двадцать минут стоял на платформе под дождём с тёплым кофе, который протекал через стакан.\n\nСоседка дала мне свой зонт. Ей семьдесят два, она ругается как извозчик и зовёт меня «малой», хотя мне сорок.\n\nВ офис я пришёл мокрый насквозь. Никто не заметил.",
+  },
+  zh: {
+    ai: "在数字时代，值得注意的是，创新解决方案在现代组织中发挥着关键作用。\n\n此外，全面的方法有助于实现稳健且可衡量的成果。团队还必须应对不断变化的环境所带来的复杂性。\n\n总之，创新体现了组织的成熟度。",
+    human: "7 点 12 分那班车又晚点了。我在站台上淋着雨等了二十分钟，手里的咖啡还是温的，杯子却在漏。\n\n邻居把伞借给了我。她七十二岁，骂起人来毫不客气，还管我叫「小孩」，可我都四十了。\n\n我浑身湿透地到了办公室。谁也没发现。",
+  },
+  ar: {
+    ai: "في العصر الرقمي، من المهم ملاحظة أن الحلول المبتكرة تلعب دوراً محورياً في المؤسسات الحديثة.\n\nعلاوة على ذلك، يسهّل النهج الشامل تحقيق نتائج متينة وقابلة للقياس. كما يتعيّن على الفرق التعامل مع تعقيدات بيئة متغيرة باستمرار.\n\nوفي الختام، يُعدّ الابتكار دليلاً على نضج المؤسسة.",
+    human: "تأخّر قطار السابعة والربع صباحاً مرة أخرى. انتظرت عشرين دقيقة على الرصيف تحت المطر، وفي يدي فنجان قهوة فاتر يتسرّب.\n\nأعارتني جارتي مظلّتها. عمرها اثنتان وسبعون، وتشتم شتماً قبيحاً، وتناديني «يا صغير» وأنا في الأربعين.\n\nوصلت المكتب مبلَّلاً تماماً. ولم يلاحظ أحد.",
+  },
 };
 
-function buildTampered(): string {
-  const base = EXAMPLES.ai;
+const EXAMPLE_FALLBACK = EXAMPLES.en!;
+
+function buildTampered(locale: string): string {
+  const base = (EXAMPLES[locale] ?? EXAMPLE_FALLBACK).ai;
   const cyrillic: Record<string, string> = { o: 'о', e: 'е', a: 'а', c: 'с', p: 'р', x: 'х', y: 'у' };
   // Insert a zero-width space every few characters, and swap some letters for
   // Cyrillic homoglyphs, exactly as a "humaniser" tool would.
@@ -128,7 +155,7 @@ function buildTampered(): string {
   return out;
 }
 
-EXAMPLES.tampered = buildTampered();
+
 
 /* ---------------------------------------------------------------- state */
 
@@ -539,7 +566,8 @@ const sampleSelect = el<HTMLSelectElement>('sample-select');
 sampleSelect.addEventListener('change', () => {
   const choice = sampleSelect.value;
   if (!choice) return;
-  editor.value = choice === 'ai' ? EXAMPLES.ai : choice === 'human' ? EXAMPLES.human : EXAMPLES.tampered;
+  const pack = EXAMPLES[getLocale()] ?? EXAMPLE_FALLBACK;
+  editor.value = choice === 'ai' ? pack.ai : choice === 'human' ? pack.human : buildTampered(getLocale());
   runAnalysis();
   sampleSelect.value = '';
 });

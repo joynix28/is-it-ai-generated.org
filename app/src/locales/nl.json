@@ -176,5 +176,17 @@
   "image.newImage": "Nieuwe afbeelding",
   "nav.faq": "Veelgestelde vragen",
   "nav.back": "Terug naar de tool",
-  "nav.tool": "Tool openen"
+  "nav.tool": "Tool openen",
+  "nav.legal": "Juridische informatie",
+  "legal.title": "Juridische informatie",
+  "legal.publisher.title": "Uitgever",
+  "legal.publisher.body": "Deze site is een open-sourceproject. Neem contact op via de GitHub-repository of de Discord, beide onderaan de pagina.",
+  "legal.host.title": "Hosting",
+  "legal.host.body": "Cloudflare Pages — Cloudflare, Inc., 101 Townsend St, San Francisco, CA 94107, Verenigde Staten.",
+  "legal.data.title": "Persoonsgegevens",
+  "legal.data.body": "Er worden geen gegevens verzameld, verzonden of bewaard. Je tekst en afbeeldingen verlaten je toestel niet. Geen account, geen cookies, geen analytics, geen advertenties.",
+  "legal.code.title": "Broncode",
+  "legal.code.body": "Alle code is openbaar en te controleren op GitHub. Het enige uitgaande verzoek is de eenmalige download van het analyseprogramma, dat daarna in de browsercache blijft.",
+  "legal.contact.title": "Contact",
+  "legal.contact.body": "Om een probleem te melden, een correctie of vertaling voor te stellen: open een issue op GitHub of schrijf op Discord."
 }

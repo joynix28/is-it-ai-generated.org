@@ -176,5 +176,17 @@
   "image.newImage": "Nova imagem",
   "nav.faq": "Perguntas frequentes",
   "nav.back": "Voltar à ferramenta",
-  "nav.tool": "Abrir a ferramenta"
+  "nav.tool": "Abrir a ferramenta",
+  "nav.legal": "Informação legal",
+  "legal.title": "Informação legal",
+  "legal.publisher.title": "Editor",
+  "legal.publisher.body": "Este site é um projeto de código aberto. Para contactar, use o repositório GitHub ou o Discord indicados no fundo da página.",
+  "legal.host.title": "Alojamento",
+  "legal.host.body": "Cloudflare Pages — Cloudflare, Inc., 101 Townsend St, San Francisco, CA 94107, Estados Unidos.",
+  "legal.data.title": "Dados pessoais",
+  "legal.data.body": "Nenhum dado é recolhido, transmitido ou guardado. O seu texto e as suas imagens não saem do seu dispositivo. Sem conta, sem cookies, sem analítica, sem publicidade.",
+  "legal.code.title": "Código-fonte",
+  "legal.code.body": "Todo o código é público e verificável no GitHub. O único pedido de saída é a descarga única do programa de análise, que fica depois na cache do navegador.",
+  "legal.contact.title": "Contacto",
+  "legal.contact.body": "Para reportar um problema, propor uma correção ou uma tradução: abra um issue no GitHub ou escreva no Discord."
 }
