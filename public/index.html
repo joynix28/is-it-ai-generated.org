@@ -1,0 +1,342 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover" />
+  <title>Is It AI Generated? — Free, private AI text & image detector</title>
+  <meta name="description" content="Free AI detector that runs entirely in your browser. Check if text or an image was AI-generated. No ads, no tracking, no upload." />
+  <meta name="theme-color" content="#0b0f17" media="(prefers-color-scheme: dark)" />
+  <meta name="theme-color" content="#f7f8fb" media="(prefers-color-scheme: light)" />
+  <link rel="canonical" href="https://is-it-ai-generated.org/" />
+  <link rel="icon" href="/favicon.svg" type="image/svg+xml" />
+  <link rel="manifest" href="/manifest.webmanifest" />
+  <link rel="stylesheet" href="/styles.css" />
+  <meta property="og:title" content="Is It AI Generated?" />
+  <meta property="og:description" content="Free, private, ad-free AI text and image detector. Everything runs on your device." />
+  <meta property="og:type" content="website" />
+  <meta property="og:url" content="https://is-it-ai-generated.org/" />
+</head>
+<body>
+  <a class="skip-link" href="#main">Skip to content</a>
+
+  <header class="site-header">
+    <div class="wrap header-inner">
+      <a class="brand" href="/">
+        <span class="brand-mark" aria-hidden="true">AI</span>
+        <span class="brand-text">
+          <strong data-i18n="app.name">Is It AI Generated?</strong>
+          <small data-i18n="app.tagline">Detect AI text and images in your browser</small>
+        </span>
+      </a>
+      <div class="header-actions">
+        <label class="lang-picker">
+          <span class="sr-only" data-i18n="common.language">Language</span>
+          <select id="lang-select" aria-label="Language"></select>
+        </label>
+        <button id="theme-toggle" class="icon-btn" type="button" aria-label="Toggle theme" title="Theme">
+          <span aria-hidden="true">◐</span>
+        </button>
+        <a class="icon-btn" href="https://github.com/joynix28/is-it-ai-generated.org" rel="noopener" target="_blank" aria-label="Source code" title="Source code">
+          <svg viewBox="0 0 16 16" width="18" height="18" aria-hidden="true"><path fill="currentColor" d="M8 0C3.58 0 0 3.58 0 8c0 3.54 2.29 6.53 5.47 7.59.4.07.55-.17.55-.38 0-.19-.01-.82-.01-1.49-2.01.37-2.53-.49-2.69-.94-.09-.23-.48-.94-.82-1.13-.28-.15-.68-.52-.01-.53.63-.01 1.08.58 1.23.82.72 1.21 1.87.87 2.33.66.07-.52.28-.87.51-1.07-1.78-.2-3.64-.89-3.64-3.95 0-.87.31-1.59.82-2.15-.08-.2-.36-1.02.08-2.12 0 0 .67-.21 2.2.82a7.4 7.4 0 0 1 2-.27c.68 0 1.36.09 2 .27 1.53-1.04 2.2-.82 2.2-.82.44 1.1.16 1.92.08 2.12.51.56.82 1.27.82 2.15 0 3.07-1.87 3.75-3.65 3.95.29.25.54.73.54 1.48 0 1.07-.01 1.93-.01 2.2 0 .21.15.46.55.38A8.01 8.01 0 0 0 16 8c0-4.42-3.58-8-8-8Z"/></svg>
+        </a>
+      </div>
+    </div>
+  </header>
+
+  <div class="badges wrap" role="list">
+    <span class="pill" role="listitem"><span aria-hidden="true">🚫</span> <span data-i18n="badge.noAds">No ads</span></span>
+    <span class="pill" role="listitem"><span aria-hidden="true">🔒</span> <span data-i18n="badge.local">Runs on your device</span></span>
+    <span class="pill" role="listitem"><span aria-hidden="true">⚡</span> <span data-i18n="badge.fast">Instant</span></span>
+    <span class="pill" role="listitem"><span aria-hidden="true">🆓</span> <span data-i18n="badge.free">Free</span></span>
+    <span class="pill" role="listitem"><span aria-hidden="true">📖</span> <span data-i18n="badge.opensource">Open source</span></span>
+  </div>
+
+  <nav class="tabs wrap" role="tablist" aria-label="Tools">
+    <button class="tab" role="tab" id="tab-text" aria-controls="panel-text" aria-selected="true" data-tab="text"><span data-i18n="nav.text">Text</span></button>
+    <button class="tab" role="tab" id="tab-image" aria-controls="panel-image" aria-selected="false" data-tab="image"><span data-i18n="nav.image">Image</span></button>
+    <button class="tab" role="tab" id="tab-counter" aria-controls="panel-counter" aria-selected="false" data-tab="counter"><span data-i18n="nav.counter">Word counter</span></button>
+    <button class="tab" role="tab" id="tab-slop" aria-controls="panel-slop" aria-selected="false" data-tab="slop"><span data-i18n="nav.slop">Slop detector</span></button>
+    <button class="tab" role="tab" id="tab-compare" aria-controls="panel-compare" aria-selected="false" data-tab="compare"><span data-i18n="nav.compare">Compare</span></button>
+    <button class="tab" role="tab" id="tab-stats" aria-controls="panel-stats" aria-selected="false" data-tab="stats"><span data-i18n="nav.stats">Stats</span></button>
+    <button class="tab" role="tab" id="tab-api" aria-controls="panel-api" aria-selected="false" data-tab="api"><span data-i18n="nav.api">API</span></button>
+    <button class="tab" role="tab" id="tab-about" aria-controls="panel-about" aria-selected="false" data-tab="about"><span data-i18n="nav.about">About</span></button>
+  </nav>
+
+  <main id="main" class="wrap">
+
+    <!-- TEXT -->
+    <section class="panel" id="panel-text" role="tabpanel" aria-labelledby="tab-text">
+      <div class="panel-head">
+        <h1 data-i18n="text.title">AI text detector</h1>
+        <p class="lead" data-i18n="text.lead">Paste text to see a per-sentence AI index and the exact patterns behind it. Nothing is uploaded.</p>
+      </div>
+      <div class="tool-grid">
+        <div class="card input-card">
+          <textarea id="text-input" class="editor" spellcheck="false" data-i18n-attr="placeholder:text.placeholder" placeholder="Paste or type your text here…"></textarea>
+          <div class="controls">
+            <div class="control">
+              <label for="text-lang" data-i18n="common.language">Language</label>
+              <select id="text-lang"></select>
+            </div>
+            <div class="control">
+              <label for="text-sensitivity" data-i18n="common.sensitivity">Sensitivity</label>
+              <input id="text-sensitivity" type="range" min="0.5" max="2" step="0.1" value="1" />
+            </div>
+            <label class="check"><input type="checkbox" id="text-highlight" checked /> <span data-i18n="text.highlight">Highlight sentences</span></label>
+          </div>
+          <div class="actions">
+            <button class="btn primary" id="text-run" data-i18n="common.analyze">Analyze</button>
+            <button class="btn" id="text-sample" data-i18n="common.sample">Try an example</button>
+            <button class="btn" id="text-clear" data-i18n="common.clear">Clear</button>
+            <span class="counter-inline" id="text-inline-count"></span>
+          </div>
+        </div>
+
+        <div class="card result-card" id="text-result" hidden>
+          <div class="score-block">
+            <div class="gauge" id="text-gauge" role="img" aria-label="AI score"></div>
+            <div class="score-meta">
+              <div class="verdict" id="text-verdict">—</div>
+              <div class="verdict-desc" id="text-verdict-desc"></div>
+              <dl class="kv">
+                <div><dt data-i18n="common.confidence">Confidence</dt><dd id="text-confidence">—</dd></div>
+                <div><dt data-i18n="common.language">Language</dt><dd id="text-detected-lang">—</dd></div>
+                <div><dt>Fingerprint</dt><dd><code id="text-fingerprint">—</code></dd></div>
+              </dl>
+            </div>
+          </div>
+
+          <div class="annotated" id="text-annotated" hidden></div>
+
+          <h3 data-i18n="text.reasons">Why this score</h3>
+          <div class="bars" id="text-reasons"></div>
+
+          <h3 data-i18n="text.aiPhrases">Detected AI phrases</h3>
+          <div class="chips" id="text-phrases"></div>
+
+          <h3 data-i18n="text.sentences">Sentence analysis</h3>
+          <ol class="sentences" id="text-sentences"></ol>
+
+          <div class="actions">
+            <button class="btn" id="text-copy" data-i18n="common.copy">Copy</button>
+            <button class="btn" id="text-download" data-i18n="common.download">Download JSON</button>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- IMAGE -->
+    <section class="panel" id="panel-image" role="tabpanel" aria-labelledby="tab-image" hidden>
+      <div class="panel-head">
+        <h1 data-i18n="image.title">AI image detector</h1>
+        <p class="lead" data-i18n="image.lead">Check provenance metadata and pixel statistics locally. The image is never uploaded.</p>
+      </div>
+      <div class="tool-grid">
+        <div class="card">
+          <div class="dropzone" id="image-drop" tabindex="0" role="button">
+            <input type="file" id="image-file" accept="image/*" hidden />
+            <div class="dropzone-inner">
+              <span class="dz-icon" aria-hidden="true">🖼️</span>
+              <strong data-i18n="image.drop">Drop an image here, or click to browse</strong>
+              <small data-i18n="image.privacy">The file is read in your browser only.</small>
+            </div>
+          </div>
+          <div class="preview" id="image-preview" hidden></div>
+        </div>
+        <div class="card result-card" id="image-result" hidden>
+          <div class="score-block">
+            <div class="gauge" id="image-gauge" role="img" aria-label="AI score"></div>
+            <div class="score-meta">
+              <div class="verdict" id="image-verdict">—</div>
+              <dl class="kv" id="image-kv"></dl>
+            </div>
+          </div>
+          <h3 data-i18n="image.metadata">Provenance metadata</h3>
+          <div class="table-wrap"><table class="data-table" id="image-metadata"></table></div>
+          <h3 data-i18n="image.signals">Pixel signals</h3>
+          <div class="bars" id="image-signals"></div>
+          <h3 data-i18n="image.hashes">Perceptual hashes</h3>
+          <div class="chips" id="image-hashes"></div>
+        </div>
+      </div>
+    </section>
+
+    <!-- COUNTER -->
+    <section class="panel" id="panel-counter" role="tabpanel" aria-labelledby="tab-counter" hidden>
+      <div class="panel-head">
+        <h1 data-i18n="counter.title">Word counter</h1>
+        <p class="lead" data-i18n="counter.lead">Counts, reading time, keyword density and readability, updated as you type.</p>
+      </div>
+      <div class="tool-grid">
+        <div class="card input-card">
+          <textarea id="counter-input" class="editor" spellcheck="false" data-i18n-attr="placeholder:text.placeholder" placeholder="Paste or type your text here…"></textarea>
+        </div>
+        <div class="card">
+          <h3 data-i18n="counter.objects">Counts</h3>
+          <div class="stat-grid" id="counter-stats"></div>
+          <h3 data-i18n="counter.time">Time</h3>
+          <div class="stat-grid" id="counter-time"></div>
+          <h3 data-i18n="counter.readability">Readability</h3>
+          <div class="stat-grid" id="counter-readability"></div>
+          <h3 data-i18n="counter.keywords">Top keywords</h3>
+          <div class="table-wrap"><table class="data-table" id="counter-keywords"></table></div>
+          <h3 data-i18n="counter.phrases">Common phrases</h3>
+          <div class="chips" id="counter-phrases"></div>
+        </div>
+      </div>
+    </section>
+
+    <!-- SLOP -->
+    <section class="panel" id="panel-slop" role="tabpanel" aria-labelledby="tab-slop" hidden>
+      <div class="panel-head">
+        <h1 data-i18n="slop.title">Slop detector</h1>
+        <p class="lead" data-i18n="slop.lead">Find the writing patterns AI models over-produce, with quotes and fixes. Based on the no-ai-slop and stop-slop rules.</p>
+      </div>
+      <div class="tool-grid">
+        <div class="card input-card">
+          <textarea id="slop-input" class="editor" spellcheck="false" data-i18n-attr="placeholder:text.placeholder" placeholder="Paste or type your text here…"></textarea>
+          <div class="actions">
+            <button class="btn primary" id="slop-run" data-i18n="common.analyze">Analyze</button>
+            <button class="btn" id="slop-deslop" data-i18n="slop.deslop">Clean up safely</button>
+            <button class="btn" id="slop-clear" data-i18n="common.clear">Clear</button>
+          </div>
+        </div>
+        <div class="card result-card" id="slop-result" hidden>
+          <div class="score-block">
+            <div class="gauge" id="slop-gauge" role="img" aria-label="Slop density"></div>
+            <div class="score-meta">
+              <div class="verdict" id="slop-verdict">—</div>
+              <div class="verdict-desc" data-i18n="slop.score">Slop density</div>
+            </div>
+          </div>
+          <h3 data-i18n="slop.findings">Findings</h3>
+          <div class="findings" id="slop-findings"></div>
+          <div id="slop-cleaned-wrap" hidden>
+            <h3 data-i18n="slop.cleaned">Cleaned text</h3>
+            <textarea class="editor" id="slop-cleaned" readonly></textarea>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- COMPARE -->
+    <section class="panel" id="panel-compare" role="tabpanel" aria-labelledby="tab-compare" hidden>
+      <div class="panel-head">
+        <h1 data-i18n="compare.title">Compare two texts</h1>
+        <p class="lead" data-i18n="compare.lead">Find near-duplicate wording between two passages, locally.</p>
+      </div>
+      <div class="tool-grid two">
+        <div class="card input-card">
+          <label class="field-label" for="compare-a" data-i18n="compare.a">First text</label>
+          <textarea id="compare-a" class="editor short" spellcheck="false"></textarea>
+        </div>
+        <div class="card input-card">
+          <label class="field-label" for="compare-b" data-i18n="compare.b">Second text</label>
+          <textarea id="compare-b" class="editor short" spellcheck="false"></textarea>
+        </div>
+      </div>
+      <div class="actions">
+        <button class="btn primary" id="compare-run" data-i18n="common.analyze">Analyze</button>
+      </div>
+      <div class="card result-card" id="compare-result" hidden>
+        <div class="score-block">
+          <div class="gauge" id="compare-gauge" role="img" aria-label="Similarity"></div>
+          <div class="score-meta"><div class="verdict" id="compare-verdict">—</div></div>
+        </div>
+        <h3 data-i18n="compare.shared">Shared phrases</h3>
+        <div class="chips" id="compare-chips"></div>
+      </div>
+    </section>
+
+    <!-- STATS -->
+    <section class="panel" id="panel-stats" role="tabpanel" aria-labelledby="tab-stats" hidden>
+      <div class="panel-head">
+        <h1 data-i18n="stats.title">Site statistics</h1>
+        <p class="lead" data-i18n="stats.lead">Aggregate, anonymous usage of this site.</p>
+      </div>
+      <p class="note" data-i18n="stats.privacy">Privacy-first: no cookies, no fingerprinting, no personal data stored.</p>
+      <div class="stat-grid big" id="stats-grid"></div>
+      <div class="tool-grid two">
+        <div class="card"><h3 data-i18n="stats.pages">Top pages</h3><div class="table-wrap"><table class="data-table" id="stats-pages"></table></div></div>
+        <div class="card"><h3 data-i18n="stats.languages">UI languages</h3><div class="table-wrap"><table class="data-table" id="stats-langs"></table></div></div>
+      </div>
+      <div class="tool-grid two">
+        <div class="card"><h3 data-i18n="stats.countries">Countries</h3><div class="table-wrap"><table class="data-table" id="stats-countries"></table></div></div>
+        <div class="card"><h3 data-i18n="stats.devices">Devices</h3><div class="table-wrap"><table class="data-table" id="stats-devices"></table></div></div>
+      </div>
+      <div class="actions">
+        <button class="btn" id="stats-optout"></button>
+      </div>
+    </section>
+
+    <!-- API -->
+    <section class="panel" id="panel-api" role="tabpanel" aria-labelledby="tab-api" hidden>
+      <div class="panel-head">
+        <h1 data-i18n="api.title">Use it as an API</h1>
+        <p class="lead" data-i18n="api.lead">The same engine is available as a REST endpoint, an npm package and a CLI.</p>
+      </div>
+      <div class="card">
+        <h3 data-i18n="api.endpoint">Endpoint</h3>
+        <pre class="code"><code>POST /api/detect
+Content-Type: application/json
+
+{ "text": "…", "language": "auto", "sensitivity": 1 }</code></pre>
+        <h3 data-i18n="api.example">Example</h3>
+        <pre class="code"><code>curl -s https://is-it-ai-generated.org/api/detect \
+  -H 'content-type: application/json' \
+  -d '{"text":"Your text here"}' | jq</code></pre>
+        <h3 data-i18n="api.npm">npm package</h3>
+        <pre class="code"><code>npm install is-it-ai-generated
+
+import { detectText } from 'is-it-ai-generated';
+detectText('Some text').score; // 0-100</code></pre>
+        <h3 data-i18n="api.cli">Command line</h3>
+        <pre class="code"><code>echo "text" | isitai
+isitai --json article.txt
+isitai --counter article.txt</code></pre>
+        <p class="note">Endpoints: <code>/api/detect</code>, <code>/api/count</code>, <code>/api/image</code>, <code>/api/health</code>, <code>/api/stats</code>.</p>
+      </div>
+    </section>
+
+    <!-- ABOUT -->
+    <section class="panel" id="panel-about" role="tabpanel" aria-labelledby="tab-about" hidden>
+      <div class="panel-head">
+        <h1 data-i18n="about.title">About and privacy</h1>
+      </div>
+      <div class="tool-grid two">
+        <div class="card">
+          <h3 data-i18n="about.privacyTitle">Privacy</h3>
+          <p data-i18n="about.privacyText">Text and images are processed entirely in your browser.</p>
+        </div>
+        <div class="card">
+          <h3 data-i18n="about.openTitle">Open source</h3>
+          <p data-i18n="about.openText">The full source is on GitHub under the MIT licence.</p>
+        </div>
+        <div class="card">
+          <h3 data-i18n="about.limitsTitle">Limits</h3>
+          <p data-i18n="about.limitsText">This is a heuristic index, not proof.</p>
+        </div>
+        <div class="card">
+          <h3>Detection model</h3>
+          <p>Text: 13 weighted stylometric features plus 20+ named slop patterns. Image: metadata provenance, FFT spectrum, noise, channel correlation. All weights are in <code>src/core/</code> and auditable.</p>
+        </div>
+      </div>
+    </section>
+  </main>
+
+  <footer class="site-footer">
+    <div class="wrap footer-inner">
+      <p data-i18n="footer.madeWith">Made with no ads, no tracking and no nonsense.</p>
+      <p>
+        <a href="https://github.com/joynix28/is-it-ai-generated.org" rel="noopener" target="_blank" data-i18n="footer.source">Source code</a>
+        <span aria-hidden="true">·</span>
+        <a href="https://github.com/joynix28/is-it-ai-generated.org/blob/main/LICENSE" rel="noopener" target="_blank" data-i18n="footer.license">MIT licence</a>
+        <span aria-hidden="true">·</span>
+        <a href="#panel-about" data-tab-link="about" data-i18n="footer.privacy">Privacy</a>
+      </p>
+    </div>
+  </footer>
+
+  <script type="module" src="/app/main.js"></script>
+</body>
+</html>

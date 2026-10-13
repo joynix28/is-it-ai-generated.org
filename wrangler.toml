@@ -1,0 +1,17 @@
+# Cloudflare Pages configuration.
+#
+# Deploy:  npm run build && wrangler pages deploy
+# Secrets: wrangler pages secret put STATS_SECRET
+
+name = "is-it-ai-generated"
+compatibility_date = "2026-10-01"
+pages_build_output_dir = "public"
+
+# Anonymous aggregate statistics. The namespace id is not a secret.
+[[kv_namespaces]]
+binding = "STATS"
+id = "e5f043fc798f4bd3967310a808e2cbcc"
+
+[vars]
+# Public, non-secret configuration only.
+STATS_ENABLED = "true"

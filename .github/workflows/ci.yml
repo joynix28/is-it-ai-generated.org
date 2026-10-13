@@ -1,0 +1,38 @@
+name: CI
+
+on:
+  push:
+    branches: [main]
+  pull_request:
+
+jobs:
+  test:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 20
+      - run: npm run build
+      - run: npm test
+
+  smoke-api:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 20
+      - run: npm run build
+      - name: Start dev server and hit the API
+        run: |
+          node scripts/dev.mjs &
+          sleep 3
+          curl -sf http://localhost:8788/api/health | grep -q '"ok":true'
+          curl -sf -X POST http://localhost:8788/api/detect \
+            -H 'content-type: application/json' \
+            -d '{"text":"In today\u0027s fast-paced world, it is important to note that leveraging cutting-edge solutions plays a crucial role."}' \
+            | grep -q '"verdict"'
+          curl -sf -X POST http://localhost:8788/api/count \
+            -H 'content-type: application/json' -d '{"text":"hello world"}' | grep -q '"words"'
+          echo "API smoke test passed"

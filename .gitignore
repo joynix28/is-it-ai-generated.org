@@ -1,0 +1,13 @@
+node_modules/
+.wrangler/
+.dev.vars
+.env
+.env.*
+dist/
+public/core/
+public/i18n/
+public/vendor/
+public/version.json
+*.log
+.DS_Store
+coverage/
