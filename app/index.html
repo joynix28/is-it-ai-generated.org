@@ -1,0 +1,279 @@
+<!doctype html>
+<html lang="fr" data-theme="light">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Détecteur de texte IA — 100 % local, sans inscription</title>
+    <meta name="description" content="Détectez un texte généré par IA et inspectez les images : analyse statistique, empreinte de modèle, C2PA, forensique de pixels. Tout se passe dans votre navigateur." />
+    <meta name="robots" content="index, follow" />
+    <link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 32 32'%3E%3Crect width='32' height='32' fill='%2318181B'/%3E%3Ctext x='16' y='22' font-family='monospace' font-size='14' font-weight='700' fill='%23FAFAFA' text-anchor='middle'%3EAT%3C/text%3E%3C/svg%3E" />
+  </head>
+  <body class="h-full">
+    <header class="flex h-12 shrink-0 items-center justify-between border-b px-4 hairline bg-white dark:bg-[#0A0A0A]">
+      <div class="flex items-center gap-2.5">
+        <span class="grid h-6 w-6 place-items-center rounded-[3px] bg-zinc-900 font-mono text-[11px] font-bold text-white dark:bg-zinc-100 dark:text-zinc-900">AT</span>
+        <h1 class="text-ui font-semibold tracking-tight">Détecteur IA</h1>
+        <span class="hidden items-center gap-1 rounded-[3px] border px-1.5 py-0.5 text-micro font-semibold uppercase tracking-[0.08em] hairline text-zinc-500 sm:inline-flex">
+          <span class="h-1.5 w-1.5 rounded-full bg-sage-600"></span>
+          100 % local
+        </span>
+      </div>
+      <button id="theme-toggle" type="button" class="btn" aria-label="Changer de thème">
+        <span id="theme-label" class="text-label">Sombre</span>
+      </button>
+    </header>
+
+    <nav class="flex h-10 shrink-0 items-center gap-1 border-b px-4 hairline bg-white dark:bg-[#0A0A0A]" role="tablist" aria-label="Modules">
+      <button id="tab-text" type="button" role="tab" aria-selected="true" aria-controls="pane-text" class="tab">Analyse de texte</button>
+      <button id="tab-image" type="button" role="tab" aria-selected="false" aria-controls="pane-image" class="tab">Inspection d'image</button>
+    </nav>
+
+    <main class="h-[calc(100%-5.5rem)]">
+      <!-- ================================================== TEXT ========== -->
+      <div id="pane-text" role="tabpanel" aria-labelledby="tab-text" class="grid h-full grid-cols-1 lg:grid-cols-[minmax(0,60fr)_minmax(0,40fr)]">
+        <section class="flex min-h-0 flex-col border-b lg:border-b-0 lg:border-r hairline">
+          <div class="flex shrink-0 flex-wrap items-center justify-between gap-2 border-b px-4 py-2.5 hairline">
+            <span class="metric-label">Éditeur</span>
+            <div class="flex flex-wrap items-center gap-1.5">
+              <button id="btn-paste" type="button" class="btn">Coller</button>
+              <button id="btn-clear" type="button" class="btn">Effacer</button>
+              <span class="mx-1 hidden h-4 w-px bg-zinc-200 dark:bg-zinc-800 sm:block"></span>
+              <button id="btn-example-ai" type="button" class="btn">Texte IA</button>
+              <button id="btn-example-human" type="button" class="btn">Texte humain</button>
+              <button id="btn-example-tampered" type="button" class="btn">Texte truqué</button>
+            </div>
+          </div>
+
+          <div class="editor-wrap">
+            <div id="highlight-layer" class="editor-layer" aria-hidden="true"></div>
+            <textarea id="editor" class="editor-input" spellcheck="false" autocomplete="off" aria-label="Texte à analyser" placeholder="Collez ou tapez un texte. L'analyse démarre à la frappe."></textarea>
+            <div id="tip" class="tip" hidden></div>
+          </div>
+
+          <div class="flex shrink-0 flex-wrap items-center gap-x-5 gap-y-1 border-t px-4 py-2 hairline font-mono text-label text-zinc-500">
+            <span><span id="count-words" class="font-semibold text-zinc-900 dark:text-zinc-100">0</span> mots</span>
+            <span><span id="count-chars" class="font-semibold text-zinc-900 dark:text-zinc-100">0</span> caractères</span>
+            <span><span id="count-sentences" class="font-semibold text-zinc-900 dark:text-zinc-100">0</span> phrases</span>
+            <span id="count-layer1" class="ml-auto">Couche 1 : <span id="layer1-ms" class="font-semibold text-zinc-900 dark:text-zinc-100">0</span> ms</span>
+          </div>
+        </section>
+
+        <aside class="min-h-0 overflow-y-auto bg-white px-4 py-4 dark:bg-[#0A0A0A]">
+          <div class="panel p-4">
+            <div class="flex items-start justify-between">
+              <span class="metric-label">Probabilité IA</span>
+              <span id="band-badge" class="rounded-[3px] border px-1.5 py-0.5 text-micro font-semibold uppercase tracking-[0.08em] hairline text-zinc-500">—</span>
+            </div>
+            <div class="mt-2 flex items-baseline gap-2">
+              <span id="score-value" class="font-mono text-score font-semibold tabular-nums text-zinc-900 dark:text-zinc-50">0</span>
+              <span class="font-mono text-ui text-zinc-400">%</span>
+            </div>
+            <div id="gauge" class="gauge mt-3" role="img" aria-label="Jauge de probabilité IA"></div>
+            <p id="verdict-reason" class="mt-3 text-body text-zinc-500">En attente de texte.</p>
+            <div class="mt-3 flex items-center justify-between border-t pt-2.5 hairline">
+              <span class="text-label text-zinc-500">Confiance</span>
+              <span id="confidence" class="font-mono text-label font-semibold tabular-nums">0 %</span>
+            </div>
+          </div>
+
+          <div class="panel mt-3 p-4">
+            <span class="metric-label">Décomposition</span>
+            <div class="mt-3 space-y-3">
+              <div>
+                <div class="flex items-baseline justify-between text-label"><span class="text-zinc-600 dark:text-zinc-400">Régularité syntaxique</span><span id="sub-syntax" class="font-mono font-semibold tabular-nums">0 %</span></div>
+                <div class="bar mt-1.5"><div id="bar-syntax" class="bar__fill"></div></div>
+                <p class="mt-1 text-[11px] leading-tight text-zinc-400">Variation du rythme des phrases (burstiness inversée)</p>
+              </div>
+              <div>
+                <div class="flex items-baseline justify-between text-label"><span class="text-zinc-600 dark:text-zinc-400">Prévisibilité lexicale</span><span id="sub-lexical" class="font-mono font-semibold tabular-nums">0 %</span></div>
+                <div class="bar mt-1.5"><div id="bar-lexical" class="bar__fill"></div></div>
+                <p class="mt-1 text-[11px] leading-tight text-zinc-400">Richesse du vocabulaire et répétitions de n-grammes</p>
+              </div>
+              <div>
+                <div class="flex items-baseline justify-between text-label"><span class="text-zinc-600 dark:text-zinc-400">Marqueurs &amp; tics LLM</span><span id="sub-markers" class="font-mono font-semibold tabular-nums">0 %</span></div>
+                <div class="bar mt-1.5"><div id="bar-markers" class="bar__fill"></div></div>
+                <p class="mt-1 text-[11px] leading-tight text-zinc-400">Densité de tournures typiques des modèles</p>
+              </div>
+              <div>
+                <div class="flex items-baseline justify-between text-label"><span class="text-zinc-600 dark:text-zinc-400">Intégrité des caractères</span><span id="sub-forensic" class="font-mono font-semibold tabular-nums">0 %</span></div>
+                <div class="bar mt-1.5"><div id="bar-forensic" class="bar__fill"></div></div>
+                <p class="mt-1 text-[11px] leading-tight text-zinc-400">Caractères invisibles et homoglyphes</p>
+              </div>
+            </div>
+          </div>
+
+          <!-- Fingerprinting -->
+          <div id="fingerprint-panel" class="panel mt-3 p-4">
+            <div class="flex items-start justify-between gap-3">
+              <span class="metric-label">Empreinte modèle</span>
+              <span id="fingerprint-top" class="font-mono text-[11px] text-zinc-400">—</span>
+            </div>
+            <div id="fingerprint-bars" class="mt-3 space-y-2.5"></div>
+            <p id="fingerprint-notes" class="mt-3 border-t pt-2.5 text-[11px] leading-tight text-zinc-400 hairline"></p>
+          </div>
+
+          <div id="forensic-panel" class="panel mt-3 hidden p-4">
+            <span class="metric-label">Anomalies détectées</span>
+            <ul id="forensic-list" class="mt-2.5 space-y-2"></ul>
+          </div>
+
+          <div id="markers-panel" class="panel mt-3 hidden p-4">
+            <span class="metric-label">Tournures repérées</span>
+            <div id="markers-list" class="mt-2.5 flex flex-wrap gap-1.5"></div>
+          </div>
+
+          <div class="panel mt-3 p-4">
+            <span class="metric-label">Signaux du moteur</span>
+            <ul id="components-list" class="mt-2.5 space-y-2"></ul>
+          </div>
+
+          <div class="panel mt-3 p-4">
+            <span class="metric-label">Mesures</span>
+            <dl class="mt-2.5 grid grid-cols-2 gap-x-4 gap-y-2">
+              <div class="flex items-baseline justify-between"><dt class="text-label text-zinc-500">Phrases</dt><dd id="stat-sentences" class="font-mono text-label font-semibold tabular-nums">0</dd></div>
+              <div class="flex items-baseline justify-between"><dt class="text-label text-zinc-500">Paragraphes</dt><dd id="stat-paragraphs" class="font-mono text-label font-semibold tabular-nums">0</dd></div>
+              <div class="flex items-baseline justify-between"><dt class="text-label text-zinc-500">Mots uniques</dt><dd id="stat-unique" class="font-mono text-label font-semibold tabular-nums">0</dd></div>
+              <div class="flex items-baseline justify-between"><dt class="text-label text-zinc-500">Type/token</dt><dd id="stat-ttr" class="font-mono text-label font-semibold tabular-nums">0</dd></div>
+              <div class="flex items-baseline justify-between"><dt class="text-label text-zinc-500">Long. moyenne</dt><dd id="stat-mean" class="font-mono text-label font-semibold tabular-nums">0</dd></div>
+              <div class="flex items-baseline justify-between"><dt class="text-label text-zinc-500">Écart-type</dt><dd id="stat-std" class="font-mono text-label font-semibold tabular-nums">0</dd></div>
+              <div class="flex items-baseline justify-between"><dt class="text-label text-zinc-500">Burstiness</dt><dd id="stat-burst" class="font-mono text-label font-semibold tabular-nums">0</dd></div>
+              <div class="flex items-baseline justify-between"><dt class="text-label text-zinc-500">Structures ternaires</dt><dd id="stat-ternary" class="font-mono text-label font-semibold tabular-nums">0</dd></div>
+              <div class="flex items-baseline justify-between"><dt class="text-label text-zinc-500">MATTR-50</dt><dd id="mes-mattr" class="font-mono text-label font-semibold tabular-nums">0</dd></div>
+              <div class="flex items-baseline justify-between"><dt class="text-label text-zinc-500">Entropie trigrammes</dt><dd id="mes-shannon" class="font-mono text-label font-semibold tabular-nums">0</dd></div>
+              <div class="flex items-baseline justify-between"><dt class="text-label text-zinc-500">Compression deflate</dt><dd id="mes-compression" class="font-mono text-label font-semibold tabular-nums">—</dd></div>
+              <div class="flex items-baseline justify-between"><dt class="text-label text-zinc-500">Phrases à énumération</dt><dd id="mes-enum" class="font-mono text-label font-semibold tabular-nums">0</dd></div>
+              <div class="flex items-baseline justify-between"><dt class="text-label text-zinc-500">Connecteurs en tête</dt><dd id="mes-conn" class="font-mono text-label font-semibold tabular-nums">0</dd></div>
+              <div class="flex items-baseline justify-between"><dt class="text-label text-zinc-500">Paragraphes isomorphes</dt><dd id="mes-iso" class="font-mono text-label font-semibold tabular-nums">0</dd></div>
+            </dl>
+          </div>
+
+          <div class="panel mt-3 p-4">
+            <div class="flex items-center justify-between">
+              <span class="metric-label">Couche 2 · modèle neuronal</span>
+              <span id="model-state" class="font-mono text-label text-zinc-400">inactif</span>
+            </div>
+            <p id="model-note" class="mt-2 text-[11px] leading-tight text-zinc-400">Classifieur ONNX quantifié exécuté dans un Web Worker. Téléchargé depuis le CDN à la première analyse, puis mis en cache. Modèle anglophone : la couche 1 reste la référence pour le français.</p>
+            <div id="model-progress-wrap" class="mt-2 hidden">
+              <div class="bar"><div id="model-progress" class="bar__fill"></div></div>
+              <p id="model-progress-label" class="mt-1 font-mono text-[11px] text-zinc-400"></p>
+            </div>
+            <div id="model-result" class="mt-2.5 hidden border-t pt-2.5 hairline">
+              <div class="flex items-baseline justify-between"><span class="text-label text-zinc-500">Classe du modèle</span><span id="model-score" class="font-mono text-label font-semibold tabular-nums">—</span></div>
+              <div class="mt-1.5 flex items-baseline justify-between"><span class="text-label text-zinc-500">Latence</span><span id="model-ms" class="font-mono text-label tabular-nums text-zinc-500">—</span></div>
+            </div>
+          </div>
+
+          <div class="panel mt-3 overflow-hidden">
+            <button id="privacy-toggle" type="button" class="flex w-full items-center justify-between px-4 py-3 text-left" aria-expanded="false">
+              <span class="flex items-center gap-2"><span class="h-1.5 w-1.5 rounded-full bg-sage-600"></span><span class="text-ui font-medium">100 % exécution locale — vérifiable en mode avion</span></span>
+              <span id="privacy-caret" class="font-mono text-zinc-400" aria-hidden="true">+</span>
+            </button>
+            <div id="privacy-body" class="hidden border-t px-4 py-3 hairline">
+              <p class="text-label leading-relaxed text-zinc-500">Votre texte et vos images ne sont jamais envoyés à un serveur. Couche 1 en TypeScript pur, couche 2 dans un Web Worker, forensique d'image via FileReader et Canvas. Aucun cookie, aucun identifiant, aucune requête analytique. La seule requête sortante est le téléchargement du modèle depuis le CDN, une fois, puis mis en cache.</p>
+            </div>
+          </div>
+
+          <p class="px-1 py-4 text-[11px] leading-relaxed text-zinc-400">Aucun détecteur n'est infaillible. Un texte formel écrit par un humain peut ressortir comme IA, et un texte retouché à la main peut passer pour humain. Le score est un indice, jamais une preuve.</p>
+        </aside>
+      </div>
+
+      <!-- ================================================= IMAGE ========== -->
+      <div id="pane-image" role="tabpanel" aria-labelledby="tab-image" class="hidden h-full grid-cols-1 lg:grid-cols-[minmax(0,60fr)_minmax(0,40fr)]">
+        <section class="flex min-h-0 flex-col border-b lg:border-b-0 lg:border-r hairline">
+          <div class="flex shrink-0 flex-wrap items-center justify-between gap-2 border-b px-4 py-2.5 hairline">
+            <span class="metric-label">Image</span>
+            <div class="flex items-center gap-1.5">
+              <button id="img-mode-original" type="button" class="btn" aria-pressed="true">Vue originale</button>
+              <button id="img-mode-heat" type="button" class="btn" aria-pressed="false">Carte des artefacts</button>
+            </div>
+          </div>
+
+          <div id="img-stage" class="relative flex-1 overflow-hidden bg-zinc-100 dark:bg-[#0d0d0d]">
+            <div id="img-empty" class="absolute inset-0 grid place-items-center p-6">
+              <div class="w-full max-w-md">
+                <div id="img-dropzone" tabindex="0" role="button" class="grid place-items-center gap-2 rounded-md border border-dashed px-6 py-14 text-center hairline-strong">
+                  <span class="font-mono text-micro uppercase tracking-[0.08em] text-zinc-400">JPEG · PNG · WebP · AVIF</span>
+                  <strong class="text-body font-medium">Déposez une image ici</strong>
+                  <span class="text-label text-zinc-500">ou cliquez pour parcourir, ou collez avec Ctrl+V</span>
+                </div>
+                <input id="img-input" type="file" accept="image/*" class="hidden" />
+              </div>
+            </div>
+
+            <div id="img-loaded" class="absolute inset-0 hidden">
+              <canvas id="img-canvas" class="absolute inset-0 h-full w-full object-contain"></canvas>
+              <canvas id="img-heat" class="pointer-events-none absolute inset-0 h-full w-full object-contain opacity-0"></canvas>
+            </div>
+          </div>
+
+          <div id="img-footer" class="hidden shrink-0 flex-wrap items-center gap-x-5 gap-y-2 border-t px-4 py-2 hairline font-mono text-label text-zinc-500">
+            <span id="img-info">—</span>
+            <label class="ml-auto flex items-center gap-2">
+              <span class="text-zinc-500">Opacité artefacts</span>
+              <input id="img-opacity" type="range" min="0" max="100" value="70" class="w-32 accent-zinc-900 dark:accent-zinc-100" />
+            </label>
+            <span id="img-ms">—</span>
+          </div>
+        </section>
+
+        <aside class="min-h-0 overflow-y-auto bg-white px-4 py-4 dark:bg-[#0A0A0A]">
+          <div class="panel p-4">
+            <div class="flex items-start justify-between">
+              <span class="metric-label">Verdict</span>
+              <span id="img-verdict-badge" class="rounded-[3px] border px-1.5 py-0.5 text-micro font-semibold uppercase tracking-[0.08em] hairline text-zinc-500">—</span>
+            </div>
+            <div class="mt-2 flex items-baseline gap-2">
+              <span id="img-score" class="font-mono text-score font-semibold tabular-nums text-zinc-900 dark:text-zinc-50">0</span>
+              <span class="font-mono text-ui text-zinc-400">%</span>
+            </div>
+            <div id="img-gauge" class="gauge mt-3" role="img" aria-label="Jauge de probabilité IA"></div>
+            <p id="img-verdict-reason" class="mt-3 text-body text-zinc-500">En attente d'image.</p>
+          </div>
+
+          <div id="img-c2pa-panel" class="panel mt-3 p-4">
+            <span class="metric-label">C2PA / Content Credentials</span>
+            <div id="img-c2pa" class="mt-2.5"></div>
+          </div>
+
+          <div id="img-evidence-panel" class="panel mt-3 hidden p-4">
+            <span class="metric-label">Constats</span>
+            <ul id="img-evidence" class="mt-2.5 space-y-2"></ul>
+          </div>
+
+          <div id="img-pixels-panel" class="panel mt-3 hidden p-4">
+            <span class="metric-label">Analyse matricielle</span>
+            <dl class="mt-2.5 space-y-2">
+              <div class="flex items-baseline justify-between"><dt class="text-label text-zinc-500">Uniformité du bruit (blocs 8×8)</dt><dd id="px-uniformity" class="font-mono text-label font-semibold tabular-nums">—</dd></div>
+              <div class="flex items-baseline justify-between"><dt class="text-label text-zinc-500">Variance laplacienne (σ)</dt><dd id="px-lap" class="font-mono text-label font-semibold tabular-nums">—</dd></div>
+              <div class="flex items-baseline justify-between"><dt class="text-label text-zinc-500">Aberration chromatique</dt><dd id="px-chroma" class="font-mono text-label font-semibold tabular-nums">—</dd></div>
+              <div class="flex items-baseline justify-between"><dt class="text-label text-zinc-500">Densité de contours</dt><dd id="px-edges" class="font-mono text-label font-semibold tabular-nums">—</dd></div>
+              <div class="flex items-baseline justify-between"><dt class="text-label text-zinc-500">Échantillon analysé</dt><dd id="px-sample" class="font-mono text-label font-semibold tabular-nums">—</dd></div>
+              <div class="flex items-baseline justify-between"><dt class="text-label text-zinc-500">Benford DCT — conformité</dt><dd id="px-benford" class="font-mono text-label font-semibold tabular-nums">—</dd></div>
+              <div class="flex items-baseline justify-between"><dt class="text-label text-zinc-500">Benford DCT — KL (bits)</dt><dd id="px-benford-kl" class="font-mono text-label font-semibold tabular-nums">—</dd></div>
+            </dl>
+            <div id="benford-chart" class="mt-3 hidden">
+              <span class="metric-label">Chiffres significatifs (observé vs Benford)</span>
+              <div id="benford-bars" class="mt-2 space-y-1"></div>
+            </div>
+          </div>
+
+          <div id="img-metadata-panel" class="panel mt-3 hidden p-4">
+            <span class="metric-label">Métadonnées extraites</span>
+            <div class="mt-2.5 overflow-x-auto">
+              <table class="w-full text-left">
+                <tbody id="img-metadata"></tbody>
+              </table>
+            </div>
+          </div>
+
+          <div class="panel mt-3 p-4">
+            <span class="metric-label">Portée</span>
+            <p class="mt-2 text-[11px] leading-relaxed text-zinc-400">Un manifeste C2PA signé ou une signature de générateur dans le binaire sont des preuves. L'analyse de pixels ne l'est pas : elle donne une tendance, et un recadrage ou une recompression l'efface. Rien ne quitte votre navigateur.</p>
+          </div>
+        </aside>
+      </div>
+    </main>
+
+    <script type="module" src="/src/main.ts"></script>
+  </body>
+</html>

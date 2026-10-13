@@ -1,0 +1,25 @@
+{
+  "name": "ai-text-detector",
+  "private": true,
+  "version": "0.1.0",
+  "type": "module",
+  "description": "Detect AI-generated text locally. No server, no tracking, no ads.",
+  "scripts": {
+    "dev": "vite",
+    "build": "tsc --noEmit && vite build",
+    "preview": "vite preview --port 4173",
+    "typecheck": "tsc --noEmit",
+    "test": "tsx --test tests/*.test.ts"
+  },
+  "dependencies": {
+    "@huggingface/transformers": "^3.7.6"
+  },
+  "devDependencies": {
+    "autoprefixer": "^10.4.20",
+    "postcss": "^8.4.49",
+    "tailwindcss": "^3.4.17",
+    "tsx": "^4.23.15",
+    "typescript": "^5.7.3",
+    "vite": "^6.0.11"
+  }
+}
