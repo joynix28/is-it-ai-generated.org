@@ -25,7 +25,7 @@ import { MARKERS, STRUCTURE_PATTERNS, fold } from './lexicon';
 import { analyseForensics } from './forensics';
 import { splitSentences, tokenize, countParagraphs, type Segment } from './segments';
 import type {
-  AnalysisResult, Band, MarkerHit, SentenceFlags, SentenceScore, SubScores, TextStats,
+  AnalysisResult, Band, MarkerHit, Msg, SentenceFlags, SentenceScore, SubScores, TextStats,
 } from './types';
 
 /* ------------------------------------------------------------- word lists */
@@ -303,8 +303,10 @@ interface Component {
   id: string;
   value: number;
   weight: number;
+  /** i18n key. */
   label: string;
-  detail?: string;
+  /** i18n key plus params. */
+  detail?: Msg;
 }
 
 function blend(components: Component[]): number {
@@ -321,7 +323,7 @@ function sentenceFlags(
   markers: MarkerScan,
   meanWords: number,
   stdWords: number,
-): { flags: SentenceFlags; score: number; reasons: string[] } {
+): { flags: SentenceFlags; score: number; reasons: Msg[] } {
   const words = tokenize(segment.text);
   const lower = words.map((w) => w.toLowerCase());
   const wordCount = words.length;
@@ -365,15 +367,15 @@ function sentenceFlags(
 
   const score = Math.round(clamp(local) * 100);
 
-  const reasons: string[] = [];
-  if (enumeration) reasons.push('Énumération de 3 éléments ou plus');
-  if (cliche) reasons.push('Cliché de dissertation typique d’un LLM');
-  if (connector) reasons.push('Connecteur logique scolaire en tête de phrase');
-  if (markerPhrase) reasons.push(`Tic de langage IA : « ${markerPhrase} »`);
-  if (hedging) reasons.push(`Verbe de prudence (« ${lower.filter((w) => FOLDED_HEDGES.has(fold(w)))[0]} »)`);
-  if (deviation < 0.6 && wordCount >= 8) reasons.push(`Longueur très proche de la moyenne (${wordCount} mots)`);
-  if (pronounRate === 0 && contractionRate === 0 && wordCount >= 10) reasons.push('Aucune marque de voix personnelle');
-  if (!reasons.length) reasons.push(score >= 60 ? 'Signaux faibles mais cumulés' : 'Rythme et vocabulaire variés');
+  const reasons: Msg[] = [];
+  if (enumeration) reasons.push({ key: 'sReason.enumeration' });
+  if (cliche) reasons.push({ key: 'sReason.cliche' });
+  if (connector) reasons.push({ key: 'sReason.connector' });
+  if (markerPhrase) reasons.push({ key: 'sReason.marker', params: { phrase: markerPhrase } });
+  if (hedging) reasons.push({ key: 'sReason.hedge', params: { word: String(lower.filter((w) => FOLDED_HEDGES.has(fold(w)))[0] ?? '') } });
+  if (deviation < 0.6 && wordCount >= 8) reasons.push({ key: 'sReason.deviation', params: { n: wordCount } });
+  if (pronounRate === 0 && contractionRate === 0 && wordCount >= 10) reasons.push({ key: 'sReason.noVoice' });
+  if (!reasons.length) reasons.push({ key: score >= 60 ? 'sReason.weak' : 'sReason.varied' });
 
   return { flags: { enumeration, hedging, connector, cliche }, score, reasons };
 }
@@ -441,87 +443,87 @@ export function analyse(text: string, locale = 'fr'): AnalysisResult {
   const components: Component[] = [
     {
       id: 'rhythm',
-      label: 'Rythme plat (burstiness filtrée)',
+      label: 'sig.rhythm',
       // A handful of sentences cannot establish a rhythm either way.
       value: mapInverse(burstiness, 0.32, 0.58) * clamp(rhythmSentences.length / 10),
       weight: 1.8,
-      detail: `CV = ${burstiness.toFixed(3)} sur ${rhythmSentences.length} phrases de prose`,
+      detail: { key: 'sigDetail.rhythm', params: { cv: burstiness.toFixed(3), n: rhythmSentences.length } },
     },
     {
       id: 'paragraphIsomorphism',
-      label: 'Isomorphisme des paragraphes',
+      label: 'sig.isomorphism',
       value: paragraphs.length >= 4 ? clamp((paragraphIsomorphism - 0.35) / 0.45) : 0,
       weight: 1.9,
-      detail: `${Math.round(paragraphIsomorphism * 100)} % des paragraphes font 2 à 4 phrases`,
+      detail: { key: 'sigDetail.isomorphism', params: { n: Math.round(paragraphIsomorphism * 100) } },
     },
     {
       id: 'paragraphUniformity',
-      label: 'Uniformité des paragraphes',
+      label: 'sig.paragraphUniformity',
       // Uniformity is meaningless below five paragraphs.
       value: paragraphs.length >= 5 ? mapInverse(paragraphCv, 0.20, 0.50) : 0,
       weight: 1.1,
-      detail: `CV = ${paragraphCv.toFixed(3)}`,
+      detail: { key: 'sigDetail.cv', params: { cv: paragraphCv.toFixed(3) } },
     },
     {
       id: 'enumerations',
-      label: 'Énumérations systématiques',
+      label: 'sig.enumerations',
       value: clamp((enumSentenceRatio - 0.10) / 0.30) * clamp(allSentences.length / 12),
       weight: 1.5,
-      detail: `${Math.round(enumSentenceRatio * 100)} % des phrases, ${sentencesWithEnum} au total`,
+      detail: { key: 'sigDetail.enum', params: { n: Math.round(enumSentenceRatio * 100), total: sentencesWithEnum } },
     },
     {
       id: 'connectors',
-      label: 'Connecteurs en tête de paragraphe',
+      label: 'sig.connectors',
       value: clamp((connectorRatio - 0.20) / 0.40),
       weight: 1.3,
-      detail: `${Math.round(connectorRatio * 100)} % des paragraphes`,
+      detail: { key: 'sigDetail.connectors', params: { n: Math.round(connectorRatio * 100) } },
     },
     {
       id: 'discourse',
-      label: 'Marqueurs de discours (Pourtant, Cependant, Ainsi…)',
+      label: 'sig.discourse',
       value: mapLinear(per100(discourseMarkers), 0.25, 1.8),
       weight: 1.6,
-      detail: `${discourseMarkers} occurrences`,
+      detail: { key: 'sigDetail.occurrences', params: { n: discourseMarkers } },
     },
     {
       id: 'cliches',
-      label: 'Clichés de dissertation FR',
+      label: 'sig.cliches',
       value: mapLinear(per100(clicheWeighted), 0.2, 2.2),
       weight: 1.9,
     },
     {
       id: 'hedges',
-      label: 'Verbes de prudence',
+      label: 'sig.hedges',
       value: mapLinear(per100(hedgeCount), 0.35, 2.4),
       weight: 1.3,
-      detail: `${hedgeCount} occurrences`,
+      detail: { key: 'sigDetail.occurrences', params: { n: hedgeCount } },
     },
     {
       id: 'lexicalVariety',
-      label: 'Richesse lexicale (TTR)',
+      label: 'sig.lexicalVariety',
       value: mapInverse(ttr, 0.33, 0.62),
       weight: 0.8,
-      detail: `TTR = ${ttr.toFixed(3)}, MATTR-50 = ${mattr50.toFixed(3)}`,
+      detail: { key: 'sigDetail.ttr', params: { ttr: ttr.toFixed(3), mattr: mattr50.toFixed(3) } },
     },
     {
       id: 'repetition',
-      label: 'Répétitions de n-grammes',
+      label: 'sig.repetition',
       value: clamp(Math.max(trigramRepeat / 0.18, bigramRepeat / 0.35)),
       weight: 0.7,
     },
     {
       id: 'llmMarkers',
-      label: 'Densité de tournures LLM',
+      label: 'sig.llmMarkers',
       value: mapLinear(per100(markers.weighted), 0.3, 3.0),
       weight: 1.2,
-      detail: `${markers.hits.length} tournures distinctes`,
+      detail: { key: 'sigDetail.occurrences', params: { n: markers.hits.length } },
     },
     {
       id: 'ternary',
-      label: 'Structures dialectiques',
+      label: 'sig.ternary',
       value: mapLinear(ternary, 0.5, 4),
       weight: 0.7,
-      detail: `${ternary} détectées`,
+      detail: { key: 'sigDetail.ternary', params: { n: ternary } },
     },
   ];
 
@@ -604,14 +606,14 @@ export function analyse(text: string, locale = 'fr'): AnalysisResult {
     clamp(0.15 + Math.min(1, wordCount / 250) * 0.7 + Math.min(1, markers.hits.length / 4) * 0.1, 0.1, 0.95) * 100,
   );
 
-  let verdictReason: string;
-  if (forensics.score >= 0.6) verdictReason = 'Caractères invisibles ou homoglyphes détectés';
-  else if (score >= 60 && substantial && paragraphIsomorphism >= 0.75 && paragraphs.length >= 4) verdictReason = 'Paragraphes calibrés : tous font 2 à 4 phrases de longueur presque identique';
-  else if (score >= 60 && substantial && connectorRatio >= 0.4 && paragraphs.length >= 4) verdictReason = 'Structure dialectique synthétique : connecteurs en tête de paragraphe';
-  else if (score >= 60 && substantial && enumSentenceRatio >= 0.25) verdictReason = 'Énumérations systématiques de trois éléments ou plus';
-  else if (score >= 60) verdictReason = 'Rythme uniforme et tournures typiques des modèles';
-  else if (score >= 35) verdictReason = 'Signaux mitigés, typiques d’un texte retouché';
-  else verdictReason = 'Variation naturelle du rythme et du vocabulaire';
+  let verdictReason: Msg;
+  if (forensics.score >= 0.6) verdictReason = { key: 'reason.forensics' };
+  else if (score >= 60 && substantial && paragraphIsomorphism >= 0.75 && paragraphs.length >= 4) verdictReason = { key: 'reason.isomorphism' };
+  else if (score >= 60 && substantial && connectorRatio >= 0.4 && paragraphs.length >= 4) verdictReason = { key: 'reason.connectors' };
+  else if (score >= 60 && substantial && enumSentenceRatio >= 0.25) verdictReason = { key: 'reason.enumerations' };
+  else if (score >= 60) verdictReason = { key: 'reason.rhythm' };
+  else if (score >= 35) verdictReason = { key: 'reason.mixed' };
+  else verdictReason = { key: 'reason.human' };
 
   return {
     score,

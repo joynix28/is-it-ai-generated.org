@@ -138,8 +138,15 @@
 .editor-wrap {
   position: relative;
   flex: 1 1 auto;
-  min-height: 0;
   overflow: hidden;
+  /* On a phone the pane scrolls instead of squeezing the editor to nothing. */
+  min-height: 55vh;
+}
+
+@media (min-width: 1024px) {
+  .editor-wrap {
+    min-height: 0;
+  }
 }
 
 .editor-layer,

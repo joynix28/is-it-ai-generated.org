@@ -247,7 +247,7 @@ function renderStats(res: AnalysisResult): void {
     head.className = 'flex items-baseline justify-between gap-3 text-label';
     const label = document.createElement('span');
     label.className = 'truncate text-zinc-600 dark:text-zinc-400';
-    label.textContent = component.label;
+    label.textContent = t(component.label);
     const value = document.createElement('span');
     value.className = 'font-mono font-semibold tabular-nums';
     value.textContent = `${Math.round(component.value * 100)} %`;
@@ -262,7 +262,7 @@ function renderStats(res: AnalysisResult): void {
     if (component.detail) {
       const detail = document.createElement('p');
       detail.className = 'mt-0.5 font-mono text-[11px] leading-tight text-zinc-400';
-      detail.textContent = component.detail;
+      detail.textContent = t(component.detail.key, component.detail.params);
       li.append(detail);
     }
     ui.componentsList.append(li);
@@ -286,7 +286,7 @@ function render(res: AnalysisResult): void {
         ? 'text-amber-700 dark:text-amber-300'
         : 'text-sage-600 dark:text-sage-200'
   }`;
-  ui.reason.textContent = res.verdictReason;
+  ui.reason.textContent = t(res.verdictReason.key, res.verdictReason.params);
   ui.confidence.textContent = `${res.confidence} %`;
 
   paintGauge(res.score, res.band);
@@ -488,7 +488,7 @@ editor.addEventListener('mousemove', (event) => {
   list.className = 'mt-1 space-y-0.5';
   for (const reason of sentence.reasons) {
     const li = document.createElement('li');
-    li.textContent = `· ${reason}`;
+    li.textContent = `· ${t(reason.key, reason.params)}`;
     list.append(li);
   }
   tip.append(list);
@@ -534,19 +534,13 @@ el<HTMLButtonElement>('btn-clear').addEventListener('click', () => {
   editor.focus();
 });
 
-el<HTMLButtonElement>('btn-example-ai').addEventListener('click', () => {
-  editor.value = EXAMPLES.ai;
+const sampleSelect = el<HTMLSelectElement>('sample-select');
+sampleSelect.addEventListener('change', () => {
+  const choice = sampleSelect.value;
+  if (!choice) return;
+  editor.value = choice === 'ai' ? EXAMPLES.ai : choice === 'human' ? EXAMPLES.human : EXAMPLES.tampered;
   runAnalysis();
-});
-
-el<HTMLButtonElement>('btn-example-human').addEventListener('click', () => {
-  editor.value = EXAMPLES.human;
-  runAnalysis();
-});
-
-el<HTMLButtonElement>('btn-example-tampered').addEventListener('click', () => {
-  editor.value = EXAMPLES.tampered;
-  runAnalysis();
+  sampleSelect.value = '';
 });
 
 /* ------------------------------------------------------------------ theme */
@@ -642,9 +636,10 @@ function renderFingerprint(text: string): void {
     bars.append(row);
   }
 
+  const firstNote = res.notes.length ? ` ${t(res.notes[0]!)}` : '';
   notes.textContent = res.inconclusive
-    ? `${FINGERPRINT_DISCLAIMER} ${res.notes[0] ?? 'Échantillon trop court pour classer.'}`
-    : `${FINGERPRINT_DISCLAIMER} Écart avec le deuxième profil : ${Math.round(res.separation * 100)} pts.${res.notes.length ? ` ${res.notes[0]}` : ''}`;
+    ? `${t(FINGERPRINT_DISCLAIMER)} ${firstNote || t('fp.none')}`
+    : `${t(FINGERPRINT_DISCLAIMER)} ${t('fingerprint.gap', { n: Math.round(res.separation * 100) })}${firstNote}`;
 }
 
 /* ============================================================================

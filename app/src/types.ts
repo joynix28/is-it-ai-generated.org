@@ -13,6 +13,11 @@ export interface SubScores {
   characterIntegrity: number;
 }
 
+export interface Msg {
+  key: string;
+  params?: Record<string, string | number>;
+}
+
 export interface SentenceFlags {
   enumeration: boolean;
   hedging: boolean;
@@ -27,7 +32,7 @@ export interface SentenceScore {
   words: number;
   score: number;
   band: Band;
-  reasons: string[];
+  reasons: Msg[];
   flags: SentenceFlags;
 }
 
@@ -83,10 +88,12 @@ export interface TextStats {
 
 export interface ScoredComponent {
   id: string;
+  /** i18n key. */
   label: string;
   value: number;
   weight: number;
-  detail: string | null;
+  /** i18n key plus params, or null. */
+  detail: Msg | null;
 }
 
 export interface AnalysisResult {
@@ -99,7 +106,7 @@ export interface AnalysisResult {
   markers: MarkerHit[];
   ternaryStructures: number;
   forensics: ForensicsResult;
-  verdictReason: string;
+  verdictReason: Msg;
   components: ScoredComponent[];
 }
 

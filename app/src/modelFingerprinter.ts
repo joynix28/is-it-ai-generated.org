@@ -274,10 +274,10 @@ export function fingerprint(text: string): FingerprintResult {
   scores.sort((a, b) => b.score - a.score);
 
   const notes: string[] = [];
-  if (wordCount < 120) notes.push('Moins de 120 mots : classement indicatif, à prendre avec des pincettes.');
-  if (f.exclamations + f.questions > 0) notes.push('Ponctuation expressive détectée : signe plutôt humain.');
+  if (wordCount < 120) notes.push('fp.noteShort');
+  if (f.exclamations + f.questions > 0) notes.push('fp.notePunctuation');
   if (/\b(?:je|j['’]|moi|nous)\b/i.test(text) && firstPersonRate > 0.015) {
-    notes.push('Voix personnelle marquée : les modèles restent plus impersonnels par défaut.');
+    notes.push('fp.noteVoice');
   }
 
   const leader = scores[0];
@@ -294,5 +294,5 @@ export function fingerprint(text: string): FingerprintResult {
   };
 }
 
-export const FINGERPRINT_DISCLAIMER =
-  'Tendances statistiques, pas une attribution. Les fournisseurs publient plusieurs modèles, les styles se recouvrent, et un texte court ne permet aucun classement fiable.';
+/** i18n key. */
+export const FINGERPRINT_DISCLAIMER = 'fingerprint.disclaimer';

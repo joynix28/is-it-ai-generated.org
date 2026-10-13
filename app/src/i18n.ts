@@ -29,9 +29,9 @@ const fr = {
   'editor.label': 'Éditeur',
   'editor.paste': 'Coller',
   'editor.clear': 'Effacer',
-  'editor.sampleAi': 'Texte IA',
-  'editor.sampleHuman': 'Texte humain',
-  'editor.sampleTampered': 'Texte truqué',
+  'editor.sampleAi': 'Texte généré par IA',
+  'editor.sampleHuman': 'Texte écrit par un humain',
+  'editor.sampleTampered': 'Texte truqué (caractères cachés)',
   'editor.placeholder': 'Collez ou tapez un texte. L\u2019analyse démarre à la frappe.',
   'editor.words': 'mots',
   'editor.chars': 'caractères',
@@ -159,6 +159,47 @@ const fr = {
   'imgEv.pixelsOnlyDetail': 'Sans EXIF ni C2PA, seules les statistiques de pixels sont disponibles. Elles indiquent une tendance et ne permettent pas de conclure.',
 
   'error.csp': 'Une ressource a été bloquée par la politique de sécurité.',
+  'editor.samplePlaceholder': 'Exemple…',
+  'reason.forensics': 'Caractères invisibles ou homoglyphes détectés',
+  'reason.isomorphism': 'Paragraphes calibrés : tous font 2 à 4 phrases de longueur presque identique',
+  'reason.connectors': 'Structure dialectique synthétique : connecteurs en tête de paragraphe',
+  'reason.enumerations': 'Énumérations systématiques de trois éléments ou plus',
+  'reason.rhythm': 'Rythme uniforme et tournures typiques des modèles',
+  'reason.mixed': 'Signaux mitigés, typiques d’un texte retouché',
+  'reason.human': 'Variation naturelle du rythme et du vocabulaire',
+  'sig.rhythm': 'Rythme plat (burstiness filtrée)',
+  'sig.isomorphism': 'Isomorphisme des paragraphes',
+  'sig.paragraphUniformity': 'Uniformité des paragraphes',
+  'sig.enumerations': 'Énumérations systématiques',
+  'sig.connectors': 'Connecteurs en tête de paragraphe',
+  'sig.discourse': 'Marqueurs de discours (Pourtant, Cependant, Ainsi…)',
+  'sig.cliches': 'Clichés de dissertation',
+  'sig.hedges': 'Verbes de prudence',
+  'sig.lexicalVariety': 'Richesse lexicale (TTR)',
+  'sig.repetition': 'Répétitions de n-grammes',
+  'sig.llmMarkers': 'Densité de tournures LLM',
+  'sig.ternary': 'Structures dialectiques',
+  'sigDetail.cv': 'CV = {cv}',
+  'sigDetail.rhythm': 'CV = {cv} sur {n} phrases de prose',
+  'sigDetail.isomorphism': '{n} % des paragraphes font 2 à 4 phrases',
+  'sigDetail.enum': '{n} % des phrases, {total} au total',
+  'sigDetail.connectors': '{n} % des paragraphes',
+  'sigDetail.occurrences': '{n} occurrences',
+  'sigDetail.ttr': 'TTR = {ttr}, MATTR-50 = {mattr}',
+  'sigDetail.ternary': '{n} détectées',
+  'sReason.enumeration': 'Énumération de 3 éléments ou plus',
+  'sReason.cliche': 'Cliché de dissertation typique d’un LLM',
+  'sReason.connector': 'Connecteur logique scolaire en tête de phrase',
+  'sReason.marker': 'Tic de langage IA : « {phrase} »',
+  'sReason.hedge': 'Verbe de prudence (« {word} »)',
+  'sReason.deviation': 'Longueur très proche de la moyenne ({n} mots)',
+  'sReason.noVoice': 'Aucune marque de voix personnelle',
+  'sReason.weak': 'Signaux faibles mais cumulés',
+  'sReason.varied': 'Rythme et vocabulaire variés',
+  'fp.noteShort': 'Moins de 120 mots : classement indicatif, à prendre avec des pincettes.',
+  'fp.notePunctuation': 'Ponctuation expressive détectée : signe plutôt humain.',
+  'fp.noteVoice': 'Voix personnelle marquée : les modèles restent plus impersonnels par défaut.',
+  'fp.none': 'Échantillon trop court pour classer.',
 };
 
 type Catalog = typeof fr;
@@ -177,9 +218,9 @@ const en: Catalog = {
   'editor.label': 'Editor',
   'editor.paste': 'Paste',
   'editor.clear': 'Clear',
-  'editor.sampleAi': 'AI text',
-  'editor.sampleHuman': 'Human text',
-  'editor.sampleTampered': 'Tampered text',
+  'editor.sampleAi': 'AI-generated text',
+  'editor.sampleHuman': 'Human-written text',
+  'editor.sampleTampered': 'Tampered text (hidden characters)',
   'editor.placeholder': 'Paste or type text. Analysis starts as you type.',
   'editor.words': 'words',
   'editor.chars': 'characters',
@@ -307,6 +348,47 @@ const en: Catalog = {
   'imgEv.pixelsOnlyDetail': 'Without EXIF or C2PA only pixel statistics are available. They show a tendency and cannot conclude.',
 
   'error.csp': 'A resource was blocked by the security policy.',
+  'editor.samplePlaceholder': 'Sample…',
+  'reason.forensics': 'Invisible characters or homoglyphs detected',
+  'reason.isomorphism': 'Calibrated paragraphs: all 2 to 4 sentences of near-identical length',
+  'reason.connectors': 'Synthetic dialectical structure: connectives opening each paragraph',
+  'reason.enumerations': 'Systematic enumerations of three or more items',
+  'reason.rhythm': 'Even rhythm and phrasings typical of models',
+  'reason.mixed': 'Mixed signals, typical of edited text',
+  'reason.human': 'Natural variation in rhythm and vocabulary',
+  'sig.rhythm': 'Flat rhythm (filtered burstiness)',
+  'sig.isomorphism': 'Paragraph isomorphism',
+  'sig.paragraphUniformity': 'Paragraph uniformity',
+  'sig.enumerations': 'Systematic enumerations',
+  'sig.connectors': 'Paragraph-opening connectives',
+  'sig.discourse': 'Discourse markers (However, Moreover, Thus…)',
+  'sig.cliches': 'Dissertation clichés',
+  'sig.hedges': 'Hedging verbs',
+  'sig.lexicalVariety': 'Lexical richness (TTR)',
+  'sig.repetition': 'N-gram repetition',
+  'sig.llmMarkers': 'LLM phrasing density',
+  'sig.ternary': 'Dialectical structures',
+  'sigDetail.cv': 'CV = {cv}',
+  'sigDetail.rhythm': 'CV = {cv} over {n} prose sentences',
+  'sigDetail.isomorphism': '{n}% of paragraphs are 2 to 4 sentences',
+  'sigDetail.enum': '{n}% of sentences, {total} in total',
+  'sigDetail.connectors': '{n}% of paragraphs',
+  'sigDetail.occurrences': '{n} occurrences',
+  'sigDetail.ttr': 'TTR = {ttr}, MATTR-50 = {mattr}',
+  'sigDetail.ternary': '{n} detected',
+  'sReason.enumeration': 'Enumeration of 3 or more items',
+  'sReason.cliche': 'Dissertation cliché typical of an LLM',
+  'sReason.connector': 'Schoolbook connective at the start of the sentence',
+  'sReason.marker': 'AI phrasing: \u201c{phrase}\u201d',
+  'sReason.hedge': 'Hedging verb (\u201c{word}\u201d)',
+  'sReason.deviation': 'Length very close to the average ({n} words)',
+  'sReason.noVoice': 'No personal voice',
+  'sReason.weak': 'Weak but cumulative signals',
+  'sReason.varied': 'Varied rhythm and vocabulary',
+  'fp.noteShort': 'Under 120 words: indicative ranking, take it with a pinch of salt.',
+  'fp.notePunctuation': 'Expressive punctuation detected: a rather human sign.',
+  'fp.noteVoice': 'Strong personal voice: models stay more impersonal by default.',
+  'fp.none': 'Sample too short to rank.',
 };
 
 const es: Partial<Catalog> = {
@@ -416,8 +498,9 @@ function humanise(key: string): string {
   return spaced.charAt(0).toUpperCase() + spaced.slice(1);
 }
 
-export function t(key: keyof Catalog, vars?: Record<string, string | number>): string {
-  const value = CATALOGS[current]?.[key] ?? fr[key] ?? humanise(String(key));
+export function t(key: string, vars?: Record<string, string | number>): string {
+  const lookup = key as keyof Catalog;
+  const value = CATALOGS[current]?.[lookup] ?? fr[lookup] ?? humanise(key);
   if (!vars) return value;
   return value.replace(/\{(\w+)\}/g, (_, name: string) => (name in vars ? String(vars[name]) : `{${name}}`));
 }
@@ -445,6 +528,20 @@ function detect(): LocaleCode {
     const base = String(tag ?? '').toLowerCase().split('-')[0] as LocaleCode;
     if (COMPLETE.includes(base)) return base;
   }
+
+  // Fall back to the browser locale string and the referring site's language.
+  const ua = navigator.userAgent.toLowerCase();
+  const fromUa = /(?:^|[ ;(])([a-z]{2})[-_][a-z]{2}/.exec(ua)?.[1] as LocaleCode | undefined;
+  if (fromUa && COMPLETE.includes(fromUa)) return fromUa;
+
+  try {
+    const host = document.referrer ? new URL(document.referrer).hostname : '';
+    const tld = /\.([a-z]{2})(?:\.|$)/.exec(host)?.[1] as LocaleCode | undefined;
+    if (tld && COMPLETE.includes(tld)) return tld;
+  } catch {
+    /* malformed referrer */
+  }
+
   return 'fr';
 }
 
