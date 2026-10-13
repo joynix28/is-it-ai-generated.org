@@ -18,7 +18,7 @@ import { splitSentences } from './segments';
 import { fingerprint, FINGERPRINT_DISCLAIMER } from './modelFingerprinter';
 import { analyseImageFile, type ImageVerdict } from './imageAnalyzer';
 import { compressionEntropy } from './compression';
-import { initI18n, setLocale, onLocaleChange, translateDom, t, type LocaleCode } from './i18n';
+import { initI18n, setLocale, onLocaleChange, translateDom, t } from './i18n';
 import type { AnalysisResult, Band, SentenceScore, WorkerRequest, WorkerResponse } from './types';
 
 const MODEL_ID = 'onnx-community/e5-small-lora-ai-generated-detector-ONNX';
@@ -905,6 +905,11 @@ async function handleImageFile(file: File): Promise<void> {
 }
 
 img.dropzone.addEventListener('click', () => img.input.click());
+// A visible control, in case the dashed zone is not read as a button.
+document.getElementById('img-browse')?.addEventListener('click', (event) => {
+  event.stopPropagation();
+  img.input.click();
+});
 img.dropzone.addEventListener('keydown', (event) => {
   if (event.key === 'Enter' || event.key === ' ') {
     event.preventDefault();
@@ -966,7 +971,7 @@ applyImageMode();
 const localeSelect = el<HTMLSelectElement>('locale-select');
 initI18n(localeSelect);
 localeSelect.addEventListener('change', () => {
-  setLocale(localeSelect.value as LocaleCode);
+  setLocale(localeSelect.value);
   if (result) render(result);
   if (lastImage) renderImage(lastImage);
   translateDom(document);

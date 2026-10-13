@@ -195,13 +195,14 @@
             </div>
           </div>
 
-          <div id="img-stage" class="relative flex-1 overflow-hidden bg-zinc-100 dark:bg-[#0d0d0d]">
-            <div id="img-empty" class="absolute inset-0 grid place-items-center p-6">
+          <div id="img-stage" class="relative flex min-h-[55vh] flex-1 items-center justify-center overflow-hidden bg-zinc-100 p-6 dark:bg-[#0d0d0d] lg:min-h-0 lg:p-0">
+            <div id="img-empty" class="w-full max-w-md">
               <div class="w-full max-w-md">
                 <div id="img-dropzone" tabindex="0" role="button" class="grid place-items-center gap-2 rounded-md border border-dashed px-6 py-14 text-center hairline-strong">
                   <span class="font-mono text-micro uppercase tracking-[0.08em] text-zinc-400">JPEG · PNG · WebP · AVIF</span>
                   <strong class="text-body font-medium">Déposez une image ici</strong>
-                  <span class="text-label text-zinc-500">ou cliquez pour parcourir, ou collez avec Ctrl+V</span>
+                  <span class="text-label text-zinc-500">ou glissez-déposez, ou collez avec Ctrl+V</span>
+                  <button id="img-browse" type="button" class="btn btn-primary mt-2" data-i18n="image.browse">Choisir une image</button>
                 </div>
                 <input id="img-input" type="file" accept="image/*" class="hidden" />
               </div>
