@@ -265,5 +265,16 @@
   "img.ev.benfordDetail": "KL = {kl} بت على {samples} معامل — إشارة محلّ خلاف، لا تحسم وحدها.",
   "img.ev.pixelsOnly": "البيانات الوصفية غائبة: تحليل البكسلات فقط",
   "img.ev.pixelsOnlyDetail": "دون EXIF أو C2PA، لا تتوفر إلا إحصاءات البكسلات. تشير إلى ميل ولا تسمح بالجزم.",
-  "app.language": "اللغة"
+  "app.language": "اللغة",
+  "img.clip.title": "تحليل بصري · مسبار مدرَّب",
+  "img.clip.idle": "غير مُفعّل",
+  "img.clip.note": "مسبار لوجستي مدرَّب على سمات CLIP ViT-L/14 (مشروع Rinne414/SynthID-detector، برخصة MIT)، مُتحقَّق منه على مولّدات لم يرها قط. يقرأ البكسلات لا التصريح: إنه احتمال، لا حكم.",
+  "img.clip.run": "أضف المسبار البصري (~293 م.ب، مرة واحدة)",
+  "img.clip.scoreLabel": "احتمال الذكاء الاصطناعي",
+  "img.clip.latency": "زمن الاستجابة",
+  "img.clip.evidence": "المسبار البصري: احتمال ذكاء اصطناعي {p} %",
+  "img.clip.detail": "P={p} %، العتبة المعايَرة {t} %. مسبار لوجستي على CLIP ViT-L/14 (Rinne414، MIT)، مُتحقَّق منه بطريقة عمياء.",
+  "img.clip.ai": "صوّت: ذكاء اصطناعي",
+  "img.clip.real": "صوّت: حقيقية",
+  "img.failed": "فشل التحليل: {message}"
 }

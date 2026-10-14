@@ -128,3 +128,14 @@ export type WorkerResponse =
   | { type: 'ready'; modelId: string }
   | { type: 'scored'; id: number; report: PerplexityReport }
   | { type: 'error'; message: string };
+
+/** The learned image probe runs in its own worker, with its own messages. */
+export type ImageWorkerRequest =
+  | { type: 'load'; modelId: string }
+  | { type: 'probe'; id: number; modelId: string; blob: Blob };
+
+export type ImageWorkerResponse =
+  | { type: 'progress'; phase: 'download' | 'init'; file?: string; progress: number; loaded?: number; total?: number }
+  | { type: 'ready'; modelId: string }
+  | { type: 'probed'; id: number; embedding: number[]; ms: number }
+  | { type: 'error'; message: string };

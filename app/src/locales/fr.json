@@ -265,5 +265,16 @@
   "img.ev.benfordDetail": "KL = {kl} bits sur {samples} coefficients — signal contesté, jamais décisif seul.",
   "img.ev.pixelsOnly": "Métadonnées absentes : analyse de pixels seule",
   "img.ev.pixelsOnlyDetail": "Sans EXIF ni C2PA, seules les statistiques de pixels sont disponibles. Elles indiquent une tendance et ne permettent pas de conclure.",
-  "app.language": "Langue"
+  "app.language": "Langue",
+  "img.clip.title": "Analyse visuelle · sonde entraînée",
+  "img.clip.idle": "inactif",
+  "img.clip.note": "Sonde logistique entraînée sur les caractéristiques CLIP ViT-L/14 (projet Rinne414/SynthID-detector, MIT), validée sur des générateurs qu'elle n'a jamais vus. Elle lit les pixels, pas une déclaration : c'est une probabilité, pas un jugement.",
+  "img.clip.run": "Ajouter la sonde visuelle (~293 Mo, une fois)",
+  "img.clip.scoreLabel": "Probabilité IA",
+  "img.clip.latency": "Latence",
+  "img.clip.evidence": "Sonde visuelle : {p} % de probabilité IA",
+  "img.clip.detail": "P={p} %, seuil calibré {t} %. Sonde logistique sur CLIP ViT-L/14 (Rinne414, MIT), validée en aveugle.",
+  "img.clip.ai": "a voté IA",
+  "img.clip.real": "a voté réelle",
+  "img.failed": "Échec de l'analyse : {message}"
 }

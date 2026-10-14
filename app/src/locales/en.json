@@ -265,5 +265,16 @@
   "img.ev.benfordDetail": "KL = {kl} bits over {samples} coefficients — contested signal, never decisive alone.",
   "img.ev.pixelsOnly": "Metadata absent: pixel analysis only",
   "img.ev.pixelsOnlyDetail": "Without EXIF or C2PA, only pixel statistics are available. They indicate a tendency and do not allow a conclusion.",
-  "app.language": "Language"
+  "app.language": "Language",
+  "img.clip.title": "Visual analysis · trained probe",
+  "img.clip.idle": "inactive",
+  "img.clip.note": "Logistic probe trained on CLIP ViT-L/14 features (Rinne414/SynthID-detector project, MIT), validated on generators it never saw. It reads pixels, not a declaration: it is a probability, not a ruling.",
+  "img.clip.run": "Add the visual probe (~293 MB, once)",
+  "img.clip.scoreLabel": "AI probability",
+  "img.clip.latency": "Latency",
+  "img.clip.evidence": "Visual probe: {p} % AI probability",
+  "img.clip.detail": "P={p} %, calibrated threshold {t} %. Logistic probe on CLIP ViT-L/14 (Rinne414, MIT), validated held out.",
+  "img.clip.ai": "voted AI",
+  "img.clip.real": "voted real",
+  "img.failed": "Analysis failed: {message}"
 }

@@ -265,5 +265,16 @@
   "img.ev.benfordDetail": "KL = {kl} bits over {samples} coëfficiënten — omstreden signaal, nooit alleen beslissend.",
   "img.ev.pixelsOnly": "Metadata ontbreekt: alleen pixelanalyse",
   "img.ev.pixelsOnlyDetail": "Zonder EXIF of C2PA zijn alleen pixelstatistieken beschikbaar. Ze wijzen op een tendens en laten geen conclusie toe.",
-  "app.language": "Taal"
+  "app.language": "Taal",
+  "img.clip.title": "Visuele analyse · getrainde sonde",
+  "img.clip.idle": "inactief",
+  "img.clip.note": "Logistische sonde, getraind op CLIP ViT-L/14-kenmerken (project Rinne414/SynthID-detector, MIT), gevalideerd op generatoren die ze nooit zag. Ze leest pixels, geen verklaring: het is een waarschijnlijkheid, geen vonnis.",
+  "img.clip.run": "Visuele sonde toevoegen (~293 MB, eenmalig)",
+  "img.clip.scoreLabel": "AI-waarschijnlijkheid",
+  "img.clip.latency": "Latentie",
+  "img.clip.evidence": "Visuele sonde: {p} % AI-waarschijnlijkheid",
+  "img.clip.detail": "P={p} %, gekalibreerde drempel {t} %. Logistische sonde op CLIP ViT-L/14 (Rinne414, MIT), blind gevalideerd.",
+  "img.clip.ai": "stemde AI",
+  "img.clip.real": "stemde echt",
+  "img.failed": "Analyse mislukt: {message}"
 }

@@ -265,5 +265,16 @@
   "img.ev.benfordDetail": "KL = {kl} Bit über {samples} Koeffizienten — umstrittenes Signal, allein nie entscheidend.",
   "img.ev.pixelsOnly": "Metadaten fehlen: nur Pixelanalyse",
   "img.ev.pixelsOnlyDetail": "Ohne EXIF oder C2PA sind nur Pixelstatistiken verfügbar. Sie zeigen eine Tendenz und erlauben keine Schlussfolgerung.",
-  "app.language": "Sprache"
+  "app.language": "Sprache",
+  "img.clip.title": "Visuelle Analyse · trainierte Sonde",
+  "img.clip.idle": "inaktiv",
+  "img.clip.note": "Logistische Sonde, trainiert auf CLIP-ViT-L/14-Merkmalen (Projekt Rinne414/SynthID-detector, MIT), validiert an Generatoren, die sie nie gesehen hat. Sie liest Pixel, keine Deklaration: eine Wahrscheinlichkeit, kein Urteil.",
+  "img.clip.run": "Visuelle Sonde hinzufügen (~293 MB, einmalig)",
+  "img.clip.scoreLabel": "KI-Wahrscheinlichkeit",
+  "img.clip.latency": "Latenz",
+  "img.clip.evidence": "Visuelle Sonde: {p} % KI-Wahrscheinlichkeit",
+  "img.clip.detail": "P={p} %, kalibrierte Schwelle {t} %. Logistische Sonde auf CLIP ViT-L/14 (Rinne414, MIT), blind validiert.",
+  "img.clip.ai": "stimmte für KI",
+  "img.clip.real": "stimmte für echt",
+  "img.failed": "Analyse fehlgeschlagen: {message}"
 }

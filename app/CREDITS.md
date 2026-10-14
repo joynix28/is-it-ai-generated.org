@@ -35,6 +35,38 @@ specification. All four are MIT.
 | [cpeoples/ai-watermark-detector](https://github.com/cpeoples/ai-watermark-detector) | MIT | the provenance/watermark split, C2PA verification, the SynthID-family schemes |
 | [YiCQi/AITextJury](https://github.com/YiCQi/AITextJury) | MIT | the jury itself: independent jurors, calibration, honest consensus |
 
+## SynthID-era detectors, reviewed
+
+Five more repositories were reviewed for the image side. Each is listed with its
+licence and with what was actually taken, because "MIT" on a repository does not
+mean every file inside it is MIT, and a repository with no licence may not be
+reused at all.
+
+| Project | Licence | Status |
+| --- | --- | --- |
+| [Rinne414/SynthID-detector](https://github.com/Rinne414/SynthID-detector) | MIT | **Used.** Its `ai_detector/` is a CLIP ViT-L/14 linear probe, validated held out (AUC 0.998; 0.0 % missed AI; 1.8 % false positives; 0.97–1.00 across *unseen* generators). The probe's own artefact, `model.npz` (1024 coefficients, an intercept, a threshold), is embedded in `src/imageProbe.ts`, and the method is reimplemented. Its watermark-template detector is **not** used: the author documents it as non-generalizing ("detected 0 of 33 held-out AI images", self-correlation). |
+| [aloshdenny/reverse-SynthID](https://github.com/aloshdenny/reverse-SynthID) | reverse-SynthID Research License v1.0 (non-commercial) | **Not used.** Cited as the reference on SynthID's spectral watermark. Its licence restricts use to non-commercial purposes and its artefacts are watermark-removal oriented, so nothing is taken. |
+| [Parths-29/SynthID-Detector](https://github.com/Parths-29/SynthID-Detector) | MIT | **Not used.** Server-side (FastAPI/Next.js/ResNet50) and it redistributes the non-commercial artefact above. Cited only. |
+| [chaitanya-link/synthetic-identity-cluster-detector](https://github.com/chaitanya-link/synthetic-identity-cluster-detector) | none | **Not used.** No licence, so no reuse. Cited only. |
+| [GumpenaPrathima/CIFAKE-…](https://github.com/GumpenaPrathima/CIFAKE-Image-Classification-and-Explainable-Identification-of-AI-Generated-Synthetic-Images) | none | **Not used.** No licence, and a CIFAKE-style classifier is 32×32 and generator-specific, which the era of this project has moved past. Cited only. |
+
+### The image probe, and its one missing piece
+
+The learned probe is implemented and unit-tested: `src/imageProbe.ts` holds the
+published 1024 coefficients, the intercept and the threshold, and
+`tests/imageProbe.test.ts` proves the embedded weights are byte-for-byte the
+published ones (first values, sum, norm).
+
+It is **not wired into the interface yet**, and that is deliberate. The probe was
+trained on timm's `vit_large_patch14_clip_224.openai` features: the 1024-d pooled
+CLS output *before* CLIP's visual projection. Every browser-ready ONNX export of
+that encoder (Xenova, onnx-community) exposes only `image_embeds`, the 768-d
+*projected* vector. Feeding 768-d features to a 1024-d probe would return a
+plausible, silently wrong number. Rather than ship that, the module waits for the
+correct encoder: the vision tower exported without the projection head, quantised
+to int8 (~293 MB) and hosted outside the repository.
+
+
 ## Standards
 
 | Standard | Used for |

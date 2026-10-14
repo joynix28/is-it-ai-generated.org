@@ -265,5 +265,16 @@
   "img.ev.benfordDetail": "KL = {kl} 比特，基于 {samples} 个系数 —— 该信号存在争议，单独不能定论。",
   "img.ev.pixelsOnly": "缺少元数据：仅像素分析",
   "img.ev.pixelsOnlyDetail": "没有 EXIF 或 C2PA 时，只能使用像素统计。它指示一种倾向，无法据此下结论。",
-  "app.language": "语言"
+  "app.language": "语言",
+  "img.clip.title": "视觉分析 · 训练探测器",
+  "img.clip.idle": "未启用",
+  "img.clip.note": "基于 CLIP ViT-L/14 特征训练的逻辑回归探针（Rinne414/SynthID-detector 项目，MIT），已在未曾见过的生成器上验证。它读取像素，而非声明：这是概率，不是判决。",
+  "img.clip.run": "启用视觉探针（约 293 MB，仅一次）",
+  "img.clip.scoreLabel": "AI 概率",
+  "img.clip.latency": "延迟",
+  "img.clip.evidence": "视觉探针：AI 概率 {p} %",
+  "img.clip.detail": "P={p} %，校准阈值 {t} %。基于 CLIP ViT-L/14 的逻辑探针（Rinne414，MIT），已盲测验证。",
+  "img.clip.ai": "判定为 AI",
+  "img.clip.real": "判定为真实",
+  "img.failed": "分析失败：{message}"
 }

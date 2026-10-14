@@ -992,7 +992,7 @@ async function handleImageFile(file: File): Promise<void> {
     renderImage(res);
     applyImageMode();
   } catch (error) {
-    img.reason.textContent = `Échec de l’analyse : ${error instanceof Error ? error.message : String(error)}`;
+    img.reason.textContent = t('img.failed', { message: error instanceof Error ? error.message : String(error) });
   } finally {
     imageBusy = false;
   }
