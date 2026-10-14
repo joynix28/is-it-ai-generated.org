@@ -211,11 +211,12 @@ const AI_GENERATORS: ReadonlyArray<{ id: string; label: string; needles: string[
   { id: 'flux', label: 'FLUX', needles: ['flux.1', 'black forest labs', 'flux1'] },
   { id: 'dalle', label: 'OpenAI DALL·E / GPT Image', needles: ['dall-e', 'dall·e', 'gpt-image', 'openai opco', 'openai'] },
   { id: 'imagen', label: 'Google Imagen / Gemini', needles: ['imagen', 'google llc', 'synthid', 'gemini'] },
-  { id: 'meta-ai', label: 'Meta AI / Imagine', needles: ['meta ai', 'meta platforms', 'imagine'] },
-  { id: 'firefly', label: 'Adobe Firefly', needles: ['firefly', 'adobe'] },
+  { id: 'meta-ai', label: 'Meta AI / Imagine', needles: ['meta ai', 'meta platforms', 'imagined with ai', 'imaginedwithai'] },
+  { id: 'firefly', label: 'Adobe Firefly', needles: ['firefly', 'adobe firefly', 'generative fill'] },
   { id: 'designer', label: 'Microsoft Designer', needles: ['microsoft designer', 'bing image creator'] },
   { id: 'ideogram', label: 'Ideogram', needles: ['ideogram'] },
   { id: 'leonardo', label: 'Leonardo.Ai', needles: ['leonardo.ai', 'leonardo ai'] },
+  { id: 'ai-label', label: 'Étiquette « AI-generated »', needles: ['ai-generated content', 'generated with ai', 'created with ai', 'made with ai', 'ai info'] },
 ];
 
 const EDITOR_SOFTWARE: ReadonlyArray<{ label: string; needles: string[] }> = [
@@ -239,6 +240,45 @@ const C2PA_ISSUERS: ReadonlyArray<{ label: string; needles: string[] }> = [
   { label: 'Sony', needles: ['sony'] },
   { label: 'Canon', needles: ['canon'] },
 ];
+
+/**
+ * IPTC digital source type.
+ *
+ * This is the interoperable field: `Iptc4xmpExt:DigitalSourceType`, defined by
+ * IPTC and written by Google, Meta, OpenAI and Adobe. Its value comes from a
+ * controlled vocabulary, so `trainedAlgorithmicMedia` means "produced by a
+ * trained model" in every tool that reads it. No guessing, no heuristic, no
+ * model to download: a declared fact.
+ *
+ * It travels in three places, and often without any C2PA manifest: the XMP
+ * packet, the `c2pa.actions` assertion, and PNG text chunks. Google's SynthID
+ * pipeline and Meta's "Imagined with AI" labeller both set it, so it is the one
+ * signal that speaks for the platforms named in the brief.
+ *
+ * Order matters: `compositeWithTrainedAlgorithmicMedia` contains
+ * `trainedAlgorithmicMedia`, so the composite must be tested first.
+ */
+const DIGITAL_SOURCE_TYPES: ReadonlyArray<{
+  id: string;
+  needle: string;
+  label: string;
+  level: 'high' | 'good' | 'info' | 'warn';
+  ai: boolean;
+}> = [
+  { id: 'composite-algorithmic', needle: 'compositewithtrainedalgorithmicmedia', label: 'IPTC DigitalSourceType : compositeWithTrainedAlgorithmicMedia', level: 'high', ai: true },
+  { id: 'trained-algorithmic', needle: 'trainedalgorithmicmedia', label: 'IPTC DigitalSourceType : trainedAlgorithmicMedia', level: 'high', ai: true },
+  { id: 'algorithmic-enhance', needle: 'algorithmicallyenhanced', label: 'IPTC DigitalSourceType : algorithmicallyEnhanced', level: 'warn', ai: false },
+  { id: 'digital-capture', needle: 'digitalcapture', label: 'IPTC DigitalSourceType : digitalCapture', level: 'good', ai: false },
+];
+
+/**
+ * Platform labels that several tools stamp as plain text when they mark a file
+ * as AI-made: Google's Gemini export, "Imagined with AI" from Meta, and the
+ * generic "AI-generated content" tag. They are folded into the generator
+ * catalogue rather than kept as a second list, so a file never reports the same
+ * finding twice.
+ */
+
 
 /** Diffusion models emit a small set of characteristic output sizes. */
 const DIFFUSION_SIZES = new Set([
@@ -655,8 +695,8 @@ export async function analyseImageFile(file: File): Promise<ImageAnalysis> {
   const aiC2paDeclared = c2paIssuers.length > 0
     && (haystack.includes('trainedalgorithmicmedia')
       || haystack.includes('compositewithtrainedalgorithmicmedia')
-      || haystack.includes('c2pa.created')
-      || haystack.includes('alg'));
+      || haystack.includes('digitalsourcetype')
+      || haystack.includes('c2pa.created'));
   const c2pa: C2paSummary = {
     present: c2paPresent,
     container: c2paPresent ? format : null,
@@ -664,6 +704,11 @@ export async function analyseImageFile(file: File): Promise<ImageAnalysis> {
     aiDeclared: aiC2paDeclared,
     manifestBytes: scan.c2paBytes,
   };
+
+  // The IPTC source type and the platform labels are read from the same bytes,
+  // independently of C2PA: a file can carry the declaration and no manifest.
+  const declaredSource = DIGITAL_SOURCE_TYPES.find((type) => haystack.includes(type.needle)) ?? null;
+  const declaredAi = declaredSource?.ai === true;
 
   // Camera fields.
   const find = (name: string): string | null =>
@@ -727,6 +772,18 @@ export async function analyseImageFile(file: File): Promise<ImageAnalysis> {
     });
   }
 
+  // The declared source type stands on its own, with or without a C2PA manifest.
+  if (declaredSource) {
+    evidence.push({
+      id: `iptc-${declaredSource.id}`,
+      level: declaredSource.level,
+      label: declaredSource.label,
+      detail: declaredSource.ai
+        ? 'Champ standard IPTC, lu par tous les outils. Déclare un média produit par un modèle.'
+        : 'Champ standard IPTC.',
+    });
+  }
+
   for (const signature of signatures) {
     evidence.push({
       id: `sig-${signature.id}`,
@@ -766,7 +823,11 @@ export async function analyseImageFile(file: File): Promise<ImageAnalysis> {
   let score = 0;
   let verdict: ImageVerdict = 'unknown';
 
-  if (c2pa.aiDeclared) {
+  if (declaredAi) {
+    // A controlled-vocabulary declaration from the file itself. Not a heuristic.
+    score = 96;
+    verdict = 'ai';
+  } else if (c2pa.aiDeclared) {
     score = 97;
     verdict = 'ai';
   } else if (signatures.length > 0) {

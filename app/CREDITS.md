@@ -14,11 +14,35 @@ vendored as source; all of it is a dependency, a model, or a published idea.
 
 | Model | Licence | Used for |
 | --- | --- | --- |
-| [onnx-community/e5-small-lora-ai-generated-detector-ONNX](https://huggingface.co/onnx-community/e5-small-lora-ai-generated-detector-ONNX) | follows the base model | Layer 2 text classifier |
-| [MayZhou/e5-small-lora-ai-generated-detector](https://huggingface.co/MayZhou/e5-small-lora-ai-generated-detector) | MIT | base model of the ONNX conversion above |
+| [onnx-community/Qwen2.5-0.5B](https://huggingface.co/onnx-community/Qwen2.5-0.5B) | Apache-2.0 | ONNX conversion the language-model juror loads |
+| [Qwen/Qwen2.5-0.5B](https://huggingface.co/Qwen/Qwen2.5-0.5B) | Apache-2.0 | base model of the conversion above |
 
-The model is downloaded from the Hugging Face CDN at run time and cached by the
-browser. It is not redistributed here.
+The model is downloaded from the Hugging Face CDN at run time, once, and cached
+by the browser. It is not redistributed here, and it only runs when the reader
+asks for the language-model juror. The earlier e5-small classifier was removed
+after it was measured against human Wikipedia; see the commit history.
+
+## Detector references
+
+These projects shaped the design. No line of their code is copied: the ideas and
+the standards behind them are, and the reading is reimplemented here from the
+specification. All four are MIT.
+
+| Project | Licence | What it informed |
+| --- | --- | --- |
+| [lynote-ai/ai-image-detector](https://github.com/lynote-ai/ai-image-detector) | MIT | the image side: a detector is one signal, not proof; the generator-signature catalogue |
+| [pablocaeg/sloptotal](https://github.com/pablocaeg/sloptotal) | MIT | the ensemble: many independent engines, one calibrated reading |
+| [cpeoples/ai-watermark-detector](https://github.com/cpeoples/ai-watermark-detector) | MIT | the provenance/watermark split, C2PA verification, the SynthID-family schemes |
+| [YiCQi/AITextJury](https://github.com/YiCQi/AITextJury) | MIT | the jury itself: independent jurors, calibration, honest consensus |
+
+## Standards
+
+| Standard | Used for |
+| --- | --- |
+| IPTC [digital source type](https://cv.iptc.org/newscodes/digitalsourcetype/) | `trainedAlgorithmicMedia` and friends: the controlled vocabulary Google, Meta, OpenAI and Adobe write |
+| [C2PA](https://c2pa.org/specifications/) / Content Credentials | provenance manifests; JUMBF parsing written from the specification |
+| Unicode UTS #39 | confusable-character folding |
+
 
 ## Build tooling (development only)
 
