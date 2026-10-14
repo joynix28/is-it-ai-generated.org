@@ -14,19 +14,18 @@ import './style.css';
  */
 
 import { analyse } from './analyzer';
-import { splitSentences } from './segments';
 import { fingerprint, FINGERPRINT_DISCLAIMER } from './modelFingerprinter';
 import { analyseImageFile, type ImageVerdict } from './imageAnalyzer';
 import { compressionEntropy } from './compression';
 import { initI18n, setLocale, onLocaleChange, translateDom, t, getLocale } from './i18n';
 import { track, initAnalytics } from './analytics';
+import { judge, type JuryVerdict, type NeuralReading } from './jury';
+import { toNeuralReading } from './perplexity';
+import { anchorsFor } from './anchors';
 import type { AnalysisResult, Band, SentenceScore, WorkerRequest, WorkerResponse } from './types';
 
-const MODEL_ID = 'onnx-community/e5-small-lora-ai-generated-detector-ONNX';
+const MODEL_ID = 'onnx-community/Qwen2.5-0.5B';
 const GAUGE_CELLS = 40;
-const MAX_CHUNKS = 6;
-const CHUNK_CHARS = 1200;
-const MODEL_TRIGGER_CHARS = 300;
 
 /* ------------------------------------------------------------------ DOM */
 
@@ -70,13 +69,14 @@ const ui = {
   statStd: el<HTMLElement>('stat-std'),
   statBurst: el<HTMLElement>('stat-burst'),
   statTernary: el<HTMLElement>('stat-ternary'),
-  modelState: el<HTMLSpanElement>('model-state'),
-  modelNote: el<HTMLParagraphElement>('model-note'),
-  modelProgressWrap: el<HTMLDivElement>('model-progress-wrap'),
-  modelProgress: el<HTMLDivElement>('model-progress'),
-  modelProgressLabel: el<HTMLParagraphElement>('model-progress-label'),
-  modelResult: el<HTMLDivElement>('model-result'),
-  modelScore: el<HTMLSpanElement>('model-score'),
+  juryState: el<HTMLSpanElement>('jury-state'),
+  juryList: el<HTMLUListElement>('jury-list'),
+  juryAgreement: el<HTMLSpanElement>('jury-agreement'),
+  juryCaveats: el<HTMLParagraphElement>('jury-caveats'),
+  juryRun: el<HTMLButtonElement>('jury-run'),
+  juryProgressWrap: el<HTMLDivElement>('jury-progress-wrap'),
+  juryProgress: el<HTMLDivElement>('jury-progress'),
+  juryProgressLabel: el<HTMLParagraphElement>('jury-progress-label'),
   scoreComplement: el<HTMLSpanElement>('score-complement'),
   componentsList: el<HTMLUListElement>('components-list'),
   mesMattr: el<HTMLElement>('mes-mattr'),
@@ -163,7 +163,9 @@ function buildTampered(locale: string): string {
 let result: AnalysisResult | null = null;
 let analyseTimer: number | undefined;
 let modelRequestId = 0;
-let modelHasRun = false;
+let modelLoaded = false;
+/** The language-model juror's vote, once it has run and proven itself. */
+let neural: NeuralReading | undefined;
 
 /* ------------------------------------------------------------- rendering */
 
@@ -298,26 +300,27 @@ function renderStats(res: AnalysisResult): void {
 }
 
 function render(res: AnalysisResult): void {
-  ui.score.textContent = String(res.score);
+  const verdict = judge(res, neural);
+  ui.score.textContent = String(verdict.score);
   // A bare "4 %" reads as a failure when the answer is "human". State the
   // reading in both directions.
-  ui.scoreComplement.textContent = res.band === 'human'
-    ? t('score.humanSuffix', { n: 100 - res.score })
-    : res.band === 'mixed'
+  ui.scoreComplement.textContent = verdict.band === 'human'
+    ? t('score.humanSuffix', { n: 100 - verdict.score })
+    : verdict.band === 'mixed'
       ? t('score.mixedSuffix')
-      : t('score.aiSuffix', { n: res.score });
-  ui.bandBadge.textContent = t(BAND_KEY[res.band]);
+      : t('score.aiSuffix', { n: verdict.score });
+  ui.bandBadge.textContent = t(BAND_KEY[verdict.band]);
   ui.bandBadge.className = `rounded-[3px] border px-1.5 py-0.5 text-micro font-semibold uppercase tracking-[0.08em] hairline ${
-    res.band === 'ai'
+    verdict.band === 'ai'
       ? 'text-rose-700 dark:text-rose-300'
-      : res.band === 'mixed'
+      : verdict.band === 'mixed'
         ? 'text-amber-700 dark:text-amber-300'
         : 'text-sage-600 dark:text-sage-200'
   }`;
   ui.reason.textContent = t(res.verdictReason.key, res.verdictReason.params);
-  ui.confidence.textContent = `${res.confidence} %`;
+  ui.confidence.textContent = `${verdict.confidence} %`;
 
-  paintGauge(res.score, res.band);
+  paintGauge(verdict.score, verdict.band);
   setBar(ui.barSyntax, ui.subSyntax, res.subScores.syntacticRegularity);
   setBar(ui.barLexical, ui.subLexical, res.subScores.lexicalPredictability);
   setBar(ui.barMarkers, ui.subMarkers, res.subScores.llmMarkers);
@@ -326,6 +329,7 @@ function render(res: AnalysisResult): void {
   renderForensics(res);
   renderMarkers(res);
   renderStats(res);
+  renderJury(verdict);
   renderFingerprint(editor.value);
   renderOverlay(editor.value, res.sentences);
   if (res.stats.words >= 40) track('tool', { tool: 'text', verdict: res.band, lang: getLocale() });
@@ -383,12 +387,19 @@ function runAnalysis(): void {
   ui.layer1Ms.textContent = (performance.now() - started).toFixed(1);
   void updateCompression(text);
 
-  if (text.length >= MODEL_TRIGGER_CHARS) void ensureModel(text);
+  // The language-model juror is opt-in and it re-runs after an edit once it has
+  // been loaded, so the verdict stays in step with the text.
+  if (modelLoaded) scheduleNeural(text);
 }
 
-/* -------------------------------------------------------------- layer 2 */
+/* ------------------------------------------------------ the model juror */
 
 let worker: Worker | null = null;
+let neuralTimer: number | undefined;
+
+function setJuryState(key: string): void {
+  ui.juryState.textContent = t(key);
+}
 
 function getWorker(): Worker {
   if (!worker) {
@@ -396,54 +407,92 @@ function getWorker(): Worker {
     worker.addEventListener('message', (event: MessageEvent<WorkerResponse>) => {
       const data = event.data;
       if (data.type === 'progress') {
-        ui.modelProgressWrap.classList.remove('hidden');
-        ui.modelProgress.style.width = `${data.progress}%`;
-        ui.modelProgressLabel.textContent = `${data.phase === 'download' ? 'Téléchargement' : 'Initialisation'} — ${data.progress} %${data.file ? ` · ${data.file}` : ''}`;
-        ui.modelState.textContent = 'chargement';
+        ui.juryProgressWrap.classList.remove('hidden');
+        ui.juryProgress.style.width = `${data.progress}%`;
+        ui.juryProgressLabel.textContent = `${data.phase === 'download' ? t('jury.downloading') : t('jury.init')} — ${data.progress} %${data.file ? ` · ${data.file}` : ''}`;
+        setJuryState('jury.state.loading');
       } else if (data.type === 'ready') {
-        ui.modelState.textContent = 'prêt';
-        ui.modelProgressWrap.classList.add('hidden');
-      } else if (data.type === 'done') {
-        ui.modelResult.classList.remove('hidden');
-        ui.modelResult.classList.add('flex');
-        ui.modelScore.textContent = `${Math.round(data.result.score * 100)} % IA · ${data.result.ms} ms`;
-        ui.modelState.textContent = 'actif';
+        modelLoaded = true;
+        ui.juryProgressWrap.classList.add('hidden');
+        setJuryState('jury.state.ready');
+      } else if (data.type === 'scored') {
+        neural = toNeuralReading(data.report);
+        setJuryState(neural.reliable ? 'jury.state.voted' : 'jury.state.abstained');
+        if (result) render(result);
       } else if (data.type === 'error') {
-        ui.modelState.textContent = 'indisponible';
-        ui.modelNote.textContent = `Couche 2 indisponible : ${data.message}. La couche 1 continue de fonctionner, l'outil reste complet.`;
-        ui.modelProgressWrap.classList.add('hidden');
+        setJuryState('jury.state.unavailable');
+        ui.juryCaveats.textContent = t('jury.error', { message: data.message });
+        ui.juryProgressWrap.classList.add('hidden');
       }
     });
   }
   return worker;
 }
 
-function chunkText(text: string): string[] {
-  const sentences = splitSentences(text, navigator.language || 'fr');
-  const chunks: string[] = [];
-  let current = '';
-  for (const sentence of sentences) {
-    if (current.length + sentence.text.length > CHUNK_CHARS && current) {
-      chunks.push(current);
-      current = '';
-    }
-    current += `${sentence.text} `;
-    if (chunks.length >= MAX_CHUNKS) break;
-  }
-  if (current && chunks.length < MAX_CHUNKS) chunks.push(current);
-  return chunks.length ? chunks : [text.slice(0, CHUNK_CHARS)];
+/** Debounce: the model is cheap once loaded, but not free on every keystroke. */
+function scheduleNeural(text: string): void {
+  window.clearTimeout(neuralTimer);
+  neuralTimer = window.setTimeout(() => runNeuralJuror(text), 900);
 }
 
-async function ensureModel(text: string): Promise<void> {
+/** Sends the text and the two calibration anchors to the worker. */
+function runNeuralJuror(text: string): void {
+  if (result && result.stats.words < 40) {
+    ui.juryCaveats.textContent = t('jury.tooShort');
+    return;
+  }
   const w = getWorker();
-  if (!modelHasRun) {
-    modelHasRun = true;
-    ui.modelState.textContent = 'chargement';
+  if (!modelLoaded) {
+    setJuryState('jury.state.loading');
     const loadMessage: WorkerRequest = { type: 'load', modelId: MODEL_ID };
     w.postMessage(loadMessage);
   }
-  const request: WorkerRequest = { type: 'classify', id: (modelRequestId += 1), modelId: MODEL_ID, chunks: chunkText(text) };
+  const pair = anchorsFor(getLocale());
+  const request: WorkerRequest = {
+    type: 'score',
+    id: (modelRequestId += 1),
+    modelId: MODEL_ID,
+    text: text.slice(0, 1600),
+    humanAnchor: pair.human,
+    machineAnchor: pair.machine,
+  };
   w.postMessage(request);
+}
+
+function renderJury(verdict: JuryVerdict): void {
+  ui.juryList.replaceChildren();
+  const sorted = [...verdict.jurors].sort((a, b) => b.reading * b.weight - a.reading * a.weight);
+  for (const juror of sorted) {
+    const li = document.createElement('li');
+    const head = document.createElement('div');
+    head.className = 'flex items-baseline justify-between gap-3 text-label';
+    const label = document.createElement('span');
+    label.className = 'truncate text-zinc-600 dark:text-zinc-400';
+    label.textContent = t(juror.label);
+    const value = document.createElement('span');
+    value.className = juror.abstained ? 'font-mono text-label text-zinc-400' : 'font-mono font-semibold tabular-nums';
+    value.textContent = juror.abstained ? t('jury.abstain') : `${Math.round(juror.reading * 100)} %`;
+    head.append(label, value);
+    li.append(head);
+    if (!juror.abstained) {
+      const bar = document.createElement('div');
+      bar.className = 'bar mt-1';
+      const fill = document.createElement('div');
+      fill.className = 'bar__fill';
+      fill.style.width = `${Math.round(juror.reading * 100)}%`;
+      bar.append(fill);
+      li.append(bar);
+    }
+    if (juror.detail) {
+      const detail = document.createElement('p');
+      detail.className = 'mt-0.5 font-mono text-[11px] leading-tight text-zinc-400';
+      detail.textContent = t(juror.detail.key, juror.detail.params);
+      li.append(detail);
+    }
+    ui.juryList.append(li);
+  }
+  ui.juryAgreement.textContent = `${Math.round(verdict.agreement * 100)} %`;
+  ui.juryCaveats.textContent = verdict.caveats.map((c) => t(c.key, c.params)).join(' ');
 }
 
 /* ----------------------------------------------------------- interaction */
@@ -456,6 +505,11 @@ editor.addEventListener('input', () => {
 editor.addEventListener('scroll', () => {
   layer.scrollTop = editor.scrollTop;
   layer.scrollLeft = editor.scrollLeft;
+});
+
+ui.juryRun.addEventListener('click', () => {
+  ui.juryRun.disabled = true;
+  runNeuralJuror(editor.value);
 });
 
 /** Character offset under the pointer, if the engine can tell us. */
@@ -1056,6 +1110,9 @@ localeSelect.addEventListener('change', () => {
   if (lastImage) renderImage(lastImage);
   renderFaq();
   translateDom(document);
+  // The calibration anchors are language-specific, so a loaded model must be
+  // re-calibrated for the new language.
+  if (modelLoaded) scheduleNeural(editor.value);
 });
 // The theme button label changes with the language too.
 onLocaleChange(() => {

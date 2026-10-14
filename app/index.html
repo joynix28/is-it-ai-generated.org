@@ -181,17 +181,20 @@
 
           <div class="panel mt-3 p-4">
             <div class="flex items-center justify-between">
-              <span class="metric-label" data-i18n="model.title">Couche 2 · modèle neuronal</span>
-              <span id="model-state" class="font-mono text-label text-zinc-400">inactif</span>
+              <span class="metric-label" data-i18n="jury.title">Jury · lectures indépendantes</span>
+              <span id="jury-state" class="font-mono text-label text-zinc-400" data-i18n="jury.state.idle">4 jurés</span>
             </div>
-            <p id="model-note" class="mt-2 text-[11px] leading-tight text-zinc-400" data-i18n="model.note">Classifieur ONNX quantifié exécuté dans un Web Worker. Téléchargé depuis le CDN à la première analyse, puis mis en cache. Modèle anglophone : la couche 1 reste la référence pour le français.</p>
-            <div id="model-progress-wrap" class="mt-2 hidden">
-              <div class="bar"><div id="model-progress" class="bar__fill"></div></div>
-              <p id="model-progress-label" class="mt-1 font-mono text-[11px] text-zinc-400"></p>
+            <p class="mt-2 text-[11px] leading-tight text-zinc-400" data-i18n="jury.note">Le verdict est un jury, pas un juge unique. Chaque lecture est affichée ; un juré qui ne peut pas prouver sa fiabilité s'abstient au lieu de voter.</p>
+            <ul id="jury-list" class="mt-2.5 space-y-2"></ul>
+            <div class="mt-2.5 flex items-baseline justify-between border-t pt-2.5 hairline">
+              <span class="text-label text-zinc-500" data-i18n="jury.agreement">Accord des jurés</span>
+              <span id="jury-agreement" class="font-mono text-label font-semibold tabular-nums">—</span>
             </div>
-            <div id="model-result" class="mt-2.5 hidden border-t pt-2.5 hairline">
-              <div class="flex items-baseline justify-between"><span class="text-label text-zinc-500">Classe du modèle</span><span id="model-score" class="font-mono text-label font-semibold tabular-nums">—</span></div>
-              <div class="mt-1.5 flex items-baseline justify-between"><span class="text-label text-zinc-500">Latence</span><span id="model-ms" class="font-mono text-label tabular-nums text-zinc-500">—</span></div>
+            <p id="jury-caveats" class="mt-2 text-[11px] leading-tight text-amber-700 dark:text-amber-300"></p>
+            <button id="jury-run" type="button" class="btn mt-2.5 w-full" data-i18n="jury.run">Ajouter le juré « modèle de langue » (~460 Mo, une fois)</button>
+            <div id="jury-progress-wrap" class="mt-2 hidden">
+              <div class="bar"><div id="jury-progress" class="bar__fill"></div></div>
+              <p id="jury-progress-label" class="mt-1 font-mono text-[11px] text-zinc-400"></p>
             </div>
           </div>
 

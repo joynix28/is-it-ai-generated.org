@@ -1,57 +1,222 @@
 [
-{"q":"Wat is deze tool?","a":"Een gratis tool die naar een tekst of een afbeelding kijkt en je vertelt of die waarschijnlijk door kunstmatige intelligentie is gemaakt. De tool laat ook punt voor punt zien waarom."},
-{"q":"Is het gratis?","a":"Ja, volledig gratis. Geen abonnement, geen betaald pakket, geen advertenties."},
-{"q":"Heb ik een account nodig?","a":"Nee. Er is geen account, geen wachtwoord, geen aanmelding. Je opent de pagina en gebruikt hem."},
-{"q":"Waar gaat mijn tekst naartoe als ik die plak?","a":"Nergens heen. Hij blijft op je toestel. Wij ontvangen hem nooit en bewaren hem nooit, want er wordt niets naar ons gestuurd."},
-{"q":"Werkt het offline?","a":"Ja, na het eerste bezoek. Het kleine analyseprogramma wordt op je toestel opgeslagen. Zet je telefoon in vliegtuigmodus: de tool blijft werken."},
-{"q":"Waarom een getal in plaats van een simpel ja of nee?","a":"Omdat niemand betrouwbaar ja of nee kan zeggen. De tool geeft je een schatting van 0 tot 100 en toont de aanwijzingen erachter."},
-{"q":"Wat betekent “4 op 100”?","a":"Dat de tekst er in 96% van de gevallen uitziet als menselijk schrijfwerk. Het getal dat je ziet is de AI-kans, geen cijfer voor je tekst."},
-{"q":"Waarom wordt een tekst die ik zelf schreef als AI gemarkeerd?","a":"Dat gebeurt. Zeer gepolijst, academisch of ambtelijk schrijfwerk lijkt op wat machines produceren: zinnen van dezelfde lengte, neutrale formuleringen. Het is geen oordeel over jou."},
-{"q":"Welke talen worden ondersteund?","a":"Vandaag zeven talen voor de interface: Frans, Engels, Spaans, Duits, Italiaans, Portugees, Nederlands. De structuuranalyse werkt in veel meer talen, maar de lijsten met typische formuleringen zijn vooral Frans en Engels."},
-{"q":"Hoe kiest het de taal?","a":"Op basis van de taal van je browser en daarna van de site waar je vandaan komt. Je kunt hem altijd wijzigen in het menu bovenaan."},
-{"q":"Werkt het op een telefoon?","a":"Ja. Op een klein scherm past de indeling zich aan: de tekst bovenaan, de analyse eronder."},
-{"q":"Kan ik het voor huiswerk gebruiken?","a":"Je kunt het gebruiken om te begrijpen hoe een tekst overkomt. Maar lever nooit het resultaat van een detector in als bewijs: het is niet betrouwbaar."},
-{"q":"Kan een leraar het gebruiken om te beoordelen?","a":"Die kan het gebruiken om een gesprek te beginnen, nooit om alleen te beslissen. Een detector zit er in beide richtingen naast."},
-{"q":"Ik word beschuldigd van fraude; spreekt de tool mij vrij?","a":"Nee, en geen enkele tool zal dat doen. Deze site helpt je de aanwijzingen te begrijpen, niet om een discussie te winnen. Praat met de persoon in kwestie."},
-{"q":"Kan het echt het verschil zien?","a":"Het herkent schrijfgewoonten: gelijkmatig ritme, terugkerende formuleringen, afgewogen alinea's. Dat is sterk bewijs voor een stijl, geen bewijs van auteurschap."},
-{"q":"Waarom schrijft AI altijd op dezelfde manier?","a":"Het kiest steeds de meest waarschijnlijke formulering. Het resultaat is gladde, gelijkmatige tekst met steeds dezelfde eigenaardigheden."},
-{"q":"Wat als ik de tekst met de hand herschrijf?","a":"De score daalt meestal, omdat herschrijven onregelmatigheid toevoegt. Dat is te verwachten: de tool meet de stijl, niet wie het heeft geschreven."},
-{"q":"Waarvoor dient het markeren van zinnen?","a":"Zinnen krijgen een kleur op basis van hoe verdacht ze zijn. Beweeg over een zin en een klein tekstballonnetje legt uit wat opviel."},
-{"q":"Waarom zijn sommige zinnen rood?","a":"Omdat er zich aanwijzingen opstapelen: een typische formulering, een gemiddelde lengte, een opsomming van drie punten, een verbindingswoord aan het begin."},
-{"q":"Wat is “burstiness”?","a":"Korte en lange zinnen afwisselen. Mensen doen dat van nature. Machines produceren een gelijkmatig ritme. Het Engelse woord is blijven hangen omdat er geen goede vertaling voor is."},
-{"q":"Wat is de “modelvingerafdruk”?","a":"Een schatting van uit welke modelfamilie de tekst kan komen: OpenAI, Google, Anthropic of Meta. Het is een neiging, geen beschuldiging, en vaak zit ze ernaast."},
-{"q":"Waarom zegt de vingerafdruk “onbepaald”?","a":"Omdat de tekst te kort of te neutraal is om de families te onderscheiden. De tool beweert liever niets."},
-{"q":"En de kant van afbeeldingen?","a":"Die zoekt eerst naar een officiële AI-handtekening in het bestand. Is die informatie gewist, dan analyseert ze de pixels, wat veel minder betrouwbaar is."},
-{"q":"Waarom is mijn afbeelding “onzeker” en niet “AI”?","a":"Omdat er zonder officiële handtekening niets bewezen kan worden. We zeggen dat liever dan iemand onterecht te beschuldigen."},
-{"q":"Wat is C2PA?","a":"Een handtekening die sommige camera's en generatoren in het bestand schrijven. Die overleeft het delen zolang niemand hem verwijdert."},
-{"q":"Waarom hebben zoveel afbeeldingen geen handtekening?","a":"Omdat sociale netwerken, screenshots en formaatomzettingen die informatie wissen. Het ontbreken ervan bewijst niets."},
-{"q":"Wat is de artefactkaart?","a":"Een weergave die de onzichtbare details van de afbeelding overdrijft. Plekken die onnatuurlijk glad of ruisig zijn, kunnen een gegenereerde afbeelding verraden."},
-{"q":"Bewaren jullie iets over mij?","a":"Geen identificatie, geen profiel, geen geschiedenis van je teksten. Er is geen trackingcookie en geen advertenties."},
-{"q":"Wie kan zien wat ik analyseer?","a":"Niemand behalve jij. De analyse draait in je browser, voor je neus."},
-{"q":"Kan ik het op mijn werk gebruiken?","a":"Ja. De code heeft een ruime licentie en je kunt hem ook op je eigen servers draaien."},
-{"q":"Hoe verdienen jullie geld?","a":"Dat doen we niet. Geen advertenties, geen doorverkochte data, geen betaald pakket. Het is een open project."},
-{"q":"Is dit betrouwbaar of een scam?","a":"Er is niets te installeren, niets te betalen, niets in te vullen. De code is openbaar: iedereen kan nagaan of hij doet wat hij belooft."},
-{"q":"Mag ik de code kopiëren?","a":"Ja, de MIT-licentie staat het toe: hergebruiken, aanpassen, zelfs verkopen, zolang je de licentievermelding behoudt."},
-{"q":"Wat is dat met die onzichtbare tekens?","a":"Sommige tools verstoppen onzichtbare tekens in een tekst om detectors te misleiden. Wij vinden ze en tonen je de exacte codepunten."},
-{"q":"Wat is een homoglief?","a":"Een letter die op een andere lijkt. Een Cyrillische “a” in plaats van een Latijnse “a”, bijvoorbeeld. Voor het oog identiek, voor een machine anders. Vaak een teken van geknoei."},
-{"q":"Waarom verrast het woordenaantal soms?","a":"Chinees, Japans en Koreaans scheiden woorden niet met spaties. Wij tellen dan elk teken als een woord, zoals tekstverwerkers dat doen."},
-{"q":"Kan ik een heel lange tekst analyseren?","a":"Ja. De hoofdanalyse is bijna direct klaar. De tweede, zwaardere analyse verwerkt alleen een fragment om snel te blijven."},
-{"q":"Waarom is de tweede analyse de eerste keer traag?","a":"Omdat ze ongeveer 30 MB downloadt. Daarna is ze direct klaar en werkt ze offline."},
-{"q":"Kan ik de tweede analyse uitschakelen?","a":"Ja. Voer ze gewoon niet uit: de tool werkt volledig zonder en er wordt niets gedownload."},
-{"q":"Wat zijn “laag 1” en “laag 2”?","a":"Laag 1 is de directe berekening, altijd beschikbaar. Laag 2 is een tweede, zwaarder programma dat een extra mening geeft. Het jargon is van ons, niet van jou."},
-{"q":"Stuurt de tool mijn tekst naar de maker van het model?","a":"Nee. Het programma wordt één keer gedownload en werkt daarna op jouw toestel. Je tekst verlaat het nooit."},
-{"q":"Werkt het voor huiswerk in het Chinees of Arabisch?","a":"Deels. Zinsritme, alinealengte en onzichtbare tekens worden in elke taal gemeten. De lijsten met typische formuleringen niet."},
-{"q":"Waarom verandert de interface vanzelf van taal?","a":"Ze volgt de taal van je toestel. Wil je liever een andere, kies die dan in het menu: je keuze wordt onthouden."},
-{"q":"Waarom ontbreken sommige talen in het menu?","a":"Omdat een taal pas verschijnt als de vertaling compleet is. We hebben liever een taal die ontbreekt dan een half vertaalde."},
-{"q":"Kan ik een vertaling bijdragen?","a":"Ja, dat is de nuttigste manier om te helpen. Elke taal past in één bestand, en een automatische controle zegt of het compleet is."},
-{"q":"Ik ben ontwikkelaar; hoe integreer ik het?","a":"De engine is een TypeScript-module zonder zware afhankelijkheden, met één ingangspunt per tool: tekstanalyse, beeldanalyse, woordentelling."},
-{"q":"Waar staat de code?","a":"Op GitHub, link onderaan de pagina. Alles is openbaar, inclusief de wijzigingsgeschiedenis."},
-{"q":"Kan ik het zelf hosten?","a":"Ja. Het is een statische site: een handvol bestanden, geen applicatieserver nodig."},
-{"q":"Hoe meld ik een bug?","a":"Op GitHub door een issue te openen, of op Discord. Een concreet voorbeeld helpt enorm."},
-{"q":"Kan de tool er naast zitten?","a":"Ja, in beide richtingen. Hij kan bewerkte AI-tekst missen en zeer formeel menselijk schrijfwerk markeren. Daarom wordt de score nooit als bewijs gepresenteerd."},
-{"q":"Waarom niet gewoon een “betrouwbaar” percentage geven?","a":"Omdat dat een leugen zou zijn. Eén getal zonder marge geeft valse zekerheid. We tonen liever de aanwijzingen en hun gewicht."},
-{"q":"Zou een oplichter dit kunnen gebruiken?","a":"Die kan proberen een score te verlagen, maar dat is een slechte gok: bewerkte tekst blijft bewerkte tekst. En niemand kan een geldige C2PA-handtekening vervalsen."},
-{"q":"Wat als een site mij zonder bewijs beschuldigt?","a":"Vraag naar de methode, niet naar de score. Een oordeel zonder uitleg is niets waard, hier en overal elders."},
-{"q":"Wordt de tekst die ik plak ergens bewaard?","a":"Nee. Sluit het tabblad en hij is weg. We kunnen hem niet terughalen, want we hebben hem nooit gehad."},
-{"q":"Waarom vragen jullie mij om het in vliegtuigmodus te controleren?","a":"Omdat je ons niet op ons woord hoeft te geloven. Koppel je verbinding los en zie zelf dat alles blijft werken."}
+  {
+    "q": "Wat is deze tool?",
+    "a": "Een gratis tool die naar een tekst of een afbeelding kijkt en je vertelt of die waarschijnlijk door kunstmatige intelligentie is gemaakt. De tool laat ook punt voor punt zien waarom."
+  },
+  {
+    "q": "Is het gratis?",
+    "a": "Ja, volledig gratis. Geen abonnement, geen betaald pakket, geen advertenties."
+  },
+  {
+    "q": "Heb ik een account nodig?",
+    "a": "Nee. Er is geen account, geen wachtwoord, geen aanmelding. Je opent de pagina en gebruikt hem."
+  },
+  {
+    "q": "Waar gaat mijn tekst naartoe als ik die plak?",
+    "a": "Nergens heen. Hij blijft op je toestel. Wij ontvangen hem nooit en bewaren hem nooit, want er wordt niets naar ons gestuurd."
+  },
+  {
+    "q": "Werkt het offline?",
+    "a": "Ja, na het eerste bezoek. Het kleine analyseprogramma wordt op je toestel opgeslagen. Zet je telefoon in vliegtuigmodus: de tool blijft werken."
+  },
+  {
+    "q": "Waarom een getal in plaats van een simpel ja of nee?",
+    "a": "Omdat niemand betrouwbaar ja of nee kan zeggen. De tool geeft je een schatting van 0 tot 100 en toont de aanwijzingen erachter."
+  },
+  {
+    "q": "Wat betekent “4 op 100”?",
+    "a": "Dat de tekst er in 96% van de gevallen uitziet als menselijk schrijfwerk. Het getal dat je ziet is de AI-kans, geen cijfer voor je tekst."
+  },
+  {
+    "q": "Waarom wordt een tekst die ik zelf schreef als AI gemarkeerd?",
+    "a": "Dat gebeurt. Zeer gepolijst, academisch of ambtelijk schrijfwerk lijkt op wat machines produceren: zinnen van dezelfde lengte, neutrale formuleringen. Het is geen oordeel over jou."
+  },
+  {
+    "q": "Welke talen worden ondersteund?",
+    "a": "Vandaag zeven talen voor de interface: Frans, Engels, Spaans, Duits, Italiaans, Portugees, Nederlands. De structuuranalyse werkt in veel meer talen, maar de lijsten met typische formuleringen zijn vooral Frans en Engels."
+  },
+  {
+    "q": "Hoe kiest het de taal?",
+    "a": "Op basis van de taal van je browser en daarna van de site waar je vandaan komt. Je kunt hem altijd wijzigen in het menu bovenaan."
+  },
+  {
+    "q": "Werkt het op een telefoon?",
+    "a": "Ja. Op een klein scherm past de indeling zich aan: de tekst bovenaan, de analyse eronder."
+  },
+  {
+    "q": "Kan ik het voor huiswerk gebruiken?",
+    "a": "Je kunt het gebruiken om te begrijpen hoe een tekst overkomt. Maar lever nooit het resultaat van een detector in als bewijs: het is niet betrouwbaar."
+  },
+  {
+    "q": "Kan een leraar het gebruiken om te beoordelen?",
+    "a": "Die kan het gebruiken om een gesprek te beginnen, nooit om alleen te beslissen. Een detector zit er in beide richtingen naast."
+  },
+  {
+    "q": "Ik word beschuldigd van fraude; spreekt de tool mij vrij?",
+    "a": "Nee, en geen enkele tool zal dat doen. Deze site helpt je de aanwijzingen te begrijpen, niet om een discussie te winnen. Praat met de persoon in kwestie."
+  },
+  {
+    "q": "Kan het echt het verschil zien?",
+    "a": "Het herkent schrijfgewoonten: gelijkmatig ritme, terugkerende formuleringen, afgewogen alinea's. Dat is sterk bewijs voor een stijl, geen bewijs van auteurschap."
+  },
+  {
+    "q": "Waarom schrijft AI altijd op dezelfde manier?",
+    "a": "Het kiest steeds de meest waarschijnlijke formulering. Het resultaat is gladde, gelijkmatige tekst met steeds dezelfde eigenaardigheden."
+  },
+  {
+    "q": "Wat als ik de tekst met de hand herschrijf?",
+    "a": "De score daalt meestal, omdat herschrijven onregelmatigheid toevoegt. Dat is te verwachten: de tool meet de stijl, niet wie het heeft geschreven."
+  },
+  {
+    "q": "Waarvoor dient het markeren van zinnen?",
+    "a": "Zinnen krijgen een kleur op basis van hoe verdacht ze zijn. Beweeg over een zin en een klein tekstballonnetje legt uit wat opviel."
+  },
+  {
+    "q": "Waarom zijn sommige zinnen rood?",
+    "a": "Omdat er zich aanwijzingen opstapelen: een typische formulering, een gemiddelde lengte, een opsomming van drie punten, een verbindingswoord aan het begin."
+  },
+  {
+    "q": "Wat is “burstiness”?",
+    "a": "Korte en lange zinnen afwisselen. Mensen doen dat van nature. Machines produceren een gelijkmatig ritme. Het Engelse woord is blijven hangen omdat er geen goede vertaling voor is."
+  },
+  {
+    "q": "Wat is de “modelvingerafdruk”?",
+    "a": "Een schatting van uit welke modelfamilie de tekst kan komen: OpenAI, Google, Anthropic of Meta. Het is een neiging, geen beschuldiging, en vaak zit ze ernaast."
+  },
+  {
+    "q": "Waarom zegt de vingerafdruk “onbepaald”?",
+    "a": "Omdat de tekst te kort of te neutraal is om de families te onderscheiden. De tool beweert liever niets."
+  },
+  {
+    "q": "En de kant van afbeeldingen?",
+    "a": "Die zoekt eerst naar een officiële AI-handtekening in het bestand. Is die informatie gewist, dan analyseert ze de pixels, wat veel minder betrouwbaar is."
+  },
+  {
+    "q": "Waarom is mijn afbeelding “onzeker” en niet “AI”?",
+    "a": "Omdat er zonder officiële handtekening niets bewezen kan worden. We zeggen dat liever dan iemand onterecht te beschuldigen."
+  },
+  {
+    "q": "Wat is C2PA?",
+    "a": "Een handtekening die sommige camera's en generatoren in het bestand schrijven. Die overleeft het delen zolang niemand hem verwijdert."
+  },
+  {
+    "q": "Waarom hebben zoveel afbeeldingen geen handtekening?",
+    "a": "Omdat sociale netwerken, screenshots en formaatomzettingen die informatie wissen. Het ontbreken ervan bewijst niets."
+  },
+  {
+    "q": "Wat is de artefactkaart?",
+    "a": "Een weergave die de onzichtbare details van de afbeelding overdrijft. Plekken die onnatuurlijk glad of ruisig zijn, kunnen een gegenereerde afbeelding verraden."
+  },
+  {
+    "q": "Bewaren jullie iets over mij?",
+    "a": "Geen identificatie, geen profiel, geen geschiedenis van je teksten. Er is geen trackingcookie en geen advertenties."
+  },
+  {
+    "q": "Wie kan zien wat ik analyseer?",
+    "a": "Niemand behalve jij. De analyse draait in je browser, voor je neus."
+  },
+  {
+    "q": "Kan ik het op mijn werk gebruiken?",
+    "a": "Ja. De code heeft een ruime licentie en je kunt hem ook op je eigen servers draaien."
+  },
+  {
+    "q": "Hoe verdienen jullie geld?",
+    "a": "Dat doen we niet. Geen advertenties, geen doorverkochte data, geen betaald pakket. Het is een open project."
+  },
+  {
+    "q": "Is dit betrouwbaar of een scam?",
+    "a": "Er is niets te installeren, niets te betalen, niets in te vullen. De code is openbaar: iedereen kan nagaan of hij doet wat hij belooft."
+  },
+  {
+    "q": "Mag ik de code kopiëren?",
+    "a": "Ja, de MIT-licentie staat het toe: hergebruiken, aanpassen, zelfs verkopen, zolang je de licentievermelding behoudt."
+  },
+  {
+    "q": "Wat is dat met die onzichtbare tekens?",
+    "a": "Sommige tools verstoppen onzichtbare tekens in een tekst om detectors te misleiden. Wij vinden ze en tonen je de exacte codepunten."
+  },
+  {
+    "q": "Wat is een homoglief?",
+    "a": "Een letter die op een andere lijkt. Een Cyrillische “a” in plaats van een Latijnse “a”, bijvoorbeeld. Voor het oog identiek, voor een machine anders. Vaak een teken van geknoei."
+  },
+  {
+    "q": "Waarom verrast het woordenaantal soms?",
+    "a": "Chinees, Japans en Koreaans scheiden woorden niet met spaties. Wij tellen dan elk teken als een woord, zoals tekstverwerkers dat doen."
+  },
+  {
+    "q": "Kan ik een heel lange tekst analyseren?",
+    "a": "Ja. De hoofdanalyse is bijna direct klaar. De tweede, zwaardere analyse verwerkt alleen een fragment om snel te blijven."
+  },
+  {
+    "q": "Waarom is de tweede analyse de eerste keer traag?",
+    "a": "Omdat het eenmalig ongeveer 460 MB downloadt. Het jurylid „taalmodel“ is optioneel: de rest van de jury werkt zonder. Daarna is alles direct en werkt het offline."
+  },
+  {
+    "q": "Kan ik de tweede analyse uitschakelen?",
+    "a": "Ja. Voer ze gewoon niet uit: de tool werkt volledig zonder en er wordt niets gedownload."
+  },
+  {
+    "q": "Wat zijn “laag 1” en “laag 2”?",
+    "a": "Laag 1 is de directe berekening, altijd beschikbaar. Laag 2 is een tweede, zwaarder programma dat een extra mening geeft. Het jargon is van ons, niet van jou."
+  },
+  {
+    "q": "Stuurt de tool mijn tekst naar de maker van het model?",
+    "a": "Nee. Het programma wordt één keer gedownload en werkt daarna op jouw toestel. Je tekst verlaat het nooit."
+  },
+  {
+    "q": "Werkt het voor huiswerk in het Chinees of Arabisch?",
+    "a": "Deels. Zinsritme, alinealengte en onzichtbare tekens worden in elke taal gemeten. De lijsten met typische formuleringen niet."
+  },
+  {
+    "q": "Waarom verandert de interface vanzelf van taal?",
+    "a": "Ze volgt de taal van je toestel. Wil je liever een andere, kies die dan in het menu: je keuze wordt onthouden."
+  },
+  {
+    "q": "Waarom ontbreken sommige talen in het menu?",
+    "a": "Omdat een taal pas verschijnt als de vertaling compleet is. We hebben liever een taal die ontbreekt dan een half vertaalde."
+  },
+  {
+    "q": "Kan ik een vertaling bijdragen?",
+    "a": "Ja, dat is de nuttigste manier om te helpen. Elke taal past in één bestand, en een automatische controle zegt of het compleet is."
+  },
+  {
+    "q": "Ik ben ontwikkelaar; hoe integreer ik het?",
+    "a": "De engine is een TypeScript-module zonder zware afhankelijkheden, met één ingangspunt per tool: tekstanalyse, beeldanalyse, woordentelling."
+  },
+  {
+    "q": "Waar staat de code?",
+    "a": "Op GitHub, link onderaan de pagina. Alles is openbaar, inclusief de wijzigingsgeschiedenis."
+  },
+  {
+    "q": "Kan ik het zelf hosten?",
+    "a": "Ja. Het is een statische site: een handvol bestanden, geen applicatieserver nodig."
+  },
+  {
+    "q": "Hoe meld ik een bug?",
+    "a": "Op GitHub door een issue te openen, of op Discord. Een concreet voorbeeld helpt enorm."
+  },
+  {
+    "q": "Kan de tool er naast zitten?",
+    "a": "Ja, in beide richtingen. Hij kan bewerkte AI-tekst missen en zeer formeel menselijk schrijfwerk markeren. Daarom wordt de score nooit als bewijs gepresenteerd."
+  },
+  {
+    "q": "Waarom niet gewoon een “betrouwbaar” percentage geven?",
+    "a": "Omdat dat een leugen zou zijn. Eén getal zonder marge geeft valse zekerheid. We tonen liever de aanwijzingen en hun gewicht."
+  },
+  {
+    "q": "Zou een oplichter dit kunnen gebruiken?",
+    "a": "Die kan proberen een score te verlagen, maar dat is een slechte gok: bewerkte tekst blijft bewerkte tekst. En niemand kan een geldige C2PA-handtekening vervalsen."
+  },
+  {
+    "q": "Wat als een site mij zonder bewijs beschuldigt?",
+    "a": "Vraag naar de methode, niet naar de score. Een oordeel zonder uitleg is niets waard, hier en overal elders."
+  },
+  {
+    "q": "Wordt de tekst die ik plak ergens bewaard?",
+    "a": "Nee. Sluit het tabblad en hij is weg. We kunnen hem niet terughalen, want we hebben hem nooit gehad."
+  },
+  {
+    "q": "Waarom vragen jullie mij om het in vliegtuigmodus te controleren?",
+    "a": "Omdat je ons niet op ons woord hoeft te geloven. Koppel je verbinding los en zie zelf dat alles blijft werken."
+  }
 ]

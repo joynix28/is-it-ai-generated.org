@@ -1,57 +1,222 @@
 [
-{"q":"Che cos'è questo strumento?","a":"Uno strumento gratuito che esamina un testo o un'immagine e ti dice se è stato probabilmente creato dall'intelligenza artificiale. Ti mostra anche perché, punto per punto."},
-{"q":"È gratuito?","a":"Sì, completamente gratuito. Nessun abbonamento, nessun piano a pagamento, nessuna pubblicità."},
-{"q":"Serve un account?","a":"No. Non c'è nessun account, nessuna password, nessuna registrazione. Apri la pagina e la usi."},
-{"q":"Dove finisce il mio testo quando lo incollo?","a":"Da nessuna parte. Resta sul tuo dispositivo. Non lo riceviamo mai e non lo conserviamo mai, perché non ci viene inviato nulla."},
-{"q":"Funziona offline?","a":"Sì, dopo la prima visita. Il piccolo programma di analisi viene salvato sul tuo dispositivo. Metti il telefono in modalità aereo: lo strumento continua a funzionare."},
-{"q":"Perché un numero invece di un semplice sì o no?","a":"Perché nessuno può rispondere sì o no in modo affidabile. Lo strumento ti dà una stima da 0 a 100 e ti mostra gli indizi che ci sono dietro."},
-{"q":"Che cosa significa «4 su 100»?","a":"Che il testo sembra scritto da un essere umano nel 96% dei casi. Il numero mostrato è la probabilità che sia AI, non un voto del tuo testo."},
-{"q":"Perché un testo che ho scritto viene segnalato come AI?","a":"Succede. Una scrittura molto levigata, accademica o amministrativa assomiglia a ciò che producono le macchine: frasi della stessa lunghezza, formulazioni neutre. Non è un giudizio su di te."},
-{"q":"Quali lingue sono supportate?","a":"Oggi sette lingue per l'interfaccia: francese, inglese, spagnolo, tedesco, italiano, portoghese, olandese. L'analisi strutturale funziona in molte altre lingue, ma gli elenchi delle formulazioni tipiche sono soprattutto in francese e inglese."},
-{"q":"Come sceglie la lingua?","a":"Dalla lingua del tuo browser, poi dal sito da cui arrivi. Puoi sempre cambiarla nel menu in alto."},
-{"q":"Funziona su un telefono?","a":"Sì. Su uno schermo piccolo l'impaginazione si adatta: il testo in alto, l'analisi sotto."},
-{"q":"Posso usarlo per i compiti?","a":"Puoi usarlo per capire come viene percepito un testo. Ma non consegnare mai il risultato di un rilevatore come prova: non è affidabile."},
-{"q":"Un insegnante può usarlo per dare un voto?","a":"Può usarlo per avviare un confronto, mai per decidere da solo. Un rilevatore sbaglia in entrambe le direzioni."},
-{"q":"Sono accusato di aver imbrogliato, lo strumento mi scagionerà?","a":"No, e nessuno strumento lo farà. Questo sito ti aiuta a capire gli indizi, non a vincere una discussione. Parla con la persona coinvolta."},
-{"q":"Riesce davvero a distinguere?","a":"Individua abitudini di scrittura: ritmo uniforme, formulazioni ripetute, paragrafi calibrati. Sono indizi forti di uno stile, non la prova di chi ha scritto."},
-{"q":"Perché l'AI scrive sempre allo stesso modo?","a":"Continua a scegliere la formulazione più probabile. Il risultato è un testo fluido e uniforme, con sempre gli stessi tic."},
-{"q":"E se riscrivo il testo a mano?","a":"Il punteggio di solito scende, perché riscrivere aggiunge irregolarità. È normale: lo strumento misura lo stile, non chi l'ha scritto."},
-{"q":"A che cosa serve l'evidenziazione delle frasi?","a":"Le frasi sono colorate in base a quanto sono sospette. Passa il mouse su una e una piccola nuvoletta spiega che cosa ha attirato l'attenzione."},
-{"q":"Perché alcune frasi sono rosse?","a":"Perché accumulano indizi: una formulazione tipica, una lunghezza media, un elenco di tre elementi, un connettivo all'inizio."},
-{"q":"Che cos'è la «burstiness»?","a":"Mescolare frasi brevi e frasi lunghe. Le persone lo fanno naturalmente. Le macchine producono un ritmo uniforme. La parola inglese è rimasta perché non c'è un buon equivalente."},
-{"q":"Che cos'è l'«impronta del modello»?","a":"Una stima di quale famiglia di modelli può aver scritto il testo: OpenAI, Google, Anthropic o Meta. È una tendenza, non un'accusa, e spesso è sbagliata."},
-{"q":"Perché l'impronta dice «indeterminato»?","a":"Perché il testo è troppo corto o troppo neutro per distinguere le famiglie. Lo strumento preferisce non affermare nulla."},
-{"q":"E per quanto riguarda le immagini?","a":"Prima cerca una firma ufficiale di AI all'interno del file. Se quell'informazione è stata cancellata, analizza i pixel, il che è molto meno affidabile."},
-{"q":"Perché la mia immagine è «incerta» e non «AI»?","a":"Perché senza una firma ufficiale non si può provare nulla. Preferiamo dirlo piuttosto che accusare a torto."},
-{"q":"Che cos'è il C2PA?","a":"Una firma che alcune fotocamere e alcuni generatori scrivono nel file. Sopravvive alla condivisione finché nessuno la rimuove."},
-{"q":"Perché così tante immagini non hanno firma?","a":"Perché i social, le catture schermo e le conversioni di formato cancellano quell'informazione. La sua assenza non prova nulla."},
-{"q":"Che cos'è la mappa degli artefatti?","a":"Una vista che esagera i dettagli invisibili dell'immagine. Le zone innaturalmente lisce o rumorose possono tradire un'immagine generata."},
-{"q":"Conservate qualcosa su di me?","a":"Nessun identificatore, nessun profilo, nessuno storico dei tuoi testi. Non ci sono cookie di tracciamento né pubblicità."},
-{"q":"Chi può vedere ciò che analizzo?","a":"Nessuno tranne te. L'analisi viene eseguita nel tuo browser, davanti a te."},
-{"q":"Posso usarlo al lavoro?","a":"Sì. Il codice è distribuito con una licenza permissiva e puoi anche eseguirlo sui tuoi server."},
-{"q":"Come guadagnate?","a":"Non guadagniamo. Niente pubblicità, niente dati rivenduti, nessun piano a pagamento. È un progetto aperto."},
-{"q":"È una cosa seria o una truffa?","a":"Non c'è nulla da installare, nulla da pagare, nulla da inserire. Il codice è pubblico: chiunque può verificare che faccia ciò che promette."},
-{"q":"Posso copiare il codice?","a":"Sì, la licenza MIT lo permette: riutilizzare, modificare, persino vendere, purché tu mantenga l'avviso di licenza."},
-{"q":"Che cos'è questa storia dei caratteri invisibili?","a":"Alcuni strumenti nascondono caratteri invisibili in un testo per ingannare i rilevatori. Noi li troviamo e ti mostriamo i punti di codice esatti."},
-{"q":"Che cos'è un omoglifo?","a":"Una lettera che assomiglia a un'altra. Una «a» cirillica al posto di una «a» latina, per esempio. Identica all'occhio, diversa per una macchina. Spesso è segno di manomissione."},
-{"q":"Perché il conteggio delle parole a volte sorprende?","a":"Il cinese, il giapponese e il coreano non separano le parole con spazi. In quel caso contiamo ogni carattere come una parola, come fanno i programmi di videoscrittura."},
-{"q":"Posso analizzare un testo molto lungo?","a":"Sì. L'analisi principale è quasi istantanea. La seconda analisi, più pesante, elabora solo un estratto per restare veloce."},
-{"q":"Perché la seconda analisi è lenta la prima volta?","a":"Perché scarica circa 30 MB. Dopodiché è istantanea e funziona offline."},
-{"q":"Posso disattivare la seconda analisi?","a":"Sì. Basta non avviarla: lo strumento funziona benissimo senza, e non viene scaricato nulla."},
-{"q":"Che cosa sono il «livello 1» e il «livello 2»?","a":"Il livello 1 è il calcolo istantaneo, sempre disponibile. Il livello 2 è un secondo programma, più pesante, che dà un parere in più. Il gergo è nostro, non tuo."},
-{"q":"Lo strumento invia il mio testo a chi produce i modelli?","a":"No. Il programma viene scaricato una volta, poi lavora sulla tua macchina. Il tuo testo non esce mai."},
-{"q":"Funziona per i compiti in cinese o in arabo?","a":"In parte. Il ritmo delle frasi, la lunghezza dei paragrafi e i caratteri invisibili si misurano in tutte le lingue. Gli elenchi delle formulazioni tipiche no."},
-{"q":"Perché l'interfaccia cambia lingua da sola?","a":"Segue la lingua del tuo dispositivo. Se ne preferisci un'altra, sceglila nel menu: la tua scelta viene ricordata."},
-{"q":"Perché nel menu mancano alcune lingue?","a":"Perché una lingua compare solo quando la sua traduzione è completa. Preferiamo che una lingua manchi piuttosto che sia tradotta a metà."},
-{"q":"Posso contribuire con una traduzione?","a":"Sì, è il modo più utile per dare una mano. Ogni lingua sta in un solo file, e un controllo automatico dice se è completa."},
-{"q":"Sono uno sviluppatore, come lo integro?","a":"Il motore è un modulo TypeScript senza dipendenze pesanti, con un punto di ingresso per strumento: analisi del testo, analisi delle immagini, conteggio delle parole."},
-{"q":"Dove si trova il codice?","a":"Su GitHub, il link in fondo alla pagina. Tutto è pubblico, compresa la cronologia delle modifiche."},
-{"q":"Posso ospitarlo da solo?","a":"Sì. È un sito statico: una manciata di file, nessun server applicativo necessario."},
-{"q":"Come segnalo un errore?","a":"Su GitHub aprendo una segnalazione, oppure su Discord. Un esempio concreto aiuta molto."},
-{"q":"Lo strumento può sbagliare?","a":"Sì, in entrambe le direzioni. Può non accorgersi di un testo AI modificato e segnalare una scrittura umana molto formale. Ecco perché il punteggio non viene mai presentato come prova."},
-{"q":"Perché non dare semplicemente una percentuale «affidabile»?","a":"Perché sarebbe una bugia. Un solo numero senza margine dà una falsa sicurezza. Preferiamo mostrare gli indizi e il loro peso."},
-{"q":"Un truffatore potrebbe usarlo?","a":"Può provare ad abbassare un punteggio, ma è un cattivo investimento: un testo modificato resta un testo modificato. E nessuno può falsificare una firma C2PA valida."},
-{"q":"E se un sito mi accusa senza prove?","a":"Chiedi il metodo, non il punteggio. Un verdetto senza spiegazioni non vale nulla, qui come ovunque."},
-{"q":"Il testo che incollo viene salvato da qualche parte?","a":"No. Chiudi la scheda e sparisce. Non abbiamo modo di recuperarlo, perché non l'abbiamo mai avuto."},
-{"q":"Perché mi chiedete di verificare in modalità aereo?","a":"Perché non devi crederci sulla parola. Taglia la connessione e verifica di persona che tutto continua a funzionare."}
+  {
+    "q": "Che cos'è questo strumento?",
+    "a": "Uno strumento gratuito che esamina un testo o un'immagine e ti dice se è stato probabilmente creato dall'intelligenza artificiale. Ti mostra anche perché, punto per punto."
+  },
+  {
+    "q": "È gratuito?",
+    "a": "Sì, completamente gratuito. Nessun abbonamento, nessun piano a pagamento, nessuna pubblicità."
+  },
+  {
+    "q": "Serve un account?",
+    "a": "No. Non c'è nessun account, nessuna password, nessuna registrazione. Apri la pagina e la usi."
+  },
+  {
+    "q": "Dove finisce il mio testo quando lo incollo?",
+    "a": "Da nessuna parte. Resta sul tuo dispositivo. Non lo riceviamo mai e non lo conserviamo mai, perché non ci viene inviato nulla."
+  },
+  {
+    "q": "Funziona offline?",
+    "a": "Sì, dopo la prima visita. Il piccolo programma di analisi viene salvato sul tuo dispositivo. Metti il telefono in modalità aereo: lo strumento continua a funzionare."
+  },
+  {
+    "q": "Perché un numero invece di un semplice sì o no?",
+    "a": "Perché nessuno può rispondere sì o no in modo affidabile. Lo strumento ti dà una stima da 0 a 100 e ti mostra gli indizi che ci sono dietro."
+  },
+  {
+    "q": "Che cosa significa «4 su 100»?",
+    "a": "Che il testo sembra scritto da un essere umano nel 96% dei casi. Il numero mostrato è la probabilità che sia AI, non un voto del tuo testo."
+  },
+  {
+    "q": "Perché un testo che ho scritto viene segnalato come AI?",
+    "a": "Succede. Una scrittura molto levigata, accademica o amministrativa assomiglia a ciò che producono le macchine: frasi della stessa lunghezza, formulazioni neutre. Non è un giudizio su di te."
+  },
+  {
+    "q": "Quali lingue sono supportate?",
+    "a": "Oggi sette lingue per l'interfaccia: francese, inglese, spagnolo, tedesco, italiano, portoghese, olandese. L'analisi strutturale funziona in molte altre lingue, ma gli elenchi delle formulazioni tipiche sono soprattutto in francese e inglese."
+  },
+  {
+    "q": "Come sceglie la lingua?",
+    "a": "Dalla lingua del tuo browser, poi dal sito da cui arrivi. Puoi sempre cambiarla nel menu in alto."
+  },
+  {
+    "q": "Funziona su un telefono?",
+    "a": "Sì. Su uno schermo piccolo l'impaginazione si adatta: il testo in alto, l'analisi sotto."
+  },
+  {
+    "q": "Posso usarlo per i compiti?",
+    "a": "Puoi usarlo per capire come viene percepito un testo. Ma non consegnare mai il risultato di un rilevatore come prova: non è affidabile."
+  },
+  {
+    "q": "Un insegnante può usarlo per dare un voto?",
+    "a": "Può usarlo per avviare un confronto, mai per decidere da solo. Un rilevatore sbaglia in entrambe le direzioni."
+  },
+  {
+    "q": "Sono accusato di aver imbrogliato, lo strumento mi scagionerà?",
+    "a": "No, e nessuno strumento lo farà. Questo sito ti aiuta a capire gli indizi, non a vincere una discussione. Parla con la persona coinvolta."
+  },
+  {
+    "q": "Riesce davvero a distinguere?",
+    "a": "Individua abitudini di scrittura: ritmo uniforme, formulazioni ripetute, paragrafi calibrati. Sono indizi forti di uno stile, non la prova di chi ha scritto."
+  },
+  {
+    "q": "Perché l'AI scrive sempre allo stesso modo?",
+    "a": "Continua a scegliere la formulazione più probabile. Il risultato è un testo fluido e uniforme, con sempre gli stessi tic."
+  },
+  {
+    "q": "E se riscrivo il testo a mano?",
+    "a": "Il punteggio di solito scende, perché riscrivere aggiunge irregolarità. È normale: lo strumento misura lo stile, non chi l'ha scritto."
+  },
+  {
+    "q": "A che cosa serve l'evidenziazione delle frasi?",
+    "a": "Le frasi sono colorate in base a quanto sono sospette. Passa il mouse su una e una piccola nuvoletta spiega che cosa ha attirato l'attenzione."
+  },
+  {
+    "q": "Perché alcune frasi sono rosse?",
+    "a": "Perché accumulano indizi: una formulazione tipica, una lunghezza media, un elenco di tre elementi, un connettivo all'inizio."
+  },
+  {
+    "q": "Che cos'è la «burstiness»?",
+    "a": "Mescolare frasi brevi e frasi lunghe. Le persone lo fanno naturalmente. Le macchine producono un ritmo uniforme. La parola inglese è rimasta perché non c'è un buon equivalente."
+  },
+  {
+    "q": "Che cos'è l'«impronta del modello»?",
+    "a": "Una stima di quale famiglia di modelli può aver scritto il testo: OpenAI, Google, Anthropic o Meta. È una tendenza, non un'accusa, e spesso è sbagliata."
+  },
+  {
+    "q": "Perché l'impronta dice «indeterminato»?",
+    "a": "Perché il testo è troppo corto o troppo neutro per distinguere le famiglie. Lo strumento preferisce non affermare nulla."
+  },
+  {
+    "q": "E per quanto riguarda le immagini?",
+    "a": "Prima cerca una firma ufficiale di AI all'interno del file. Se quell'informazione è stata cancellata, analizza i pixel, il che è molto meno affidabile."
+  },
+  {
+    "q": "Perché la mia immagine è «incerta» e non «AI»?",
+    "a": "Perché senza una firma ufficiale non si può provare nulla. Preferiamo dirlo piuttosto che accusare a torto."
+  },
+  {
+    "q": "Che cos'è il C2PA?",
+    "a": "Una firma che alcune fotocamere e alcuni generatori scrivono nel file. Sopravvive alla condivisione finché nessuno la rimuove."
+  },
+  {
+    "q": "Perché così tante immagini non hanno firma?",
+    "a": "Perché i social, le catture schermo e le conversioni di formato cancellano quell'informazione. La sua assenza non prova nulla."
+  },
+  {
+    "q": "Che cos'è la mappa degli artefatti?",
+    "a": "Una vista che esagera i dettagli invisibili dell'immagine. Le zone innaturalmente lisce o rumorose possono tradire un'immagine generata."
+  },
+  {
+    "q": "Conservate qualcosa su di me?",
+    "a": "Nessun identificatore, nessun profilo, nessuno storico dei tuoi testi. Non ci sono cookie di tracciamento né pubblicità."
+  },
+  {
+    "q": "Chi può vedere ciò che analizzo?",
+    "a": "Nessuno tranne te. L'analisi viene eseguita nel tuo browser, davanti a te."
+  },
+  {
+    "q": "Posso usarlo al lavoro?",
+    "a": "Sì. Il codice è distribuito con una licenza permissiva e puoi anche eseguirlo sui tuoi server."
+  },
+  {
+    "q": "Come guadagnate?",
+    "a": "Non guadagniamo. Niente pubblicità, niente dati rivenduti, nessun piano a pagamento. È un progetto aperto."
+  },
+  {
+    "q": "È una cosa seria o una truffa?",
+    "a": "Non c'è nulla da installare, nulla da pagare, nulla da inserire. Il codice è pubblico: chiunque può verificare che faccia ciò che promette."
+  },
+  {
+    "q": "Posso copiare il codice?",
+    "a": "Sì, la licenza MIT lo permette: riutilizzare, modificare, persino vendere, purché tu mantenga l'avviso di licenza."
+  },
+  {
+    "q": "Che cos'è questa storia dei caratteri invisibili?",
+    "a": "Alcuni strumenti nascondono caratteri invisibili in un testo per ingannare i rilevatori. Noi li troviamo e ti mostriamo i punti di codice esatti."
+  },
+  {
+    "q": "Che cos'è un omoglifo?",
+    "a": "Una lettera che assomiglia a un'altra. Una «a» cirillica al posto di una «a» latina, per esempio. Identica all'occhio, diversa per una macchina. Spesso è segno di manomissione."
+  },
+  {
+    "q": "Perché il conteggio delle parole a volte sorprende?",
+    "a": "Il cinese, il giapponese e il coreano non separano le parole con spazi. In quel caso contiamo ogni carattere come una parola, come fanno i programmi di videoscrittura."
+  },
+  {
+    "q": "Posso analizzare un testo molto lungo?",
+    "a": "Sì. L'analisi principale è quasi istantanea. La seconda analisi, più pesante, elabora solo un estratto per restare veloce."
+  },
+  {
+    "q": "Perché la seconda analisi è lenta la prima volta?",
+    "a": "Perché scarica circa 460 MB, una sola volta. Il giurato «modello linguistico» è opzionale: il resto della giuria funziona senza. Dopo tutto è immediato e funziona offline."
+  },
+  {
+    "q": "Posso disattivare la seconda analisi?",
+    "a": "Sì. Basta non avviarla: lo strumento funziona benissimo senza, e non viene scaricato nulla."
+  },
+  {
+    "q": "Che cosa sono il «livello 1» e il «livello 2»?",
+    "a": "Il livello 1 è il calcolo istantaneo, sempre disponibile. Il livello 2 è un secondo programma, più pesante, che dà un parere in più. Il gergo è nostro, non tuo."
+  },
+  {
+    "q": "Lo strumento invia il mio testo a chi produce i modelli?",
+    "a": "No. Il programma viene scaricato una volta, poi lavora sulla tua macchina. Il tuo testo non esce mai."
+  },
+  {
+    "q": "Funziona per i compiti in cinese o in arabo?",
+    "a": "In parte. Il ritmo delle frasi, la lunghezza dei paragrafi e i caratteri invisibili si misurano in tutte le lingue. Gli elenchi delle formulazioni tipiche no."
+  },
+  {
+    "q": "Perché l'interfaccia cambia lingua da sola?",
+    "a": "Segue la lingua del tuo dispositivo. Se ne preferisci un'altra, sceglila nel menu: la tua scelta viene ricordata."
+  },
+  {
+    "q": "Perché nel menu mancano alcune lingue?",
+    "a": "Perché una lingua compare solo quando la sua traduzione è completa. Preferiamo che una lingua manchi piuttosto che sia tradotta a metà."
+  },
+  {
+    "q": "Posso contribuire con una traduzione?",
+    "a": "Sì, è il modo più utile per dare una mano. Ogni lingua sta in un solo file, e un controllo automatico dice se è completa."
+  },
+  {
+    "q": "Sono uno sviluppatore, come lo integro?",
+    "a": "Il motore è un modulo TypeScript senza dipendenze pesanti, con un punto di ingresso per strumento: analisi del testo, analisi delle immagini, conteggio delle parole."
+  },
+  {
+    "q": "Dove si trova il codice?",
+    "a": "Su GitHub, il link in fondo alla pagina. Tutto è pubblico, compresa la cronologia delle modifiche."
+  },
+  {
+    "q": "Posso ospitarlo da solo?",
+    "a": "Sì. È un sito statico: una manciata di file, nessun server applicativo necessario."
+  },
+  {
+    "q": "Come segnalo un errore?",
+    "a": "Su GitHub aprendo una segnalazione, oppure su Discord. Un esempio concreto aiuta molto."
+  },
+  {
+    "q": "Lo strumento può sbagliare?",
+    "a": "Sì, in entrambe le direzioni. Può non accorgersi di un testo AI modificato e segnalare una scrittura umana molto formale. Ecco perché il punteggio non viene mai presentato come prova."
+  },
+  {
+    "q": "Perché non dare semplicemente una percentuale «affidabile»?",
+    "a": "Perché sarebbe una bugia. Un solo numero senza margine dà una falsa sicurezza. Preferiamo mostrare gli indizi e il loro peso."
+  },
+  {
+    "q": "Un truffatore potrebbe usarlo?",
+    "a": "Può provare ad abbassare un punteggio, ma è un cattivo investimento: un testo modificato resta un testo modificato. E nessuno può falsificare una firma C2PA valida."
+  },
+  {
+    "q": "E se un sito mi accusa senza prove?",
+    "a": "Chiedi il metodo, non il punteggio. Un verdetto senza spiegazioni non vale nulla, qui come ovunque."
+  },
+  {
+    "q": "Il testo che incollo viene salvato da qualche parte?",
+    "a": "No. Chiudi la scheda e sparisce. Non abbiamo modo di recuperarlo, perché non l'abbiamo mai avuto."
+  },
+  {
+    "q": "Perché mi chiedete di verificare in modalità aereo?",
+    "a": "Perché non devi crederci sulla parola. Taglia la connessione e verifica di persona che tutto continua a funzionare."
+  }
 ]

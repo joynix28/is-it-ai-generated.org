@@ -94,6 +94,8 @@ export interface ScoredComponent {
   weight: number;
   /** i18n key plus params, or null. */
   detail: Msg | null;
+  /** False when the signal does not apply to this text (a bullet list has no paragraph rhythm). */
+  applicable?: boolean;
 }
 
 export interface AnalysisResult {
@@ -110,28 +112,19 @@ export interface AnalysisResult {
   components: ScoredComponent[];
 }
 
-export interface ModelChunkResult {
-  index: number;
-  label: string;
-  score: number;
-  text: string;
-}
-
-export interface ModelResult {
-  label: string;
-  score: number;
-  chunks: ModelChunkResult[];
-  modelId: string;
+export interface PerplexityReport {
+  text: number;
+  human: number;
+  machine: number;
   ms: number;
 }
 
 export type WorkerRequest =
   | { type: 'load'; modelId: string }
-  | { type: 'classify'; id: number; modelId: string; chunks: string[] };
+  | { type: 'score'; id: number; modelId: string; text: string; humanAnchor: string; machineAnchor: string };
 
 export type WorkerResponse =
   | { type: 'progress'; phase: 'download' | 'init'; file?: string; progress: number; loaded?: number; total?: number }
   | { type: 'ready'; modelId: string }
-  | { type: 'chunk'; id: number; result: ModelChunkResult }
-  | { type: 'done'; id: number; result: Omit<ModelResult, 'modelId'> }
+  | { type: 'scored'; id: number; report: PerplexityReport }
   | { type: 'error'; message: string };

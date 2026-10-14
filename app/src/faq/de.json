@@ -1,57 +1,222 @@
 [
-{"q":"Was ist dieses Werkzeug?","a":"Ein kostenloses Werkzeug, das sich einen Text oder ein Bild ansieht und dir sagt, ob es wahrscheinlich von künstlicher Intelligenz erstellt wurde. Es zeigt dir auch Punkt für Punkt, warum."},
-{"q":"Ist es kostenlos?","a":"Ja, völlig kostenlos. Kein Abo, keine bezahlte Stufe, keine Werbung."},
-{"q":"Brauche ich ein Konto?","a":"Nein. Es gibt kein Konto, kein Passwort, keine Registrierung. Du öffnest die Seite und legst los."},
-{"q":"Wohin geht mein Text, wenn ich ihn einfüge?","a":"Nirgendwohin. Er bleibt auf deinem Gerät. Wir bekommen ihn nie zu sehen und speichern ihn nie, weil uns nichts gesendet wird."},
-{"q":"Funktioniert es offline?","a":"Ja, nach dem ersten Besuch. Das kleine Analyseprogramm wird auf deinem Gerät gespeichert. Schalte dein Handy in den Flugmodus: Das Werkzeug funktioniert weiter."},
-{"q":"Warum eine Zahl statt eines einfachen Ja oder Nein?","a":"Weil niemand zuverlässig Ja oder Nein sagen kann. Das Werkzeug gibt dir eine Schätzung von 0 bis 100 und zeigt die Hinweise dahinter."},
-{"q":"Was bedeutet „4 von 100“?","a":"Dass der Text in 96 % der Fälle wie menschliches Schreiben wirkt. Die angezeigte Zahl ist die KI-Wahrscheinlichkeit, keine Note für deinen Text."},
-{"q":"Warum wird ein Text, den ich geschrieben habe, als KI markiert?","a":"Das kommt vor. Sehr poliertes, akademisches oder behördliches Schreiben sieht aus wie das, was Maschinen produzieren: gleich lange Sätze, neutrale Formulierungen. Es ist kein Urteil über dich."},
-{"q":"Welche Sprachen werden unterstützt?","a":"Derzeit sieben Sprachen für die Oberfläche: Französisch, Englisch, Spanisch, Deutsch, Italienisch, Portugiesisch, Niederländisch. Die Strukturanalyse funktioniert in vielen weiteren Sprachen, aber die Listen typischer Formulierungen sind vor allem Französisch und Englisch."},
-{"q":"Wie wählt es die Sprache aus?","a":"Anhand der Sprache deines Browsers, dann anhand der Seite, von der du kommst. Du kannst sie jederzeit im Menü oben ändern."},
-{"q":"Funktioniert es auf dem Handy?","a":"Ja. Auf einem kleinen Bildschirm passt sich das Layout an: der Text oben, die Analyse darunter."},
-{"q":"Kann ich es für Hausaufgaben nutzen?","a":"Du kannst es nutzen, um zu verstehen, wie ein Text wirkt. Aber reiche niemals das Ergebnis eines Detektors als Beweis ein: Es ist nicht zuverlässig."},
-{"q":"Kann eine Lehrkraft es zum Benoten nutzen?","a":"Sie kann es nutzen, um ein Gespräch zu beginnen, aber niemals, um allein zu entscheiden. Ein Detektor irrt sich in beide Richtungen."},
-{"q":"Mir wird Betrug vorgeworfen – spricht mich das Werkzeug frei?","a":"Nein, und kein Werkzeug wird das tun. Diese Seite hilft dir, die Hinweise zu verstehen, nicht, eine Diskussion zu gewinnen. Sprich mit der betroffenen Person."},
-{"q":"Kann es den Unterschied wirklich erkennen?","a":"Es erkennt Schreibgewohnheiten: gleichmäßiger Rhythmus, wiederkehrende Formulierungen, abgestimmte Absätze. Das ist ein starker Hinweis auf einen Stil, kein Beweis der Urheberschaft."},
-{"q":"Warum schreibt KI immer gleich?","a":"Sie wählt immer wieder die wahrscheinlichste Formulierung. Das Ergebnis ist glatter, gleichmäßiger Text mit immer denselben Eigenheiten."},
-{"q":"Was, wenn ich den Text von Hand umschreibe?","a":"Der Wert sinkt meistens, weil Umschreiben Unregelmäßigkeit hineinbringt. Das ist zu erwarten: Das Werkzeug misst den Stil, nicht, wer geschrieben hat."},
-{"q":"Wofür ist die Hervorhebung der Sätze gut?","a":"Sätze werden danach eingefärbt, wie verdächtig sie sind. Fahre mit der Maus über einen, und eine kleine Sprechblase erklärt, was aufgefallen ist."},
-{"q":"Warum sind manche Sätze rot?","a":"Weil sich bei ihnen Hinweise häufen: eine typische Formulierung, eine durchschnittliche Länge, eine Aufzählung mit drei Punkten, ein Bindewort am Anfang."},
-{"q":"Was ist „Burstiness“?","a":"Kurze und lange Sätze mischen. Menschen tun das ganz natürlich. Maschinen erzeugen einen gleichmäßigen Rhythmus. Das englische Wort hat sich eingebürgert, weil es keine gute Entsprechung gibt."},
-{"q":"Was ist der „Modell-Fingerabdruck“?","a":"Eine Schätzung, aus welcher Modellfamilie der Text stammen könnte: OpenAI, Google, Anthropic oder Meta. Es ist eine Tendenz, keine Anschuldigung, und sie liegt oft falsch."},
-{"q":"Warum sagt der Fingerabdruck „unbestimmt“?","a":"Weil der Text zu kurz oder zu neutral ist, um die Familien zu unterscheiden. Das Werkzeug behauptet lieber nichts."},
-{"q":"Und die Bildseite?","a":"Sie sucht zuerst nach einer offiziellen KI-Signatur in der Datei. Wurde diese Information gelöscht, analysiert sie die Pixel, was weit weniger zuverlässig ist."},
-{"q":"Warum ist mein Bild „unsicher“ und nicht „KI“?","a":"Weil ohne offizielle Signatur nichts bewiesen werden kann. Wir sagen das lieber, als zu Unrecht zu beschuldigen."},
-{"q":"Was ist C2PA?","a":"Eine Signatur, die manche Kameras und Generatoren in die Datei schreiben. Sie übersteht das Teilen, solange sie niemand entfernt."},
-{"q":"Warum haben so viele Bilder keine Signatur?","a":"Weil soziale Netzwerke, Screenshots und Formatkonvertierungen diese Information löschen. Ihr Fehlen beweist nichts."},
-{"q":"Was ist die Artefaktkarte?","a":"Eine Ansicht, die die unsichtbaren Details des Bildes übertreibt. Bereiche, die unnatürlich glatt oder verrauscht sind, können ein erzeugtes Bild verraten."},
-{"q":"Speichert ihr irgendetwas über mich?","a":"Keine Kennung, kein Profil, kein Verlauf deiner Texte. Es gibt keine Tracking-Cookies und keine Werbung."},
-{"q":"Wer sieht, was ich analysiere?","a":"Niemand außer dir. Die Analyse läuft in deinem Browser, direkt vor dir."},
-{"q":"Kann ich es bei der Arbeit nutzen?","a":"Ja. Der Code steht unter einer freizügigen Lizenz, und du kannst ihn auch auf deinen eigenen Servern betreiben."},
-{"q":"Wie verdient ihr Geld?","a":"Gar nicht. Keine Werbung, keine weiterverkauften Daten, keine bezahlte Stufe. Es ist ein offenes Projekt."},
-{"q":"Ist das seriös oder ein Betrug?","a":"Es gibt nichts zu installieren, nichts zu bezahlen, nichts einzugeben. Der Code ist öffentlich: Jeder kann nachprüfen, ob er hält, was er verspricht."},
-{"q":"Darf ich den Code kopieren?","a":"Ja, die MIT-Lizenz erlaubt es: wiederverwenden, verändern, sogar verkaufen, solange du den Lizenzhinweis behältst."},
-{"q":"Was hat es mit diesen unsichtbaren Zeichen auf sich?","a":"Manche Tools verstecken unsichtbare Zeichen in einem Text, um Detektoren zu täuschen. Wir finden sie und zeigen dir die genauen Codepunkte."},
-{"q":"Was ist ein Homoglyph?","a":"Ein Buchstabe, der wie ein anderer aussieht. Zum Beispiel ein kyrillisches „a“ statt eines lateinischen „a“. Mit dem Auge identisch, für die Maschine anders. Oft ein Zeichen für Manipulation."},
-{"q":"Warum überrascht die Wortzahl manchmal?","a":"Chinesisch, Japanisch und Koreanisch trennen Wörter nicht mit Leerzeichen. Wir zählen dann jedes Zeichen als ein Wort, so wie es Textverarbeitungsprogramme tun."},
-{"q":"Kann ich einen sehr langen Text analysieren?","a":"Ja. Die Hauptanalyse ist nahezu sofort fertig. Die zweite, aufwendigere Analyse verarbeitet nur einen Ausschnitt, um schnell zu bleiben."},
-{"q":"Warum ist die zweite Analyse beim ersten Mal langsam?","a":"Weil sie etwa 30 MB herunterlädt. Danach ist sie sofort da und funktioniert offline."},
-{"q":"Kann ich die zweite Analyse abschalten?","a":"Ja. Führe sie einfach nicht aus: Das Werkzeug funktioniert völlig ohne sie, und es wird nichts heruntergeladen."},
-{"q":"Was sind „Ebene 1“ und „Ebene 2“?","a":"Ebene 1 ist die sofortige Berechnung, immer verfügbar. Ebene 2 ist ein zweites, aufwendigeres Programm, das eine zusätzliche Einschätzung abgibt. Der Fachjargon stammt von uns, nicht von dir."},
-{"q":"Sendet das Werkzeug meinen Text an den Modellhersteller?","a":"Nein. Das Programm wird einmal heruntergeladen und arbeitet dann auf deinem Gerät. Dein Text verlässt es nie."},
-{"q":"Funktioniert es für Hausaufgaben auf Chinesisch oder Arabisch?","a":"Teilweise. Satzrhythmus, Absatzlänge und unsichtbare Zeichen werden in jeder Sprache gemessen. Die Listen typischer Formulierungen nicht."},
-{"q":"Warum wechselt die Oberfläche von selbst die Sprache?","a":"Sie folgt der Sprache deines Geräts. Wenn du eine andere bevorzugst, wähle sie im Menü: Deine Wahl wird gespeichert."},
-{"q":"Warum fehlen manche Sprachen im Menü?","a":"Weil eine Sprache erst erscheint, wenn ihre Übersetzung vollständig ist. Uns ist eine fehlende Sprache lieber als eine halb übersetzte."},
-{"q":"Kann ich eine Übersetzung beisteuern?","a":"Ja, das ist die nützlichste Art zu helfen. Jede Sprache passt in eine einzige Datei, und eine automatische Prüfung sagt, ob sie vollständig ist."},
-{"q":"Ich bin Entwickler – wie binde ich es ein?","a":"Die Engine ist ein TypeScript-Modul ohne schwere Abhängigkeiten, mit einem Einstiegspunkt pro Werkzeug: Textanalyse, Bildanalyse, Wortzählung."},
-{"q":"Wo ist der Code?","a":"Auf GitHub, Link unten auf der Seite. Alles ist öffentlich, einschließlich der Änderungshistorie."},
-{"q":"Kann ich es selbst hosten?","a":"Ja. Es ist eine statische Seite: eine Handvoll Dateien, kein Anwendungsserver nötig."},
-{"q":"Wie melde ich einen Fehler?","a":"Auf GitHub, indem du ein Issue eröffnest, oder auf Discord. Ein konkretes Beispiel hilft ungemein."},
-{"q":"Kann das Werkzeug sich irren?","a":"Ja, in beide Richtungen. Es kann überarbeiteten KI-Text übersehen und sehr formelles menschliches Schreiben markieren. Deshalb wird der Wert nie als Beweis dargestellt."},
-{"q":"Warum nicht einfach einen „zuverlässigen“ Prozentsatz angeben?","a":"Weil das eine Lüge wäre. Eine einzelne Zahl ohne Spielraum vermittelt falsche Sicherheit. Wir zeigen lieber die Hinweise und ihr Gewicht."},
-{"q":"Könnte ein Betrüger das nutzen?","a":"Er kann versuchen, einen Wert zu senken, aber das ist ein schlechtes Geschäft: Überarbeiteter Text bleibt überarbeiteter Text. Und niemand kann eine gültige C2PA-Signatur fälschen."},
-{"q":"Was, wenn eine Seite mich ohne Beweise beschuldigt?","a":"Verlange die Methode, nicht den Wert. Ein Urteil ohne Erklärung ist nichts wert, hier und überall sonst."},
-{"q":"Wird der Text, den ich einfüge, irgendwo gespeichert?","a":"Nein. Schließe den Tab, und er ist weg. Wir können ihn nicht wiederherstellen, weil wir ihn nie hatten."},
-{"q":"Warum soll ich es im Flugmodus prüfen?","a":"Weil du uns nicht einfach glauben musst. Kappe deine Verbindung und überzeuge dich selbst davon, dass alles weiter funktioniert."}
+  {
+    "q": "Was ist dieses Werkzeug?",
+    "a": "Ein kostenloses Werkzeug, das sich einen Text oder ein Bild ansieht und dir sagt, ob es wahrscheinlich von künstlicher Intelligenz erstellt wurde. Es zeigt dir auch Punkt für Punkt, warum."
+  },
+  {
+    "q": "Ist es kostenlos?",
+    "a": "Ja, völlig kostenlos. Kein Abo, keine bezahlte Stufe, keine Werbung."
+  },
+  {
+    "q": "Brauche ich ein Konto?",
+    "a": "Nein. Es gibt kein Konto, kein Passwort, keine Registrierung. Du öffnest die Seite und legst los."
+  },
+  {
+    "q": "Wohin geht mein Text, wenn ich ihn einfüge?",
+    "a": "Nirgendwohin. Er bleibt auf deinem Gerät. Wir bekommen ihn nie zu sehen und speichern ihn nie, weil uns nichts gesendet wird."
+  },
+  {
+    "q": "Funktioniert es offline?",
+    "a": "Ja, nach dem ersten Besuch. Das kleine Analyseprogramm wird auf deinem Gerät gespeichert. Schalte dein Handy in den Flugmodus: Das Werkzeug funktioniert weiter."
+  },
+  {
+    "q": "Warum eine Zahl statt eines einfachen Ja oder Nein?",
+    "a": "Weil niemand zuverlässig Ja oder Nein sagen kann. Das Werkzeug gibt dir eine Schätzung von 0 bis 100 und zeigt die Hinweise dahinter."
+  },
+  {
+    "q": "Was bedeutet „4 von 100“?",
+    "a": "Dass der Text in 96 % der Fälle wie menschliches Schreiben wirkt. Die angezeigte Zahl ist die KI-Wahrscheinlichkeit, keine Note für deinen Text."
+  },
+  {
+    "q": "Warum wird ein Text, den ich geschrieben habe, als KI markiert?",
+    "a": "Das kommt vor. Sehr poliertes, akademisches oder behördliches Schreiben sieht aus wie das, was Maschinen produzieren: gleich lange Sätze, neutrale Formulierungen. Es ist kein Urteil über dich."
+  },
+  {
+    "q": "Welche Sprachen werden unterstützt?",
+    "a": "Derzeit sieben Sprachen für die Oberfläche: Französisch, Englisch, Spanisch, Deutsch, Italienisch, Portugiesisch, Niederländisch. Die Strukturanalyse funktioniert in vielen weiteren Sprachen, aber die Listen typischer Formulierungen sind vor allem Französisch und Englisch."
+  },
+  {
+    "q": "Wie wählt es die Sprache aus?",
+    "a": "Anhand der Sprache deines Browsers, dann anhand der Seite, von der du kommst. Du kannst sie jederzeit im Menü oben ändern."
+  },
+  {
+    "q": "Funktioniert es auf dem Handy?",
+    "a": "Ja. Auf einem kleinen Bildschirm passt sich das Layout an: der Text oben, die Analyse darunter."
+  },
+  {
+    "q": "Kann ich es für Hausaufgaben nutzen?",
+    "a": "Du kannst es nutzen, um zu verstehen, wie ein Text wirkt. Aber reiche niemals das Ergebnis eines Detektors als Beweis ein: Es ist nicht zuverlässig."
+  },
+  {
+    "q": "Kann eine Lehrkraft es zum Benoten nutzen?",
+    "a": "Sie kann es nutzen, um ein Gespräch zu beginnen, aber niemals, um allein zu entscheiden. Ein Detektor irrt sich in beide Richtungen."
+  },
+  {
+    "q": "Mir wird Betrug vorgeworfen – spricht mich das Werkzeug frei?",
+    "a": "Nein, und kein Werkzeug wird das tun. Diese Seite hilft dir, die Hinweise zu verstehen, nicht, eine Diskussion zu gewinnen. Sprich mit der betroffenen Person."
+  },
+  {
+    "q": "Kann es den Unterschied wirklich erkennen?",
+    "a": "Es erkennt Schreibgewohnheiten: gleichmäßiger Rhythmus, wiederkehrende Formulierungen, abgestimmte Absätze. Das ist ein starker Hinweis auf einen Stil, kein Beweis der Urheberschaft."
+  },
+  {
+    "q": "Warum schreibt KI immer gleich?",
+    "a": "Sie wählt immer wieder die wahrscheinlichste Formulierung. Das Ergebnis ist glatter, gleichmäßiger Text mit immer denselben Eigenheiten."
+  },
+  {
+    "q": "Was, wenn ich den Text von Hand umschreibe?",
+    "a": "Der Wert sinkt meistens, weil Umschreiben Unregelmäßigkeit hineinbringt. Das ist zu erwarten: Das Werkzeug misst den Stil, nicht, wer geschrieben hat."
+  },
+  {
+    "q": "Wofür ist die Hervorhebung der Sätze gut?",
+    "a": "Sätze werden danach eingefärbt, wie verdächtig sie sind. Fahre mit der Maus über einen, und eine kleine Sprechblase erklärt, was aufgefallen ist."
+  },
+  {
+    "q": "Warum sind manche Sätze rot?",
+    "a": "Weil sich bei ihnen Hinweise häufen: eine typische Formulierung, eine durchschnittliche Länge, eine Aufzählung mit drei Punkten, ein Bindewort am Anfang."
+  },
+  {
+    "q": "Was ist „Burstiness“?",
+    "a": "Kurze und lange Sätze mischen. Menschen tun das ganz natürlich. Maschinen erzeugen einen gleichmäßigen Rhythmus. Das englische Wort hat sich eingebürgert, weil es keine gute Entsprechung gibt."
+  },
+  {
+    "q": "Was ist der „Modell-Fingerabdruck“?",
+    "a": "Eine Schätzung, aus welcher Modellfamilie der Text stammen könnte: OpenAI, Google, Anthropic oder Meta. Es ist eine Tendenz, keine Anschuldigung, und sie liegt oft falsch."
+  },
+  {
+    "q": "Warum sagt der Fingerabdruck „unbestimmt“?",
+    "a": "Weil der Text zu kurz oder zu neutral ist, um die Familien zu unterscheiden. Das Werkzeug behauptet lieber nichts."
+  },
+  {
+    "q": "Und die Bildseite?",
+    "a": "Sie sucht zuerst nach einer offiziellen KI-Signatur in der Datei. Wurde diese Information gelöscht, analysiert sie die Pixel, was weit weniger zuverlässig ist."
+  },
+  {
+    "q": "Warum ist mein Bild „unsicher“ und nicht „KI“?",
+    "a": "Weil ohne offizielle Signatur nichts bewiesen werden kann. Wir sagen das lieber, als zu Unrecht zu beschuldigen."
+  },
+  {
+    "q": "Was ist C2PA?",
+    "a": "Eine Signatur, die manche Kameras und Generatoren in die Datei schreiben. Sie übersteht das Teilen, solange sie niemand entfernt."
+  },
+  {
+    "q": "Warum haben so viele Bilder keine Signatur?",
+    "a": "Weil soziale Netzwerke, Screenshots und Formatkonvertierungen diese Information löschen. Ihr Fehlen beweist nichts."
+  },
+  {
+    "q": "Was ist die Artefaktkarte?",
+    "a": "Eine Ansicht, die die unsichtbaren Details des Bildes übertreibt. Bereiche, die unnatürlich glatt oder verrauscht sind, können ein erzeugtes Bild verraten."
+  },
+  {
+    "q": "Speichert ihr irgendetwas über mich?",
+    "a": "Keine Kennung, kein Profil, kein Verlauf deiner Texte. Es gibt keine Tracking-Cookies und keine Werbung."
+  },
+  {
+    "q": "Wer sieht, was ich analysiere?",
+    "a": "Niemand außer dir. Die Analyse läuft in deinem Browser, direkt vor dir."
+  },
+  {
+    "q": "Kann ich es bei der Arbeit nutzen?",
+    "a": "Ja. Der Code steht unter einer freizügigen Lizenz, und du kannst ihn auch auf deinen eigenen Servern betreiben."
+  },
+  {
+    "q": "Wie verdient ihr Geld?",
+    "a": "Gar nicht. Keine Werbung, keine weiterverkauften Daten, keine bezahlte Stufe. Es ist ein offenes Projekt."
+  },
+  {
+    "q": "Ist das seriös oder ein Betrug?",
+    "a": "Es gibt nichts zu installieren, nichts zu bezahlen, nichts einzugeben. Der Code ist öffentlich: Jeder kann nachprüfen, ob er hält, was er verspricht."
+  },
+  {
+    "q": "Darf ich den Code kopieren?",
+    "a": "Ja, die MIT-Lizenz erlaubt es: wiederverwenden, verändern, sogar verkaufen, solange du den Lizenzhinweis behältst."
+  },
+  {
+    "q": "Was hat es mit diesen unsichtbaren Zeichen auf sich?",
+    "a": "Manche Tools verstecken unsichtbare Zeichen in einem Text, um Detektoren zu täuschen. Wir finden sie und zeigen dir die genauen Codepunkte."
+  },
+  {
+    "q": "Was ist ein Homoglyph?",
+    "a": "Ein Buchstabe, der wie ein anderer aussieht. Zum Beispiel ein kyrillisches „a“ statt eines lateinischen „a“. Mit dem Auge identisch, für die Maschine anders. Oft ein Zeichen für Manipulation."
+  },
+  {
+    "q": "Warum überrascht die Wortzahl manchmal?",
+    "a": "Chinesisch, Japanisch und Koreanisch trennen Wörter nicht mit Leerzeichen. Wir zählen dann jedes Zeichen als ein Wort, so wie es Textverarbeitungsprogramme tun."
+  },
+  {
+    "q": "Kann ich einen sehr langen Text analysieren?",
+    "a": "Ja. Die Hauptanalyse ist nahezu sofort fertig. Die zweite, aufwendigere Analyse verarbeitet nur einen Ausschnitt, um schnell zu bleiben."
+  },
+  {
+    "q": "Warum ist die zweite Analyse beim ersten Mal langsam?",
+    "a": "Weil es einmalig etwa 460 MB herunterlädt. Der Geschworene „Sprachmodell“ ist optional: die übrige Jury arbeitet ohne ihn. Danach ist alles sofort da und funktioniert offline."
+  },
+  {
+    "q": "Kann ich die zweite Analyse abschalten?",
+    "a": "Ja. Führe sie einfach nicht aus: Das Werkzeug funktioniert völlig ohne sie, und es wird nichts heruntergeladen."
+  },
+  {
+    "q": "Was sind „Ebene 1“ und „Ebene 2“?",
+    "a": "Ebene 1 ist die sofortige Berechnung, immer verfügbar. Ebene 2 ist ein zweites, aufwendigeres Programm, das eine zusätzliche Einschätzung abgibt. Der Fachjargon stammt von uns, nicht von dir."
+  },
+  {
+    "q": "Sendet das Werkzeug meinen Text an den Modellhersteller?",
+    "a": "Nein. Das Programm wird einmal heruntergeladen und arbeitet dann auf deinem Gerät. Dein Text verlässt es nie."
+  },
+  {
+    "q": "Funktioniert es für Hausaufgaben auf Chinesisch oder Arabisch?",
+    "a": "Teilweise. Satzrhythmus, Absatzlänge und unsichtbare Zeichen werden in jeder Sprache gemessen. Die Listen typischer Formulierungen nicht."
+  },
+  {
+    "q": "Warum wechselt die Oberfläche von selbst die Sprache?",
+    "a": "Sie folgt der Sprache deines Geräts. Wenn du eine andere bevorzugst, wähle sie im Menü: Deine Wahl wird gespeichert."
+  },
+  {
+    "q": "Warum fehlen manche Sprachen im Menü?",
+    "a": "Weil eine Sprache erst erscheint, wenn ihre Übersetzung vollständig ist. Uns ist eine fehlende Sprache lieber als eine halb übersetzte."
+  },
+  {
+    "q": "Kann ich eine Übersetzung beisteuern?",
+    "a": "Ja, das ist die nützlichste Art zu helfen. Jede Sprache passt in eine einzige Datei, und eine automatische Prüfung sagt, ob sie vollständig ist."
+  },
+  {
+    "q": "Ich bin Entwickler – wie binde ich es ein?",
+    "a": "Die Engine ist ein TypeScript-Modul ohne schwere Abhängigkeiten, mit einem Einstiegspunkt pro Werkzeug: Textanalyse, Bildanalyse, Wortzählung."
+  },
+  {
+    "q": "Wo ist der Code?",
+    "a": "Auf GitHub, Link unten auf der Seite. Alles ist öffentlich, einschließlich der Änderungshistorie."
+  },
+  {
+    "q": "Kann ich es selbst hosten?",
+    "a": "Ja. Es ist eine statische Seite: eine Handvoll Dateien, kein Anwendungsserver nötig."
+  },
+  {
+    "q": "Wie melde ich einen Fehler?",
+    "a": "Auf GitHub, indem du ein Issue eröffnest, oder auf Discord. Ein konkretes Beispiel hilft ungemein."
+  },
+  {
+    "q": "Kann das Werkzeug sich irren?",
+    "a": "Ja, in beide Richtungen. Es kann überarbeiteten KI-Text übersehen und sehr formelles menschliches Schreiben markieren. Deshalb wird der Wert nie als Beweis dargestellt."
+  },
+  {
+    "q": "Warum nicht einfach einen „zuverlässigen“ Prozentsatz angeben?",
+    "a": "Weil das eine Lüge wäre. Eine einzelne Zahl ohne Spielraum vermittelt falsche Sicherheit. Wir zeigen lieber die Hinweise und ihr Gewicht."
+  },
+  {
+    "q": "Könnte ein Betrüger das nutzen?",
+    "a": "Er kann versuchen, einen Wert zu senken, aber das ist ein schlechtes Geschäft: Überarbeiteter Text bleibt überarbeiteter Text. Und niemand kann eine gültige C2PA-Signatur fälschen."
+  },
+  {
+    "q": "Was, wenn eine Seite mich ohne Beweise beschuldigt?",
+    "a": "Verlange die Methode, nicht den Wert. Ein Urteil ohne Erklärung ist nichts wert, hier und überall sonst."
+  },
+  {
+    "q": "Wird der Text, den ich einfüge, irgendwo gespeichert?",
+    "a": "Nein. Schließe den Tab, und er ist weg. Wir können ihn nicht wiederherstellen, weil wir ihn nie hatten."
+  },
+  {
+    "q": "Warum soll ich es im Flugmodus prüfen?",
+    "a": "Weil du uns nicht einfach glauben musst. Kappe deine Verbindung und überzeuge dich selbst davon, dass alles weiter funktioniert."
+  }
 ]
