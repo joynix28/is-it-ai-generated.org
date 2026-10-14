@@ -21,7 +21,7 @@
  * value, so a reader can disagree with the reasoning instead of a black box.
  */
 
-import { MARKERS, STRUCTURE_PATTERNS, fold } from './lexicon';
+import { MARKERS, MARKERS_BY_LANG, STRUCTURE_PATTERNS, HEDGE_VERBS_BY_LANG, fold } from './lexicon';
 import { analyseForensics } from './forensics';
 import { splitSentences, tokenize, countParagraphs, type Segment } from './segments';
 import type {
@@ -36,12 +36,6 @@ const PERSONAL_PRONOUNS = new Set([
 ]);
 
 /** Prudent verbs that let an LLM assert without committing. Very French-essay. */
-const HEDGE_VERBS = [
-  'peut', 'peuvent', 'pourrait', 'pourraient', 'demeure', 'demeurent', 'constitue',
-  'constituent', 'représente', 'représentent', 'implique', 'impliquent', 'semble',
-  'semblent', 'paraît', 'paraissent', 'nécessairement', 'susciter', 'suscite',
-  'permet', 'permettent', 'tend', 'tendent', 's\'avère', 'convient',
-];
 
 /** Connectives that open a paragraph in machine-written French essays. */
 const OPENING_CONNECTORS = [
@@ -100,9 +94,26 @@ const FR_CLICHES: ReadonlyArray<{ phrase: string; weight: number }> = [
 // Accent-folded copies, built once. Matching must compare the same shape on
 // both sides: fold() strips accents, so an accented phrase list never matches a
 // folded text otherwise.
-const FOLDED_MARKERS = MARKERS.map((m) => ({ phrase: fold(m.phrase), raw: m.phrase, weight: m.weight }));
+const DEFAULT_MARKERS = MARKERS;
+
+/** Folded marker and hedge packs per language, built once. */
+function foldedMarkers(lang: string) {
+  const pack = MARKERS_BY_LANG[lang] ?? DEFAULT_MARKERS;
+  return pack.map((m) => ({ phrase: fold(m.phrase), raw: m.phrase, weight: m.weight }));
+}
+const FOLDED_BY_LANG = new Map<string, ReturnType<typeof foldedMarkers>>();
+function markersFor(lang: string) {
+  if (!FOLDED_BY_LANG.has(lang)) FOLDED_BY_LANG.set(lang, foldedMarkers(lang));
+  return FOLDED_BY_LANG.get(lang)!;
+}
 const FOLDED_CLICHES = FR_CLICHES.map((c) => ({ phrase: fold(c.phrase), raw: c.phrase, weight: c.weight }));
-const FOLDED_HEDGES = new Set(HEDGE_VERBS.map((w) => fold(w)));
+const FOLDED_HEDGES_BY_LANG = new Map<string, Set<string>>();
+function hedgesFor(lang: string) {
+  if (!FOLDED_HEDGES_BY_LANG.has(lang)) {
+    FOLDED_HEDGES_BY_LANG.set(lang, new Set((HEDGE_VERBS_BY_LANG[lang] ?? HEDGE_VERBS_BY_LANG.en ?? []).map((w) => fold(w))));
+  }
+  return FOLDED_HEDGES_BY_LANG.get(lang)!;
+}
 const FOLDED_CONNECTORS = OPENING_CONNECTORS.map((c) => fold(c));
 
 /** French numbers up to the plan markers we expect. */
@@ -256,12 +267,12 @@ interface MarkerScan {
   spans: Array<{ start: number; end: number; weight: number; phrase: string }>;
 }
 
-function findMarkers(folded: string): MarkerScan {
+function findMarkers(folded: string, lang: string): MarkerScan {
   const hits: MarkerHit[] = [];
   const spans: MarkerScan['spans'] = [];
   let weighted = 0;
 
-  for (const marker of FOLDED_MARKERS) {
+  for (const marker of markersFor(lang)) {
     let cursor = 0;
     let count = 0;
     for (;;) {
@@ -307,12 +318,19 @@ interface Component {
   label: string;
   /** i18n key plus params. */
   detail?: Msg;
+  /**
+   * False when the sample is too small to measure this signal. A signal that
+   * cannot apply must not count as zero, or a short text is dragged toward
+   * "human" by components that never had a chance to fire.
+   */
+  applicable?: boolean;
 }
 
 function blend(components: Component[]): number {
-  const total = components.reduce((sum, c) => sum + c.weight, 0);
+  const use = components.filter((c) => c.applicable !== false);
+  const total = use.reduce((sum, c) => sum + c.weight, 0);
   if (!total) return 0;
-  return clamp(components.reduce((sum, c) => sum + c.value * c.weight, 0) / total);
+  return clamp(use.reduce((sum, c) => sum + c.value * c.weight, 0) / total);
 }
 
 /* ------------------------------------------------------------- sentences */
@@ -323,6 +341,7 @@ function sentenceFlags(
   markers: MarkerScan,
   meanWords: number,
   stdWords: number,
+  lang: string,
 ): { flags: SentenceFlags; score: number; reasons: Msg[] } {
   const words = tokenize(segment.text);
   const lower = words.map((w) => w.toLowerCase());
@@ -330,7 +349,10 @@ function sentenceFlags(
 
   const enumeration = hasEnumeration(segment.text);
 
-  const hedgeCount = lower.filter((w) => FOLDED_HEDGES.has(fold(w))).length;
+  const hedgeSet = hedgesFor(lang);
+  const hedgeCount = /[\u4E00-\u9FFF\u3040-\u30FF\uAC00-\uD7AF]/.test(text)
+    ? (HEDGE_VERBS_BY_LANG[lang] ?? []).filter((h) => fold(text).includes(fold(h))).length
+    : lower.filter((w) => hedgeSet.has(fold(w))).length;
   const hedging = hedgeCount > 0;
 
   const firstWord = fold(lower.slice(0, 3).join(' '));
@@ -372,7 +394,7 @@ function sentenceFlags(
   if (cliche) reasons.push({ key: 'sReason.cliche' });
   if (connector) reasons.push({ key: 'sReason.connector' });
   if (markerPhrase) reasons.push({ key: 'sReason.marker', params: { phrase: markerPhrase } });
-  if (hedging) reasons.push({ key: 'sReason.hedge', params: { word: String(lower.filter((w) => FOLDED_HEDGES.has(fold(w)))[0] ?? '') } });
+  if (hedging) reasons.push({ key: 'sReason.hedge', params: { word: String(lower.filter((w) => hedgeSet.has(fold(w)))[0] ?? '') } });
   if (deviation < 0.6 && wordCount >= 8) reasons.push({ key: 'sReason.deviation', params: { n: wordCount } });
   if (pronounRate === 0 && contractionRate === 0 && wordCount >= 10) reasons.push({ key: 'sReason.noVoice' });
   if (!reasons.length) reasons.push({ key: score >= 60 ? 'sReason.weak' : 'sReason.varied' });
@@ -390,6 +412,9 @@ function sentenceFlags(
 export function analyse(text: string, locale = 'fr'): AnalysisResult {
   const source = text ?? '';
   const folded = fold(source);
+  // Chinese, Japanese and Korean do not separate words with spaces, so anything
+  // built on whitespace tokens has to be handled differently there.
+  const cjk = /[\u4E00-\u9FFF\u3040-\u30FF\uAC00-\uD7AF]/.test(source);
   const words = tokenize(source);
   const lowerWords = words.map((w) => w.toLowerCase());
   const wordCount = words.length;
@@ -427,16 +452,25 @@ export function analyse(text: string, locale = 'fr'): AnalysisResult {
   const trigramRepeat = repeatedRate(lowerWords, 3);
 
   // --- markers, clichés, hedges -------------------------------------------
-  const markers = findMarkers(folded);
+  const markers = findMarkers(folded, locale);
   const ternary = countStructures(source);
   const discourseMarkers = FOLDED_CONNECTORS
     .filter((c) => !c.endsWith(' '))
     .reduce((sum, c) => sum + countOccurrences(folded, `${c},`), 0);
   const clicheWeighted = FOLDED_CLICHES.reduce((sum, c) => sum + countOccurrences(folded, c.phrase) * c.weight, 0);
-  const hedgeCount = lowerWords.filter((w) => FOLDED_HEDGES.has(fold(w))).length;
+  const hedgeSet = hedgesFor(locale);
+  // In scripts without word separators a hedge is embedded inside a long token,
+  // so it has to be found by substring rather than by token equality.
+  const hedgeCount = cjk
+    ? (HEDGE_VERBS_BY_LANG[locale] ?? []).filter((h) => folded.includes(fold(h))).length
+    : lowerWords.filter((w) => hedgeSet.has(fold(w))).length;
   const forensics = analyseForensics(source);
 
   const per100 = (n: number): number => (wordCount ? (n / wordCount) * 100 : 0);
+  // The cliché, connective and dialectical lists are French and English only.
+  // Counting them as zero elsewhere would drag every other language toward
+  // "human", which is exactly the bug this guard prevents.
+  const hasFrEnLists = locale === 'fr' || locale === 'en';
 
   /* --- components -------------------------------------------------------- */
 
@@ -447,12 +481,14 @@ export function analyse(text: string, locale = 'fr'): AnalysisResult {
       // A handful of sentences cannot establish a rhythm either way.
       value: mapInverse(burstiness, 0.32, 0.58) * clamp(rhythmSentences.length / 10),
       weight: 1.8,
+      applicable: rhythmSentences.length >= 8,
       detail: { key: 'sigDetail.rhythm', params: { cv: burstiness.toFixed(3), n: rhythmSentences.length } },
     },
     {
       id: 'paragraphIsomorphism',
       label: 'sig.isomorphism',
       value: paragraphs.length >= 4 ? clamp((paragraphIsomorphism - 0.35) / 0.45) : 0,
+      applicable: paragraphs.length >= 4,
       weight: 1.9,
       detail: { key: 'sigDetail.isomorphism', params: { n: Math.round(paragraphIsomorphism * 100) } },
     },
@@ -461,6 +497,7 @@ export function analyse(text: string, locale = 'fr'): AnalysisResult {
       label: 'sig.paragraphUniformity',
       // Uniformity is meaningless below five paragraphs.
       value: paragraphs.length >= 5 ? mapInverse(paragraphCv, 0.20, 0.50) : 0,
+      applicable: paragraphs.length >= 5,
       weight: 1.1,
       detail: { key: 'sigDetail.cv', params: { cv: paragraphCv.toFixed(3) } },
     },
@@ -468,6 +505,7 @@ export function analyse(text: string, locale = 'fr'): AnalysisResult {
       id: 'enumerations',
       label: 'sig.enumerations',
       value: clamp((enumSentenceRatio - 0.10) / 0.30) * clamp(allSentences.length / 12),
+      applicable: allSentences.length >= 8,
       weight: 1.5,
       detail: { key: 'sigDetail.enum', params: { n: Math.round(enumSentenceRatio * 100), total: sentencesWithEnum } },
     },
@@ -475,12 +513,14 @@ export function analyse(text: string, locale = 'fr'): AnalysisResult {
       id: 'connectors',
       label: 'sig.connectors',
       value: clamp((connectorRatio - 0.20) / 0.40),
+      applicable: paragraphs.length >= 4,
       weight: 1.3,
       detail: { key: 'sigDetail.connectors', params: { n: Math.round(connectorRatio * 100) } },
     },
     {
       id: 'discourse',
       label: 'sig.discourse',
+      applicable: hasFrEnLists,
       value: mapLinear(per100(discourseMarkers), 0.25, 1.8),
       weight: 1.6,
       detail: { key: 'sigDetail.occurrences', params: { n: discourseMarkers } },
@@ -488,6 +528,7 @@ export function analyse(text: string, locale = 'fr'): AnalysisResult {
     {
       id: 'cliches',
       label: 'sig.cliches',
+      applicable: hasFrEnLists,
       value: mapLinear(per100(clicheWeighted), 0.2, 2.2),
       weight: 1.9,
     },
@@ -501,6 +542,7 @@ export function analyse(text: string, locale = 'fr'): AnalysisResult {
     {
       id: 'lexicalVariety',
       label: 'sig.lexicalVariety',
+      applicable: !cjk,
       value: mapInverse(ttr, 0.33, 0.62),
       weight: 0.8,
       detail: { key: 'sigDetail.ttr', params: { ttr: ttr.toFixed(3), mattr: mattr50.toFixed(3) } },
@@ -508,6 +550,7 @@ export function analyse(text: string, locale = 'fr'): AnalysisResult {
     {
       id: 'repetition',
       label: 'sig.repetition',
+      applicable: !cjk,
       value: clamp(Math.max(trigramRepeat / 0.18, bigramRepeat / 0.35)),
       weight: 0.7,
     },
@@ -521,6 +564,7 @@ export function analyse(text: string, locale = 'fr'): AnalysisResult {
     {
       id: 'ternary',
       label: 'sig.ternary',
+      applicable: hasFrEnLists,
       value: mapLinear(ternary, 0.5, 4),
       weight: 0.7,
       detail: { key: 'sigDetail.ternary', params: { n: ternary } },
@@ -586,7 +630,7 @@ export function analyse(text: string, locale = 'fr'): AnalysisResult {
   // when the sentence itself is unremarkable, so the local score is blended with
   // the document score rather than standing alone.
   const sentences: SentenceScore[] = allSentences.map((segment) => {
-    const { flags, score: local, reasons } = sentenceFlags(segment, source, markers, meanWords, stdWords);
+    const { flags, score: local, reasons } = sentenceFlags(segment, source, markers, meanWords, stdWords, locale);
     const words = tokenize(segment.text).length;
     const weight = words < 6 ? 0.25 : 0.55;
     const blended = Math.round(weight * local + (1 - weight) * score);
@@ -626,6 +670,6 @@ export function analyse(text: string, locale = 'fr'): AnalysisResult {
     ternaryStructures: ternary,
     forensics,
     verdictReason,
-    components: components.map((c) => ({ id: c.id, label: c.label, value: Math.round(c.value * 1000) / 1000, weight: c.weight, detail: c.detail ?? null })),
+    components: components.map((c) => ({ id: c.id, label: c.label, value: Math.round(c.value * 1000) / 1000, weight: c.weight, detail: c.detail ?? null, applicable: c.applicable !== false })),
   };
 }

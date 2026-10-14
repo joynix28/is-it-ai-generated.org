@@ -203,5 +203,6 @@
   "stats.languages": "Sprachen",
   "stats.countries": "Länder",
   "stats.devices": "Geräte",
-  "stats.empty": "Noch keine Daten."
+  "stats.empty": "Noch keine Daten.",
+  "hero.answer": "Kurz gesagt: Niemand kann mit Sicherheit sagen, wer einen Text geschrieben hat. Dieses Werkzeug misst Schreibgewohnheiten — Satzrhythmus, Absatzlänge, wiederkehrende Formulierungen, unsichtbare Zeichen — und zeigt einen Wert von 0 bis 100. Alles läuft in deinem Browser: Der analysierte Text verlässt dein Gerät nie. Ein hoher Wert ist ein Hinweis, nie ein Beweis."
 }

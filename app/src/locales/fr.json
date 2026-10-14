@@ -203,5 +203,6 @@
   "stats.languages": "Langues",
   "stats.countries": "Pays",
   "stats.devices": "Appareils",
-  "stats.empty": "Aucune donnée pour le moment."
+  "stats.empty": "Aucune donnée pour le moment.",
+  "hero.answer": "Réponse courte : personne ne peut affirmer avec certitude qui a écrit un texte. Cet outil mesure des habitudes d'écriture — rythme des phrases, longueur des paragraphes, tournures répétées, caractères invisibles — et affiche un indice de 0 à 100. Tout se passe dans votre navigateur : le texte analysé ne quitte jamais votre appareil. Un score élevé est une piste, jamais une preuve, et personne ne devrait trancher sur un seul chiffre."
 }

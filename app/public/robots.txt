@@ -1,0 +1,29 @@
+# https://is-it-generated-by-ai.org
+# Everything is public and indexable except the statistics page.
+
+User-agent: *
+Allow: /
+Disallow: /stats/
+
+# AI search crawlers: allowed, so the tool can be cited in AI answers.
+User-agent: OAI-SearchBot
+Allow: /
+User-agent: ChatGPT-User
+Allow: /
+User-agent: Claude-SearchBot
+Allow: /
+User-agent: PerplexityBot
+Allow: /
+User-agent: Google-Extended
+Allow: /
+
+# Training crawlers: also allowed. This is a free public tool and being in the
+# training data of search assistants is the point. Say otherwise here if not.
+User-agent: GPTBot
+Allow: /
+User-agent: ClaudeBot
+Allow: /
+User-agent: CCBot
+Allow: /
+
+Sitemap: https://is-it-generated-by-ai.org/sitemap.xml

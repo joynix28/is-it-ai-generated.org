@@ -134,6 +134,17 @@ export const localeCoverage = (): { code: string; complete: boolean; filled: num
   });
 
 function detect(): string {
+  // An explicit ?lang wins, so every language has a real, shareable, indexable URL.
+  const fromUrl = (() => {
+    try {
+      const value = new URLSearchParams(location.search).get('lang');
+      return value && COMPLETE.includes(value) ? value : null;
+    } catch {
+      return null;
+    }
+  })();
+  if (fromUrl) return fromUrl;
+
   const stored = (() => {
     try {
       const value = localStorage.getItem('aitd.locale');

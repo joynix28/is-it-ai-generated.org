@@ -158,3 +158,115 @@ export function fold(input: string): string {
     .replace(/œ/g, 'o')
     .replace(/æ/g, 'a');
 }
+
+
+/* -------------------------------------------------------------------------
+ * Per-language marker packs.
+ *
+ * The French and English lists above are the default. Each other language has
+ * its own clichés and hedging verbs, written by native-speaker habit rather
+ * than translated from French, because the gives differ: German essays open
+ * with "Zusammenfassend", Chinese ones with "值得注意的是".
+ *
+ * Structural signals (rhythm, paragraph shape, MATTR, entropy, invisible
+ * characters) already work in every language without a pack.
+ * ---------------------------------------------------------------------- */
+
+export const HEDGE_VERBS_FR = [
+  'peut', 'peuvent', 'pourrait', 'pourraient', 'demeure', 'demeurent', 'constitue',
+  'constituent', 'représente', 'représentent', 'implique', 'impliquent', 'semble',
+  'semblent', 'paraît', 'paraissent', 'nécessairement', 'susciter', 'suscite',
+  'permet', 'permettent', 'tend', 'tendent', "s'avère", 'convient',
+];
+
+export const HEDGE_VERBS_EN = [
+  'may', 'might', 'can', 'could', 'represents', 'implies', 'necessarily',
+  'appears', 'seems', 'tends', 'often', 'typically', 'arguably',
+];
+
+export const HEDGE_VERBS_BY_LANG: Record<string, string[]> = {
+  fr: HEDGE_VERBS_FR,
+  en: HEDGE_VERBS_EN,
+  es: ['puede', 'pueden', 'podría', 'constituye', 'representa', 'implica', 'necesariamente', 'parece', 'suele', 'tiende', 'conviene'],
+  de: ['kann', 'können', 'könnte', 'stellt', 'bedeutet', 'erfordert', 'möglicherweise', 'scheint', 'neigt', 'in der regel'],
+  it: ['può', 'possono', 'potrebbe', 'rappresenta', 'implica', 'necessariamente', 'sembra', 'tende', 'occorre', 'bisogna'],
+  pt: ['pode', 'podem', 'poderia', 'representa', 'implica', 'necessariamente', 'parece', 'costuma', 'tende', 'convém'],
+  nl: ['kan', 'kunnen', 'zou', 'vormt', 'betekent', 'vereist', 'mogelijk', 'lijkt', 'meestal', 'doorgaans'],
+  ru: ['может', 'могут', 'представляет', 'означает', 'требует', 'вероятно', 'кажется', 'как правило', 'следует', 'необходимо'],
+  zh: ['可以', '可能', '意味着', '需要', '通常', '似乎', '往往', '应当', '必须', '一定程度上'],
+  ar: ['يمكن', 'قد', 'يمثل', 'يعني', 'يتطلب', 'يبدو', 'عادة', 'ينبغي', 'غالباً', 'إلى حد ما'],
+};
+
+export const MARKERS_BY_LANG: Record<string, Marker[]> = {
+  es: [
+    { phrase: 'es importante señalar', weight: 3 }, { phrase: 'es importante notar', weight: 3 },
+    { phrase: 'cabe destacar', weight: 3 }, { phrase: 'en el mundo actual', weight: 3 },
+    { phrase: 'en la era digital', weight: 3 }, { phrase: 'juega un papel crucial', weight: 3 },
+    { phrase: 'desempeña un papel fundamental', weight: 3 }, { phrase: 'en constante evolución', weight: 3 },
+    { phrase: 'en conclusión', weight: 2 }, { phrase: 'en resumen', weight: 2 },
+    { phrase: 'un amplio abanico', weight: 2 }, { phrase: 'un amplio espectro', weight: 2 },
+    { phrase: 'es fundamental', weight: 2 }, { phrase: 'resulta esencial', weight: 2 },
+    { phrase: 'asimismo', weight: 2 }, { phrase: 'por otra parte', weight: 1 }, { phrase: 'además', weight: 1 },
+  ],
+  de: [
+    { phrase: 'es ist wichtig zu beachten', weight: 3 }, { phrase: 'es ist wichtig zu betonen', weight: 3 },
+    { phrase: 'in der heutigen', weight: 3 }, { phrase: 'spielt eine entscheidende rolle', weight: 3 },
+    { phrase: 'spielt eine wichtige rolle', weight: 3 }, { phrase: 'in einer sich ständig wandelnden', weight: 3 },
+    { phrase: 'zusammenfassend', weight: 2 }, { phrase: 'abschließend lässt sich sagen', weight: 3 },
+    { phrase: 'darüber hinaus', weight: 2 }, { phrase: 'des weiteren', weight: 2 },
+    { phrase: 'nicht nur', weight: 1 }, { phrase: 'sondern auch', weight: 1 },
+    { phrase: 'von entscheidender bedeutung', weight: 2 }, { phrase: 'ein breites spektrum', weight: 2 },
+  ],
+  it: [
+    { phrase: 'è importante notare', weight: 3 }, { phrase: 'è importante sottolineare', weight: 3 },
+    { phrase: 'nel mondo di oggi', weight: 3 }, { phrase: "nell’era digitale", weight: 3 },
+    { phrase: 'svolge un ruolo cruciale', weight: 3 }, { phrase: 'in continua evoluzione', weight: 3 },
+    { phrase: 'in conclusione', weight: 2 }, { phrase: 'in sintesi', weight: 2 },
+    { phrase: 'inoltre', weight: 1 }, { phrase: "l’intero spettro", weight: 2 },
+    { phrase: 'non solo', weight: 1 }, { phrase: 'ma anche', weight: 1 },
+    { phrase: 'è fondamentale', weight: 2 }, { phrase: "un’ampia gamma", weight: 2 },
+  ],
+  pt: [
+    { phrase: 'é importante notar', weight: 3 }, { phrase: 'é importante salientar', weight: 3 },
+    { phrase: 'no mundo atual', weight: 3 }, { phrase: 'na era digital', weight: 3 },
+    { phrase: 'desempenha um papel crucial', weight: 3 }, { phrase: 'em constante evolução', weight: 3 },
+    { phrase: 'em conclusão', weight: 2 }, { phrase: 'em resumo', weight: 2 },
+    { phrase: 'além disso', weight: 1 }, { phrase: 'uma ampla gama', weight: 2 },
+    { phrase: 'não só', weight: 1 }, { phrase: 'mas também', weight: 1 },
+    { phrase: 'é fundamental', weight: 2 }, { phrase: 'desempenha um papel fundamental', weight: 3 },
+  ],
+  nl: [
+    { phrase: 'het is belangrijk op te merken', weight: 3 }, { phrase: 'het is belangrijk te benadrukken', weight: 3 },
+    { phrase: 'in de hedendaagse', weight: 3 }, { phrase: 'speelt een cruciale rol', weight: 3 },
+    { phrase: 'in een voortdurend veranderende', weight: 3 }, { phrase: 'tot slot', weight: 2 },
+    { phrase: 'samenvattend', weight: 2 }, { phrase: 'bovendien', weight: 1 },
+    { phrase: 'niet alleen', weight: 1 }, { phrase: 'maar ook', weight: 1 },
+    { phrase: 'een breed scala', weight: 2 }, { phrase: 'van cruciaal belang', weight: 2 },
+  ],
+  ru: [
+    { phrase: 'важно отметить', weight: 3 }, { phrase: 'важно подчеркнуть', weight: 3 },
+    { phrase: 'в современном мире', weight: 3 }, { phrase: 'в цифровую эпоху', weight: 3 },
+    { phrase: 'играет ключевую роль', weight: 3 }, { phrase: 'играет важную роль', weight: 3 },
+    { phrase: 'в постоянно меняющемся', weight: 3 }, { phrase: 'в заключение', weight: 2 },
+    { phrase: 'следует отметить', weight: 3 }, { phrase: 'кроме того', weight: 1 },
+    { phrase: 'не только', weight: 1 }, { phrase: 'но и', weight: 1 },
+    { phrase: 'широкий спектр', weight: 2 },
+  ],
+  zh: [
+    { phrase: '值得注意的是', weight: 3 }, { phrase: '需要指出的是', weight: 3 },
+    { phrase: '在当今', weight: 3 }, { phrase: '在数字时代', weight: 3 },
+    { phrase: '起着关键作用', weight: 3 }, { phrase: '发挥着重要作用', weight: 3 },
+    { phrase: '不断变化', weight: 3 }, { phrase: '总之', weight: 2 },
+    { phrase: '综上所述', weight: 2 }, { phrase: '此外', weight: 1 },
+    { phrase: '不仅', weight: 1 }, { phrase: '而且', weight: 1 },
+    { phrase: '广泛的', weight: 2 },
+  ],
+  ar: [
+    { phrase: 'من المهم ملاحظة', weight: 3 }, { phrase: 'تجدر الإشارة', weight: 3 },
+    { phrase: 'في عالم اليوم', weight: 3 }, { phrase: 'في العصر الرقمي', weight: 3 },
+    { phrase: 'يلعب دوراً محورياً', weight: 3 }, { phrase: 'في بيئة متغيرة باستمرار', weight: 3 },
+    { phrase: 'في الختام', weight: 2 }, { phrase: 'علاوة على ذلك', weight: 1 },
+    { phrase: 'ليس فقط', weight: 1 }, { phrase: 'بل أيضاً', weight: 1 },
+    { phrase: 'مجموعة واسعة', weight: 2 },
+  ],
+};

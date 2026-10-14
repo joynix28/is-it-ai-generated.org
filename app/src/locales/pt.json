@@ -203,5 +203,6 @@
   "stats.languages": "Línguas",
   "stats.countries": "Países",
   "stats.devices": "Dispositivos",
-  "stats.empty": "Ainda sem dados."
+  "stats.empty": "Ainda sem dados.",
+  "hero.answer": "Resposta curta: ninguém pode afirmar com certeza quem escreveu um texto. Esta ferramenta mede hábitos de escrita —ritmo das frases, comprimento dos parágrafos, formulações repetidas, caracteres invisíveis— e mostra um índice de 0 a 100. Tudo acontece no seu navegador: o texto analisado nunca sai do seu dispositivo. Uma pontuação alta é um indício, nunca uma prova."
 }

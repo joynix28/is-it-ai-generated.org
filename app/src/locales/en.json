@@ -203,5 +203,6 @@
   "stats.languages": "Languages",
   "stats.countries": "Countries",
   "stats.devices": "Devices",
-  "stats.empty": "No data yet."
+  "stats.empty": "No data yet.",
+  "hero.answer": "The short answer: nobody can state with certainty who wrote a text. This tool measures writing habits — sentence rhythm, paragraph length, repeated phrasings, invisible characters — and shows an index from 0 to 100. Everything runs in your browser: the text you analyse never leaves your device. A high score is a lead, never proof, and no one should decide on a single number."
 }

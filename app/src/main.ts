@@ -354,7 +354,6 @@ async function updateCompression(text: string): Promise<void> {
 function runAnalysis(): void {
   const text = editor.value;
   const started = performance.now();
-  const locale = navigator.language || 'fr';
 
   if (!text.trim()) {
     result = null;
@@ -378,7 +377,7 @@ function runAnalysis(): void {
     return;
   }
 
-  const res = analyse(text, locale);
+  const res = analyse(text, getLocale());
   result = res;
   render(res);
   ui.layer1Ms.textContent = (performance.now() - started).toFixed(1);

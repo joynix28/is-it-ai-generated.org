@@ -203,5 +203,6 @@
   "stats.languages": "Lingue",
   "stats.countries": "Paesi",
   "stats.devices": "Dispositivi",
-  "stats.empty": "Nessun dato per ora."
+  "stats.empty": "Nessun dato per ora.",
+  "hero.answer": "Risposta breve: nessuno può dire con certezza chi ha scritto un testo. Questo strumento misura abitudini di scrittura —ritmo delle frasi, lunghezza dei paragrafi, formule ripetute, caratteri invisibili— e mostra un indice da 0 a 100. Tutto avviene nel tuo browser: il testo analizzato non lascia mai il tuo dispositivo. Un punteggio alto è un indizio, mai una prova."
 }

@@ -1,0 +1,33 @@
+# Is It AI Generated?
+
+> A free, ad-free detector for AI-written text and AI images. Everything runs in
+> the visitor's browser: no upload, no account, no tracking. Ten interface
+> languages.
+
+Note on this file: Google Search does not use llms.txt, so it is not a ranking
+lever. It is provided for assistants that read it.
+
+## Pages
+
+- [Tool](https://is-it-generated-by-ai.org/): paste text to get an AI index from 0 to 100 with per-sentence
+  highlighting and the evidence behind it; drop an image for C2PA provenance and
+  pixel forensics.
+- [FAQ](https://is-it-generated-by-ai.org/faq/): 55 plain-language questions on reliability, privacy,
+  homework, images and C2PA, in ten languages.
+- [Legal notice](https://is-it-generated-by-ai.org/legal/): publisher, host, personal data, source code.
+- [Statistics](https://is-it-generated-by-ai.org/stats/): anonymous aggregates, and how they are counted.
+
+## How it works, in one paragraph
+
+Text: burstiness computed after filtering headings, paragraph isomorphism,
+systematic enumerations, language-specific clichés and hedging verbs, MATTR-50,
+Shannon trigram entropy and compression entropy, plus character forensics for
+invisible characters and homoglyphs. Images: C2PA Content Credentials, EXIF,
+generator signatures, Laplacian noise, chromatic aberration and Benford's law
+over the 8x8 DCT.
+
+## Limits, stated plainly
+
+This is a heuristic index, not proof of authorship. It measures style. Short
+texts are unreliable, and edited or mixed content misleads any detector. Never
+use the score as the only evidence in a decision about a person.

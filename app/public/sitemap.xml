@@ -1,0 +1,51 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9" xmlns:xhtml="http://www.w3.org/1999/xhtml">
+  <url>
+    <loc>https://is-it-generated-by-ai.org/</loc>
+    <xhtml:link rel="alternate" hreflang="fr" href="https://is-it-generated-by-ai.org/"/>
+    <xhtml:link rel="alternate" hreflang="en" href="https://is-it-generated-by-ai.org/?lang=en"/>
+    <xhtml:link rel="alternate" hreflang="es" href="https://is-it-generated-by-ai.org/?lang=es"/>
+    <xhtml:link rel="alternate" hreflang="de" href="https://is-it-generated-by-ai.org/?lang=de"/>
+    <xhtml:link rel="alternate" hreflang="it" href="https://is-it-generated-by-ai.org/?lang=it"/>
+    <xhtml:link rel="alternate" hreflang="pt" href="https://is-it-generated-by-ai.org/?lang=pt"/>
+    <xhtml:link rel="alternate" hreflang="nl" href="https://is-it-generated-by-ai.org/?lang=nl"/>
+    <xhtml:link rel="alternate" hreflang="ru" href="https://is-it-generated-by-ai.org/?lang=ru"/>
+    <xhtml:link rel="alternate" hreflang="zh" href="https://is-it-generated-by-ai.org/?lang=zh"/>
+    <xhtml:link rel="alternate" hreflang="ar" href="https://is-it-generated-by-ai.org/?lang=ar"/>
+    <xhtml:link rel="alternate" hreflang="x-default" href="https://is-it-generated-by-ai.org/"/>
+    <changefreq>weekly</changefreq>
+    <priority>1.0</priority>
+  </url>
+  <url>
+    <loc>https://is-it-generated-by-ai.org/faq/</loc>
+    <xhtml:link rel="alternate" hreflang="fr" href="https://is-it-generated-by-ai.org/faq/"/>
+    <xhtml:link rel="alternate" hreflang="en" href="https://is-it-generated-by-ai.org/faq/?lang=en"/>
+    <xhtml:link rel="alternate" hreflang="es" href="https://is-it-generated-by-ai.org/faq/?lang=es"/>
+    <xhtml:link rel="alternate" hreflang="de" href="https://is-it-generated-by-ai.org/faq/?lang=de"/>
+    <xhtml:link rel="alternate" hreflang="it" href="https://is-it-generated-by-ai.org/faq/?lang=it"/>
+    <xhtml:link rel="alternate" hreflang="pt" href="https://is-it-generated-by-ai.org/faq/?lang=pt"/>
+    <xhtml:link rel="alternate" hreflang="nl" href="https://is-it-generated-by-ai.org/faq/?lang=nl"/>
+    <xhtml:link rel="alternate" hreflang="ru" href="https://is-it-generated-by-ai.org/faq/?lang=ru"/>
+    <xhtml:link rel="alternate" hreflang="zh" href="https://is-it-generated-by-ai.org/faq/?lang=zh"/>
+    <xhtml:link rel="alternate" hreflang="ar" href="https://is-it-generated-by-ai.org/faq/?lang=ar"/>
+    <xhtml:link rel="alternate" hreflang="x-default" href="https://is-it-generated-by-ai.org/faq/"/>
+    <changefreq>weekly</changefreq>
+    <priority>0.8</priority>
+  </url>
+  <url>
+    <loc>https://is-it-generated-by-ai.org/legal/</loc>
+    <xhtml:link rel="alternate" hreflang="fr" href="https://is-it-generated-by-ai.org/legal/"/>
+    <xhtml:link rel="alternate" hreflang="en" href="https://is-it-generated-by-ai.org/legal/?lang=en"/>
+    <xhtml:link rel="alternate" hreflang="es" href="https://is-it-generated-by-ai.org/legal/?lang=es"/>
+    <xhtml:link rel="alternate" hreflang="de" href="https://is-it-generated-by-ai.org/legal/?lang=de"/>
+    <xhtml:link rel="alternate" hreflang="it" href="https://is-it-generated-by-ai.org/legal/?lang=it"/>
+    <xhtml:link rel="alternate" hreflang="pt" href="https://is-it-generated-by-ai.org/legal/?lang=pt"/>
+    <xhtml:link rel="alternate" hreflang="nl" href="https://is-it-generated-by-ai.org/legal/?lang=nl"/>
+    <xhtml:link rel="alternate" hreflang="ru" href="https://is-it-generated-by-ai.org/legal/?lang=ru"/>
+    <xhtml:link rel="alternate" hreflang="zh" href="https://is-it-generated-by-ai.org/legal/?lang=zh"/>
+    <xhtml:link rel="alternate" hreflang="ar" href="https://is-it-generated-by-ai.org/legal/?lang=ar"/>
+    <xhtml:link rel="alternate" hreflang="x-default" href="https://is-it-generated-by-ai.org/legal/"/>
+    <changefreq>weekly</changefreq>
+    <priority>0.4</priority>
+  </url>
+</urlset>
