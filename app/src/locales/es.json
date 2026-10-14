@@ -204,5 +204,10 @@
   "stats.countries": "Países",
   "stats.devices": "Dispositivos",
   "stats.empty": "Aún no hay datos.",
-  "hero.answer": "Respuesta corta: nadie puede afirmar con certeza quién escribió un texto. Esta herramienta mide hábitos de escritura —ritmo de las frases, longitud de los párrafos, giros repetidos, caracteres invisibles— y muestra un índice de 0 a 100. Todo ocurre en tu navegador: el texto analizado nunca sale de tu dispositivo. Una puntuación alta es una pista, nunca una prueba."
+  "hero.answer": "Respuesta corta: nadie puede afirmar con certeza quién escribió un texto. Esta herramienta mide hábitos de escritura —ritmo de las frases, longitud de los párrafos, giros repetidos, caracteres invisibles— y muestra un índice de 0 a 100. Todo ocurre en tu navegador: el texto analizado nunca sale de tu dispositivo. Una puntuación alta es una pista, nunca una prueba.",
+  "sig.formattedShape": "Forma de respuesta",
+  "sig.assistantCloser": "Frase de cierre de asistente",
+  "sigDetail.formattedShape": "{bullets} viñetas, {headings} títulos, {rules} separadores, {bold} negritas",
+  "reason.closer": "Termina ofreciendo continuar, típico de un asistente",
+  "reason.formatted": "Respuesta estructurada: títulos, listas y separadores"
 }

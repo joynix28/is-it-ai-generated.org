@@ -89,6 +89,20 @@ const FR_CLICHES: ReadonlyArray<{ phrase: string; weight: number }> = [
   { phrase: 'la nature de nos relations', weight: 2 },
   { phrase: 'il serait illusoire de prétendre', weight: 3 },
   { phrase: 'ce que nous faisons du temps dont nous disposons', weight: 3 },
+  // Encyclopedic, answer-shaped French: the register of a chat reply, not an essay.
+  { phrase: "il s'agit de", weight: 1 },
+  { phrase: "l'ensemble des", weight: 2 },
+  { phrase: 'ainsi que', weight: 1 },
+  { phrase: 'a travers le monde', weight: 2 },
+  { phrase: 'il se compose de', weight: 2 },
+  { phrase: 'il repose sur', weight: 2 },
+  { phrase: 'au-dela', weight: 1 },
+  { phrase: 'a la fois une', weight: 2 },
+  { phrase: 'parmi les', weight: 1 },
+  { phrase: 'figurent', weight: 2 },
+  { phrase: 'notamment', weight: 1 },
+  { phrase: 'principalement', weight: 1 },
+  { phrase: 'de type', weight: 1 },
 ];
 
 // Accent-folded copies, built once. Matching must compare the same shape on
@@ -326,8 +340,15 @@ interface Component {
   applicable?: boolean;
 }
 
+/**
+ * Evidence components prove that something is there; they never prove that it is
+ * absent. Including them in the average would drag ordinary prose down for not
+ * being a formatted answer, which is not a defect. They raise the floor instead.
+ */
+const EVIDENCE_IDS = new Set(['formattedShape', 'assistantCloser']);
+
 function blend(components: Component[]): number {
-  const use = components.filter((c) => c.applicable !== false);
+  const use = components.filter((c) => c.applicable !== false && !EVIDENCE_IDS.has(c.id));
   const total = use.reduce((sum, c) => sum + c.weight, 0);
   if (!total) return 0;
   return clamp(use.reduce((sum, c) => sum + c.value * c.weight, 0) / total);
@@ -467,6 +488,23 @@ export function analyse(text: string, locale = 'fr'): AnalysisResult {
   const forensics = analyseForensics(source);
 
   const per100 = (n: number): number => (wordCount ? (n / wordCount) * 100 : 0);
+
+  // A chat answer is not prose: it is headings, rules, bullet lists, bold labels
+  // and a closing offer to continue. None of that is prose style, and a detector
+  // that only measures prose misses it entirely.
+  const lines = source.split('\n');
+  const nonEmpty = lines.filter((l) => l.trim());
+  const bulletLines = nonEmpty.filter((l) => /^\s*[-*\u2022]\s+/.test(l)).length;
+  const headingLines = nonEmpty.filter((l) => /^#{1,6}\s/.test(l)).length;
+  const numberHeadings = nonEmpty.filter((l) => /^\s*\d+[.)]\s+\S/.test(l)).length;
+  const ruleLines = nonEmpty.filter((l) => /^\s*(?:-{3,}|\*{3,}|_{3,})\s*$/.test(l)).length;
+  const boldSpans = (source.match(/\*\*[^*\n]{1,80}\*\*/g) ?? []).length;
+  const bulletHeavy = nonEmpty.length > 0 && bulletLines / nonEmpty.length > 0.25;
+  const structureScore = bulletLines + headingLines * 1.6 + numberHeadings * 1.4 + ruleLines * 1.2 + boldSpans * 0.8;
+  const formattedShape = mapLinear(per100(structureScore), 0.4, 4);
+
+  const tail = source.slice(-320);
+  const assistantCloser = /(?:souhaites-tu|veux-tu que|n['\u2019]h[ée]site[sz]? pas|dites-moi si|dis-moi si|do you want me to|would you like me to|let me know if you|i hope this helps|feel free to ask|\u00bfquieres que|m[o\u00f6]chtest du|vuoi che|quer que eu|wil je dat|\u0445\u043e\u0447\u0435\u0448\u044c, \u0447\u0442\u043e\u0431\u044b \u044f|\u9700\u8981\u6211|\u0647\u0644 \u062a\u0631\u064a\u062f \u0623\u0646)/i.test(tail) ? 1 : 0;
   // The cliché, connective and dialectical lists are French and English only.
   // Counting them as zero elsewhere would drag every other language toward
   // "human", which is exactly the bug this guard prevents.
@@ -488,7 +526,7 @@ export function analyse(text: string, locale = 'fr'): AnalysisResult {
       id: 'paragraphIsomorphism',
       label: 'sig.isomorphism',
       value: paragraphs.length >= 4 ? clamp((paragraphIsomorphism - 0.35) / 0.45) : 0,
-      applicable: paragraphs.length >= 4,
+      applicable: paragraphs.length >= 4 && !bulletHeavy,
       weight: 1.9,
       detail: { key: 'sigDetail.isomorphism', params: { n: Math.round(paragraphIsomorphism * 100) } },
     },
@@ -497,7 +535,7 @@ export function analyse(text: string, locale = 'fr'): AnalysisResult {
       label: 'sig.paragraphUniformity',
       // Uniformity is meaningless below five paragraphs.
       value: paragraphs.length >= 5 ? mapInverse(paragraphCv, 0.20, 0.50) : 0,
-      applicable: paragraphs.length >= 5,
+      applicable: paragraphs.length >= 5 && !bulletHeavy,
       weight: 1.1,
       detail: { key: 'sigDetail.cv', params: { cv: paragraphCv.toFixed(3) } },
     },
@@ -513,7 +551,7 @@ export function analyse(text: string, locale = 'fr'): AnalysisResult {
       id: 'connectors',
       label: 'sig.connectors',
       value: clamp((connectorRatio - 0.20) / 0.40),
-      applicable: paragraphs.length >= 4,
+      applicable: paragraphs.length >= 4 && !bulletHeavy,
       weight: 1.3,
       detail: { key: 'sigDetail.connectors', params: { n: Math.round(connectorRatio * 100) } },
     },
@@ -524,6 +562,19 @@ export function analyse(text: string, locale = 'fr'): AnalysisResult {
       value: mapLinear(per100(discourseMarkers), 0.25, 1.8),
       weight: 1.6,
       detail: { key: 'sigDetail.occurrences', params: { n: discourseMarkers } },
+    },
+    {
+      id: 'formattedShape',
+      label: 'sig.formattedShape',
+      value: formattedShape,
+      weight: 2.2,
+      detail: { key: 'sigDetail.formattedShape', params: { bullets: bulletLines, headings: headingLines + numberHeadings, rules: ruleLines, bold: boldSpans } },
+    },
+    {
+      id: 'assistantCloser',
+      label: 'sig.assistantCloser',
+      value: assistantCloser,
+      weight: 2.6,
     },
     {
       id: 'cliches',
@@ -584,6 +635,13 @@ export function analyse(text: string, locale = 'fr'): AnalysisResult {
   if (substantial && paragraphIsomorphism >= 0.75 && paragraphs.length >= 4) score = Math.max(score, 72);
   if (substantial && connectorRatio >= 0.4 && paragraphs.length >= 4) score = Math.max(score, 70);
   if (substantial && enumSentenceRatio >= 0.25) score = Math.max(score, 66);
+  // A closing offer to continue, or a heavily formatted answer, is not a matter
+  // of degree: it is the shape of a chat reply.
+  if (assistantCloser) score = Math.max(score, 72);
+  if (formattedShape >= 0.7) score = Math.max(score, 70);
+  // Both together is the signature of a chat answer: a formatted breakdown that
+  // ends by offering to continue.
+  if (assistantCloser && formattedShape >= 0.7) score = Math.max(score, 88);
   if (forensics.score >= 0.6) score = Math.max(score, 72);
 
   if (wordCount < 40) score = Math.round(score * 0.75 + 50 * 0.25);
@@ -655,6 +713,8 @@ export function analyse(text: string, locale = 'fr'): AnalysisResult {
   else if (score >= 60 && substantial && paragraphIsomorphism >= 0.75 && paragraphs.length >= 4) verdictReason = { key: 'reason.isomorphism' };
   else if (score >= 60 && substantial && connectorRatio >= 0.4 && paragraphs.length >= 4) verdictReason = { key: 'reason.connectors' };
   else if (score >= 60 && substantial && enumSentenceRatio >= 0.25) verdictReason = { key: 'reason.enumerations' };
+  else if (assistantCloser) verdictReason = { key: 'reason.closer' };
+  else if (formattedShape >= 0.6) verdictReason = { key: 'reason.formatted' };
   else if (score >= 60) verdictReason = { key: 'reason.rhythm' };
   else if (score >= 35) verdictReason = { key: 'reason.mixed' };
   else verdictReason = { key: 'reason.human' };

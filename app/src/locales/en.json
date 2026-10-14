@@ -204,5 +204,10 @@
   "stats.countries": "Countries",
   "stats.devices": "Devices",
   "stats.empty": "No data yet.",
-  "hero.answer": "The short answer: nobody can state with certainty who wrote a text. This tool measures writing habits — sentence rhythm, paragraph length, repeated phrasings, invisible characters — and shows an index from 0 to 100. Everything runs in your browser: the text you analyse never leaves your device. A high score is a lead, never proof, and no one should decide on a single number."
+  "hero.answer": "The short answer: nobody can state with certainty who wrote a text. This tool measures writing habits — sentence rhythm, paragraph length, repeated phrasings, invisible characters — and shows an index from 0 to 100. Everything runs in your browser: the text you analyse never leaves your device. A high score is a lead, never proof, and no one should decide on a single number.",
+  "sig.formattedShape": "Formatted answer shape",
+  "sig.assistantCloser": "Assistant closing line",
+  "sigDetail.formattedShape": "{bullets} bullets, {headings} headings, {rules} rules, {bold} bold spans",
+  "reason.closer": "Ends by offering to continue, typical of an assistant",
+  "reason.formatted": "Structured answer: headings, lists and rules"
 }

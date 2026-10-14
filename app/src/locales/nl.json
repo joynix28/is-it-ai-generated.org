@@ -204,5 +204,10 @@
   "stats.countries": "Landen",
   "stats.devices": "Toestellen",
   "stats.empty": "Nog geen gegevens.",
-  "hero.answer": "Kort antwoord: niemand kan met zekerheid zeggen wie een tekst heeft geschreven. Deze tool meet schrijfgewoonten — zinsritme, alinealengte, terugkerende formuleringen, onzichtbare tekens — en toont een waarde van 0 tot 100. Alles gebeurt in je browser: de geanalyseerde tekst verlaat je toestel nooit. Een hoge score is een aanwijzing, nooit een bewijs."
+  "hero.answer": "Kort antwoord: niemand kan met zekerheid zeggen wie een tekst heeft geschreven. Deze tool meet schrijfgewoonten — zinsritme, alinealengte, terugkerende formuleringen, onzichtbare tekens — en toont een waarde van 0 tot 100. Alles gebeurt in je browser: de geanalyseerde tekst verlaat je toestel nooit. Een hoge score is een aanwijzing, nooit een bewijs.",
+  "sig.formattedShape": "Opmaak van een antwoord",
+  "sig.assistantCloser": "Afsluitende assistentzin",
+  "sigDetail.formattedShape": "{bullets} opsommingen, {headings} koppen, {rules} scheidingslijnen, {bold} vet",
+  "reason.closer": "Eindigt met een aanbod om verder te gaan, typisch voor een assistent",
+  "reason.formatted": "Gestructureerd antwoord: koppen, lijsten en lijnen"
 }
