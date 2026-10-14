@@ -774,13 +774,13 @@ const img = {
   pxSample: el<HTMLElement>('px-sample'),
 };
 
-const IMG_BADGE: Record<ImageVerdict, { label: string; cls: string }> = {
-  ai: { label: 'IA', cls: 'text-rose-700 dark:text-rose-300' },
-  'likely-ai': { label: 'Probable IA', cls: 'text-rose-700 dark:text-rose-300' },
-  unsure: { label: 'Incertain', cls: 'text-amber-700 dark:text-amber-300' },
-  'likely-real': { label: 'Probable réelle', cls: 'text-sage-600 dark:text-sage-200' },
-  real: { label: 'Réelle', cls: 'text-sage-600 dark:text-sage-200' },
-  unknown: { label: 'Indéterminé', cls: 'text-zinc-500' },
+const IMG_BADGE: Record<ImageVerdict, { labelKey: string; cls: string }> = {
+  ai: { labelKey: 'img.badge.ai', cls: 'text-rose-700 dark:text-rose-300' },
+  'likely-ai': { labelKey: 'img.badge.likelyAi', cls: 'text-rose-700 dark:text-rose-300' },
+  unsure: { labelKey: 'img.badge.unsure', cls: 'text-amber-700 dark:text-amber-300' },
+  'likely-real': { labelKey: 'img.badge.likelyReal', cls: 'text-sage-600 dark:text-sage-200' },
+  real: { labelKey: 'img.badge.real', cls: 'text-sage-600 dark:text-sage-200' },
+  unknown: { labelKey: 'img.badge.unknown', cls: 'text-zinc-500' },
 };
 
 function imageGaugeCells(): void {
@@ -825,13 +825,13 @@ function renderImage(res: Awaited<ReturnType<typeof analyseImageFile>>): void {
   img.footer.classList.add('flex');
 
   const badge = IMG_BADGE[res.verdict];
-  img.badge.textContent = badge.label;
+  img.badge.textContent = t(badge.labelKey);
   img.badge.className = `rounded-[3px] border px-1.5 py-0.5 text-micro font-semibold uppercase tracking-[0.08em] hairline ${badge.cls}`;
   img.score.textContent = String(res.score);
   paintImageGauge(res.score, res.verdict);
   img.reason.textContent = res.evidence.length
-    ? res.evidence[0]!.label
-    : 'Aucun signal fort. Analyse de pixels seule.';
+    ? t(res.evidence[0]!.labelKey, res.evidence[0]!.labelParams)
+    : t('img.noSignal');
 
   img.info.textContent = `${res.format.toUpperCase()} · ${res.width ?? '?'}×${res.height ?? '?'} · ${(res.bytes / 1024).toFixed(1)} KB`;
   img.ms.textContent = `${res.ms} ms`;
@@ -848,15 +848,15 @@ function renderImage(res: Awaited<ReturnType<typeof analyseImageFile>>): void {
   const c2paTitle = document.createElement('p');
   c2paTitle.className = 'text-body font-medium';
   c2paTitle.textContent = res.c2pa.aiDeclared
-    ? 'Génération IA certifiée par signature C2PA'
+    ? t('img.c2pa.ai')
     : res.c2pa.present
-      ? 'Manifeste C2PA présent'
-      : 'Aucun manifeste C2PA';
+      ? t('img.c2pa.present')
+      : t('img.c2pa.none');
   const c2paDetail = document.createElement('p');
   c2paDetail.className = 'mt-0.5 font-mono text-[11px] text-zinc-500';
   c2paDetail.textContent = res.c2pa.present
-    ? `${res.c2pa.container ?? '?'} · ${res.c2pa.manifestBytes} octets${res.c2pa.issuers.length ? ` · ${res.c2pa.issuers.join(', ')}` : ''}`
-    : 'Les métadonnées ont été supprimées ou n’ont jamais existé.';
+    ? `${res.c2pa.container ?? '?'} · ${t('img.bytes', { n: res.c2pa.manifestBytes })}${res.c2pa.issuers.length ? ` · ${res.c2pa.issuers.join(', ')}` : ''}`
+    : t('img.c2pa.removed');
   c2paText.append(c2paTitle, c2paDetail);
   c2paBox.append(dot, c2paText);
   img.c2pa.append(c2paBox);
@@ -874,12 +874,13 @@ function renderImage(res: Awaited<ReturnType<typeof analyseImageFile>>): void {
     const body = document.createElement('div');
     const title = document.createElement('p');
     title.className = 'text-label font-medium';
-    title.textContent = item.label;
+    title.textContent = t(item.labelKey, item.labelParams);
     body.append(title);
-    if (item.detail) {
+    const detailText = item.detailKey ? t(item.detailKey, item.detailParams) : item.detailText ?? null;
+    if (detailText) {
       const detail = document.createElement('p');
       detail.className = 'mt-0.5 break-words font-mono text-[11px] leading-tight text-zinc-500';
-      detail.textContent = item.detail;
+      detail.textContent = detailText;
       body.append(detail);
     }
     li.append(mark, body);
@@ -899,7 +900,7 @@ function renderImage(res: Awaited<ReturnType<typeof analyseImageFile>>): void {
 
   // Benford / DCT
   const b = res.pixels?.benford ?? null;
-  ui.pxBenford.textContent = b ? `${Math.round(b.conformity * 100)} %` : 'échantillon trop petit';
+  ui.pxBenford.textContent = b ? `${Math.round(b.conformity * 100)} %` : t('img.benfordSmall');
   ui.pxBenfordKl.textContent = b ? b.kl.toFixed(3) : '—';
   ui.benfordChart.classList.toggle('hidden', !b);
   ui.benfordBars.replaceChildren();
@@ -935,7 +936,7 @@ function renderImage(res: Awaited<ReturnType<typeof analyseImageFile>>): void {
     const th = document.createElement('th');
     th.scope = 'row';
     th.className = 'w-2/5 py-1.5 pr-3 align-top text-label font-normal text-zinc-500';
-    th.textContent = row.key;
+    th.textContent = row.keyIsI18n ? t(row.key) : row.key;
     const td = document.createElement('td');
     td.className = 'break-words py-1.5 align-top font-mono text-[11px] text-zinc-700 dark:text-zinc-300';
     td.textContent = row.value;

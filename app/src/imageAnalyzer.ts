@@ -21,8 +21,15 @@ export type ImageVerdict = 'ai' | 'likely-ai' | 'unsure' | 'likely-real' | 'real
 export interface ImageEvidence {
   id: string;
   level: 'high' | 'good' | 'info' | 'warn';
-  label: string;
-  detail: string | null;
+  /** i18n key for the heading. */
+  labelKey: string;
+  /** Values interpolated into the heading. */
+  labelParams?: Record<string, string | number>;
+  /** i18n key for the sub-line when it is prose. */
+  detailKey?: string | null;
+  detailParams?: Record<string, string | number>;
+  /** Sub-line shown verbatim (brand names, numbers) when it is not prose. */
+  detailText?: string | null;
 }
 
 export interface C2paSummary {
@@ -86,7 +93,7 @@ export interface ImageAnalysis {
   c2pa: C2paSummary;
   signatures: SignatureHit[];
   camera: CameraInfo;
-  rawMetadata: Array<{ key: string; value: string }>;
+  rawMetadata: Array<{ key: string; value: string; keyIsI18n: boolean }>;
   diffusionGeometry: boolean;
   pixels: PixelReport | null;
   score: number;
@@ -216,7 +223,7 @@ const AI_GENERATORS: ReadonlyArray<{ id: string; label: string; needles: string[
   { id: 'designer', label: 'Microsoft Designer', needles: ['microsoft designer', 'bing image creator'] },
   { id: 'ideogram', label: 'Ideogram', needles: ['ideogram'] },
   { id: 'leonardo', label: 'Leonardo.Ai', needles: ['leonardo.ai', 'leonardo ai'] },
-  { id: 'ai-label', label: 'Étiquette « AI-generated »', needles: ['ai-generated content', 'generated with ai', 'created with ai', 'made with ai', 'ai info'] },
+  { id: 'ai-label', label: 'AI-generated', needles: ['ai-generated content', 'generated with ai', 'created with ai', 'made with ai', 'ai info'] },
 ];
 
 const EDITOR_SOFTWARE: ReadonlyArray<{ label: string; needles: string[] }> = [
@@ -257,18 +264,21 @@ const C2PA_ISSUERS: ReadonlyArray<{ label: string; needles: string[] }> = [
  *
  * Order matters: `compositeWithTrainedAlgorithmicMedia` contains
  * `trainedAlgorithmicMedia`, so the composite must be tested first.
+ *
+ * `value` is the controlled-vocabulary token itself, identical in every
+ * language: only the sentence around it is translated.
  */
 const DIGITAL_SOURCE_TYPES: ReadonlyArray<{
   id: string;
   needle: string;
-  label: string;
+  value: string;
   level: 'high' | 'good' | 'info' | 'warn';
   ai: boolean;
 }> = [
-  { id: 'composite-algorithmic', needle: 'compositewithtrainedalgorithmicmedia', label: 'IPTC DigitalSourceType : compositeWithTrainedAlgorithmicMedia', level: 'high', ai: true },
-  { id: 'trained-algorithmic', needle: 'trainedalgorithmicmedia', label: 'IPTC DigitalSourceType : trainedAlgorithmicMedia', level: 'high', ai: true },
-  { id: 'algorithmic-enhance', needle: 'algorithmicallyenhanced', label: 'IPTC DigitalSourceType : algorithmicallyEnhanced', level: 'warn', ai: false },
-  { id: 'digital-capture', needle: 'digitalcapture', label: 'IPTC DigitalSourceType : digitalCapture', level: 'good', ai: false },
+  { id: 'composite-algorithmic', needle: 'compositewithtrainedalgorithmicmedia', value: 'compositeWithTrainedAlgorithmicMedia', level: 'high', ai: true },
+  { id: 'trained-algorithmic', needle: 'trainedalgorithmicmedia', value: 'trainedAlgorithmicMedia', level: 'high', ai: true },
+  { id: 'algorithmic-enhance', needle: 'algorithmicallyenhanced', value: 'algorithmicallyEnhanced', level: 'warn', ai: false },
+  { id: 'digital-capture', needle: 'digitalcapture', value: 'digitalCapture', level: 'good', ai: false },
 ];
 
 /**
@@ -725,11 +735,11 @@ export async function analyseImageFile(file: File): Promise<ImageAnalysis> {
     hasOptics: Boolean(find('Make') || find('Model') || find('FocalLength') || find('ExposureTime')),
   };
 
-  const rawMetadata: Array<{ key: string; value: string }> = [
-    ...scan.exifTags.map((t) => ({ key: t.name, value: t.value })),
+  const rawMetadata: Array<{ key: string; value: string; keyIsI18n: boolean }> = [
+    ...scan.exifTags.map((t) => ({ key: t.name, value: t.value, keyIsI18n: false })),
   ];
-  for (const editor of editors) rawMetadata.push({ key: 'Editing software', value: editor });
-  for (const signature of signatures) rawMetadata.push({ key: 'Generator signature', value: signature.label });
+  for (const editor of editors) rawMetadata.push({ key: 'img.meta.editingSoftware', value: editor, keyIsI18n: true });
+  for (const signature of signatures) rawMetadata.push({ key: 'img.meta.generator', value: signature.label, keyIsI18n: true });
 
   const geometryKey = scan.width && scan.height ? `${scan.width}x${scan.height}` : '';
   const diffusionGeometry = Boolean(
@@ -760,15 +770,16 @@ export async function analyseImageFile(file: File): Promise<ImageAnalysis> {
     evidence.push({
       id: 'c2pa-ai',
       level: 'high',
-      label: 'Signature C2PA déclarant une génération IA',
-      detail: c2paIssuers.join(', '),
+      labelKey: 'img.ev.c2paAi',
+      detailText: c2paIssuers.join(', ') || null,
     });
   } else if (c2pa.present) {
     evidence.push({
       id: 'c2pa',
       level: 'info',
-      label: 'Manifeste C2PA présent',
-      detail: c2paIssuers.length ? c2paIssuers.join(', ') : 'émetteur non identifié',
+      labelKey: 'img.ev.c2paPresent',
+      detailKey: c2paIssuers.length ? null : 'img.ev.c2paIssuerUnknown',
+      detailText: c2paIssuers.length ? c2paIssuers.join(', ') : null,
     });
   }
 
@@ -777,10 +788,9 @@ export async function analyseImageFile(file: File): Promise<ImageAnalysis> {
     evidence.push({
       id: `iptc-${declaredSource.id}`,
       level: declaredSource.level,
-      label: declaredSource.label,
-      detail: declaredSource.ai
-        ? 'Champ standard IPTC, lu par tous les outils. Déclare un média produit par un modèle.'
-        : 'Champ standard IPTC.',
+      labelKey: 'img.ev.iptc',
+      labelParams: { value: declaredSource.value },
+      detailKey: declaredSource.ai ? 'img.ev.iptcAi' : 'img.ev.iptcOther',
     });
   }
 
@@ -788,8 +798,9 @@ export async function analyseImageFile(file: File): Promise<ImageAnalysis> {
     evidence.push({
       id: `sig-${signature.id}`,
       level: 'high',
-      label: `Signature de générateur : ${signature.label}`,
-      detail: signature.detail.slice(0, 160),
+      labelKey: 'img.ev.generator',
+      labelParams: { name: signature.label },
+      detailText: signature.detail.slice(0, 160),
     });
   }
 
@@ -797,17 +808,19 @@ export async function analyseImageFile(file: File): Promise<ImageAnalysis> {
     evidence.push({
       id: 'camera',
       level: 'good',
-      label: 'Métadonnées optiques présentes',
-      detail: [camera.make, camera.model, camera.lens].filter(Boolean).join(' · ') || null,
+      labelKey: 'img.ev.camera',
+      detailText: [camera.make, camera.model, camera.lens].filter(Boolean).join(' · ') || null,
     });
   }
 
-  if (!scan.exifTags.length && !c2pa.present) {
+  // "No metadata" must not be claimed while the file just showed some: an XMP
+  // packet with a declared source type, or a generator signature, is metadata.
+  if (!scan.exifTags.length && !c2pa.present && !declaredSource && signatures.length === 0) {
     evidence.push({
       id: 'no-metadata',
       level: 'warn',
-      label: 'Aucune métadonnée',
-      detail: 'EXIF et Content Credentials absents. Les plateformes les suppriment presque toujours, ce n’est donc pas une preuve.',
+      labelKey: 'img.ev.noMetadata',
+      detailKey: 'img.ev.noMetadataDetail',
     });
   }
 
@@ -815,8 +828,8 @@ export async function analyseImageFile(file: File): Promise<ImageAnalysis> {
     evidence.push({
       id: 'geometry',
       level: 'warn',
-      label: 'Géométrie caractéristique des modèles de diffusion',
-      detail: geometryKey,
+      labelKey: 'img.ev.geometry',
+      detailText: geometryKey,
     });
   }
 
@@ -860,15 +873,16 @@ export async function analyseImageFile(file: File): Promise<ImageAnalysis> {
       evidence.push({
         id: 'benford',
         level: 'warn',
-        label: 'Loi de Benford non respectée sur la DCT 8×8',
-        detail: `KL = ${pixels.benford.kl} bits sur ${pixels.benford.samples} coefficients — signal contesté, jamais décisif seul.`,
+        labelKey: 'img.ev.benford',
+        detailKey: 'img.ev.benfordDetail',
+        detailParams: { kl: pixels.benford.kl, samples: pixels.benford.samples },
       });
     }
     evidence.push({
       id: 'pixels-only',
       level: 'warn',
-      label: 'Métadonnées absentes : analyse de pixels seule',
-      detail: 'Sans EXIF ni C2PA, seules les statistiques de pixels sont disponibles. Elles indiquent une tendance et ne permettent pas de conclure.',
+      labelKey: 'img.ev.pixelsOnly',
+      detailKey: 'img.ev.pixelsOnlyDetail',
     });
   }
 
@@ -898,6 +912,3 @@ export async function analyseImageFile(file: File): Promise<ImageAnalysis> {
 function bandInverse(v: number, lo: number, hi: number): number {
   return 1 - band(v, lo, hi);
 }
-
-export const IMAGE_DISCLAIMER =
-  'Un manifeste C2PA ou une signature de générateur sont des preuves. L’analyse de pixels ne l’est pas : elle indique une tendance, jamais une certitude.';

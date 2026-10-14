@@ -44,7 +44,7 @@
         </span>
       </div>
       <label class="flex items-center">
-        <span class="sr-only">Language</span>
+        <span class="sr-only" data-i18n="app.language">Language</span>
         <select id="locale-select" class="rounded-sm border px-2 py-1.5 text-label hairline bg-transparent text-zinc-600 dark:text-zinc-400"></select>
       </label>
       <button id="theme-toggle" type="button" class="btn" aria-label="Changer de thème">
@@ -85,7 +85,7 @@
             <span><span id="count-words" class="font-semibold text-zinc-900 dark:text-zinc-100">0</span> mots</span>
             <span><span id="count-chars" class="font-semibold text-zinc-900 dark:text-zinc-100">0</span> caractères</span>
             <span><span id="count-sentences" class="font-semibold text-zinc-900 dark:text-zinc-100">0</span> phrases</span>
-            <span id="count-layer1" class="ml-auto">Couche 1 : <span id="layer1-ms" class="font-semibold text-zinc-900 dark:text-zinc-100">0</span> ms</span>
+            <span id="count-layer1" class="ml-auto"><span data-i18n="editor.layer1">Couche 1</span> : <span id="layer1-ms" class="font-semibold text-zinc-900 dark:text-zinc-100">0</span> ms</span>
           </div>
         </section>
 
@@ -229,7 +229,7 @@
                 <div id="img-dropzone" tabindex="0" role="button" class="grid place-items-center gap-2 rounded-md border border-dashed px-6 py-14 text-center hairline-strong">
                   <span class="font-mono text-micro uppercase tracking-[0.08em] text-zinc-400">JPEG · PNG · WebP · AVIF</span>
                   <strong class="text-body font-medium">Déposez une image ici</strong>
-                  <span class="text-label text-zinc-500">ou glissez-déposez, ou collez avec Ctrl+V</span>
+                  <span class="text-label text-zinc-500" data-i18n="image.dropHint">ou glissez-déposez, ou collez avec Ctrl+V</span>
                   <button id="img-browse" type="button" class="btn btn-primary mt-2" data-i18n="image.browse">Choisir une image</button>
                 </div>
                 <input id="img-input" type="file" accept="image/*" class="hidden" />
