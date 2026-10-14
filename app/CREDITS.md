@@ -50,21 +50,34 @@ reused at all.
 | [chaitanya-link/synthetic-identity-cluster-detector](https://github.com/chaitanya-link/synthetic-identity-cluster-detector) | none | **Not used.** No licence, so no reuse. Cited only. |
 | [GumpenaPrathima/CIFAKE-…](https://github.com/GumpenaPrathima/CIFAKE-Image-Classification-and-Explainable-Identification-of-AI-Generated-Synthetic-Images) | none | **Not used.** No licence, and a CIFAKE-style classifier is 32×32 and generator-specific, which the era of this project has moved past. Cited only. |
 
-### The image probe, and its one missing piece
+### The image probe, and how it runs
 
-The learned probe is implemented and unit-tested: `src/imageProbe.ts` holds the
-published 1024 coefficients, the intercept and the threshold, and
-`tests/imageProbe.test.ts` proves the embedded weights are byte-for-byte the
-published ones (first values, sum, norm).
+The learned probe runs. `src/imageProbe.ts` holds the published 1024 coefficients,
+the intercept and the threshold; `tests/imageProbe.test.ts` proves the embedded
+weights are byte-for-byte the published ones (first values, sum, norm). The panel
+is opt-in: a button downloads the encoder once (~293 MB, cached), shows real
+progress, and reports a probability. It never overrides a declared provenance,
+and an unproven model is never allowed to accuse on its own.
 
-It is **not wired into the interface yet**, and that is deliberate. The probe was
-trained on timm's `vit_large_patch14_clip_224.openai` features: the 1024-d pooled
-CLS output *before* CLIP's visual projection. Every browser-ready ONNX export of
-that encoder (Xenova, onnx-community) exposes only `image_embeds`, the 768-d
-*projected* vector. Feeding 768-d features to a 1024-d probe would return a
-plausible, silently wrong number. Rather than ship that, the module waits for the
-correct encoder: the vision tower exported without the projection head, quantised
-to int8 (~293 MB) and hosted outside the repository.
+The naive path did not work, and that is why this needed one extra step. The
+probe was trained on timm's `vit_large_patch14_clip_224.openai` features: the
+1024-d pooled CLS output *before* CLIP's visual projection. Every browser-ready
+ONNX export of that encoder (Xenova, onnx-community; verified by reading the
+graphs' output names) exposes only `image_embeds`, the 768-d *projected* vector.
+Feeding 768 numbers to a 1024-weight probe returns a plausible, silently wrong
+number, so the encoder was rebuilt instead: the pooled tensor is exposed as
+`pooler_output` by graph surgery on the quantised export — **no retraining, no
+weight change** — and published, MIT, at
+[`joynix28/clip-vit-large-patch14-pooler`](https://huggingface.co/joynix28/clip-vit-large-patch14-pooler).
+
+Measured on the converted encoder before shipping: a Flux image scored 0.992 (AI),
+while eleven real photographs scored 0.023 to 0.605 — eight below the 0.458
+threshold by a wide margin, one above it, and the two charts in a Stable Diffusion
+sample set (out of the probe's photo domain) below it. The author's own
+out-of-family caveat applies: the probe was trained on GPT-Image and Nano Banana,
+and other generators are "unverified". On the browser path, end to end: 293 MB
+download, ~30 s initialisation, ~35 s inference on one WASM thread, 99 % AI on the
+Flux image, no console error.
 
 
 ## Standards

@@ -132,10 +132,10 @@ export type WorkerResponse =
 /** The learned image probe runs in its own worker, with its own messages. */
 export type ImageWorkerRequest =
   | { type: 'load'; modelId: string }
-  | { type: 'probe'; id: number; modelId: string; blob: Blob };
+  | { type: 'probe'; id: number; pixels: Float32Array };
 
 export type ImageWorkerResponse =
-  | { type: 'progress'; phase: 'download' | 'init'; file?: string; progress: number; loaded?: number; total?: number }
+  | { type: 'progress'; phase: 'download' | 'init'; progress: number; loaded?: number; total?: number }
   | { type: 'ready'; modelId: string }
   | { type: 'probed'; id: number; embedding: number[]; ms: number }
   | { type: 'error'; message: string };

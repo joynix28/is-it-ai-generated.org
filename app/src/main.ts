@@ -15,16 +15,20 @@ import './style.css';
 
 import { analyse } from './analyzer';
 import { fingerprint, FINGERPRINT_DISCLAIMER } from './modelFingerprinter';
-import { analyseImageFile, type ImageVerdict } from './imageAnalyzer';
+import { analyseImageFile, type ImageEvidence, type ImageVerdict } from './imageAnalyzer';
+import { probeScore, PROBE_JPEG_QUALITY, PROBE_THRESHOLD, type ProbeOutcome } from './imageProbe';
 import { compressionEntropy } from './compression';
 import { initI18n, setLocale, onLocaleChange, translateDom, t, getLocale } from './i18n';
 import { track, initAnalytics } from './analytics';
 import { judge, type JuryVerdict, type NeuralReading } from './jury';
 import { toNeuralReading } from './perplexity';
 import { anchorsFor } from './anchors';
-import type { AnalysisResult, Band, SentenceScore, WorkerRequest, WorkerResponse } from './types';
+import type { AnalysisResult, Band, ImageWorkerRequest, ImageWorkerResponse, SentenceScore, WorkerRequest, WorkerResponse } from './types';
 
 const MODEL_ID = 'onnx-community/Qwen2.5-0.5B';
+/** The converted CLIP vision tower with the 1024-d pooled output exposed. */
+const IMAGE_MODEL_URL =
+  'https://huggingface.co/joynix28/clip-vit-large-patch14-pooler/resolve/main/clip_vit_l14_pooler.onnx';
 const GAUGE_CELLS = 40;
 
 /* ------------------------------------------------------------------ DOM */
@@ -762,6 +766,14 @@ const img = {
   badge: el<HTMLSpanElement>('img-verdict-badge'),
   reason: el<HTMLParagraphElement>('img-verdict-reason'),
   c2pa: el<HTMLDivElement>('img-c2pa'),
+  clipRun: el<HTMLButtonElement>('img-clip-run'),
+  clipState: el<HTMLSpanElement>('img-clip-state'),
+  clipProgressWrap: el<HTMLDivElement>('img-clip-progress-wrap'),
+  clipProgress: el<HTMLDivElement>('img-clip-progress'),
+  clipProgressLabel: el<HTMLParagraphElement>('img-clip-progress-label'),
+  clipResult: el<HTMLDivElement>('img-clip-result'),
+  clipScore: el<HTMLSpanElement>('img-clip-score'),
+  clipMs: el<HTMLSpanElement>('img-clip-ms'),
   evidencePanel: el<HTMLDivElement>('img-evidence-panel'),
   evidence: el<HTMLUListElement>('img-evidence'),
   pixelsPanel: el<HTMLDivElement>('img-pixels-panel'),
@@ -818,19 +830,52 @@ function drawImage(bitmap: ImageBitmap | HTMLImageElement, res: Awaited<ReturnTy
   }
 }
 
+/** The probe is a classifier; map its probability onto the image bands. */
+function probeVerdict(outcome: ProbeOutcome): ImageVerdict {
+  if (outcome.probability >= 0.8) return 'ai';
+  if (outcome.isAi) return 'likely-ai';
+  if (outcome.probability <= PROBE_THRESHOLD * 0.5) return 'real';
+  return 'likely-real';
+}
+
+function clipEvidence(outcome: ProbeOutcome): ImageEvidence {
+  return {
+    id: 'clip-probe',
+    level: outcome.isAi ? 'high' : 'good',
+    labelKey: 'img.clip.evidence',
+    labelParams: { p: Math.round(outcome.probability * 100) },
+    detailKey: 'img.clip.detail',
+    detailParams: { p: Math.round(outcome.probability * 100), t: Math.round(PROBE_THRESHOLD * 100) },
+  };
+}
+
 function renderImage(res: Awaited<ReturnType<typeof analyseImageFile>>): void {
   img.empty.classList.add('hidden');
   img.loaded.classList.remove('hidden');
   img.footer.classList.remove('hidden');
   img.footer.classList.add('flex');
 
-  const badge = IMG_BADGE[res.verdict];
+  // A declared provenance outranks a classifier: a C2PA manifest or an IPTC
+  // source type is a fact read from the file, the probe is a probability read
+  // from its pixels. When the file declares nothing, the probe may lead.
+  const declared = res.evidence.some(
+    (e) => e.id === 'c2pa-ai' || e.id === 'iptc-trained-algorithmic' || e.id === 'iptc-composite-algorithmic',
+  );
+  const evidence = clip
+    ? declared
+      ? [...res.evidence, clipEvidence(clip)]
+      : [clipEvidence(clip), ...res.evidence]
+    : res.evidence;
+  const score = clip && !declared ? Math.round(clip.probability * 100) : res.score;
+  const verdict = clip && !declared ? probeVerdict(clip) : res.verdict;
+
+  const badge = IMG_BADGE[verdict];
   img.badge.textContent = t(badge.labelKey);
   img.badge.className = `rounded-[3px] border px-1.5 py-0.5 text-micro font-semibold uppercase tracking-[0.08em] hairline ${badge.cls}`;
-  img.score.textContent = String(res.score);
-  paintImageGauge(res.score, res.verdict);
-  img.reason.textContent = res.evidence.length
-    ? t(res.evidence[0]!.labelKey, res.evidence[0]!.labelParams)
+  img.score.textContent = String(score);
+  paintImageGauge(score, verdict);
+  img.reason.textContent = evidence.length
+    ? t(evidence[0]!.labelKey, evidence[0]!.labelParams)
     : t('img.noSignal');
 
   img.info.textContent = `${res.format.toUpperCase()} · ${res.width ?? '?'}×${res.height ?? '?'} · ${(res.bytes / 1024).toFixed(1)} KB`;
@@ -862,9 +907,9 @@ function renderImage(res: Awaited<ReturnType<typeof analyseImageFile>>): void {
   img.c2pa.append(c2paBox);
 
   // Evidence
-  img.evidencePanel.classList.toggle('hidden', res.evidence.length === 0);
+  img.evidencePanel.classList.toggle('hidden', evidence.length === 0);
   img.evidence.replaceChildren();
-  for (const item of res.evidence) {
+  for (const item of evidence) {
     const li = document.createElement('li');
     li.className = 'flex items-start gap-2';
     const mark = document.createElement('span');
@@ -946,6 +991,10 @@ function renderImage(res: Awaited<ReturnType<typeof analyseImageFile>>): void {
 }
 
 let lastImage: Awaited<ReturnType<typeof analyseImageFile>> | null = null;
+/** Kept so the visual probe can re-run after an interface change. */
+let lastImageFile: File | null = null;
+/** The learned probe's reading, once it has run. Null until then. */
+let clip: ProbeOutcome | null = null;
 let imageMode: 'original' | 'heat' = 'original';
 
 function applyImageMode(): void {
@@ -968,6 +1017,8 @@ async function handleImageFile(file: File): Promise<void> {
   }
   imageBusy = true;
   img.reason.textContent = t('score.analysing');
+  lastImageFile = file;
+  resetClip();
   try {
     const res = await analyseImageFile(file);
     // The binary result stands on its own: a file we cannot decode (corrupt,
@@ -998,9 +1049,135 @@ async function handleImageFile(file: File): Promise<void> {
   }
 }
 
+/* ------------------------------------------------ learned image probe */
+
+let imageWorker: Worker | null = null;
+let imageRequestId = 0;
+let imageModelLoaded = false;
+
+function setClipState(key: string): void {
+  img.clipState.textContent = t(key);
+}
+
+function resetClip(): void {
+  clip = null;
+  img.clipResult.classList.add('hidden');
+  img.clipScore.textContent = '—';
+  img.clipMs.textContent = '—';
+  img.clipProgressWrap.classList.add('hidden');
+  img.clipRun.disabled = false;
+  setClipState('img.clip.idle');
+}
+
+function getImageWorker(): Worker {
+  if (!imageWorker) {
+    imageWorker = new Worker(new URL('./imageWorker.ts', import.meta.url), { type: 'module' });
+    imageWorker.addEventListener('message', (event: MessageEvent<ImageWorkerResponse>) => {
+      const data = event.data;
+      if (data.type === 'progress') {
+        img.clipProgressWrap.classList.remove('hidden');
+        img.clipProgress.style.width = `${data.progress}%`;
+        const size = data.loaded && data.total
+          ? ` · ${(data.loaded / 1048576).toFixed(0)}/${(data.total / 1048576).toFixed(0)} Mo`
+          : '';
+        img.clipProgressLabel.textContent = `${data.phase === 'download' ? t('jury.downloading') : t('jury.init')} — ${data.progress} %${size}`;
+        setClipState('jury.state.loading');
+      } else if (data.type === 'ready') {
+        imageModelLoaded = true;
+        img.clipProgressWrap.classList.add('hidden');
+        setClipState('jury.state.ready');
+      } else if (data.type === 'probed') {
+        const outcome = probeScore(data.embedding);
+        if (!outcome) {
+          setClipState('jury.state.unavailable');
+          img.clipRun.disabled = false;
+          return;
+        }
+        clip = outcome;
+        img.clipResult.classList.remove('hidden');
+        img.clipScore.textContent = `${Math.round(outcome.probability * 100)} %`;
+        img.clipMs.textContent = `${data.ms} ms`;
+        img.clipRun.disabled = false;
+        setClipState(outcome.isAi ? 'img.clip.ai' : 'img.clip.real');
+        if (lastImage) renderImage(lastImage);
+      } else if (data.type === 'error') {
+        setClipState('jury.state.unavailable');
+        img.clipProgressWrap.classList.add('hidden');
+        img.clipRun.disabled = false;
+      }
+    });
+  }
+  return imageWorker;
+}
+
+/** CLIP normalisation, as the encoder's training data used it. */
+const CLIP_MEAN = [0.48145466, 0.4578275, 0.40821073] as const;
+const CLIP_STD = [0.26862954, 0.26130258, 0.27577711] as const;
+
+async function toClipPixels(blob: Blob): Promise<Float32Array> {
+  const bitmap = await createImageBitmap(blob);
+  const canvas = document.createElement('canvas');
+  canvas.width = 224;
+  canvas.height = 224;
+  const ctx = canvas.getContext('2d');
+  if (!ctx) throw new Error('no 2d context');
+  ctx.imageSmoothingEnabled = true;
+  ctx.imageSmoothingQuality = 'high';
+  ctx.drawImage(bitmap, 0, 0, 224, 224);
+  const { data } = ctx.getImageData(0, 0, 224, 224);
+  const area = 224 * 224;
+  const out = new Float32Array(3 * area);
+  for (let i = 0; i < area; i += 1) {
+    out[i] = (data[i * 4]! / 255 - CLIP_MEAN[0]) / CLIP_STD[0];
+    out[area + i] = (data[i * 4 + 1]! / 255 - CLIP_MEAN[1]) / CLIP_STD[1];
+    out[2 * area + i] = (data[i * 4 + 2]! / 255 - CLIP_MEAN[2]) / CLIP_STD[2];
+  }
+  return out;
+}
+
+/**
+ * Re-encode at the probe's training JPEG quality (88), then resize to 224x224 with
+ * CLIP's normalisation. Without the JPEG step the reading shifts: the probe was
+ * trained so that one compression level would not decide the answer.
+ */
+async function runImageProbe(file: File): Promise<void> {
+  const bitmap = await createImageBitmap(file);
+  const canvas = document.createElement('canvas');
+  canvas.width = bitmap.width;
+  canvas.height = bitmap.height;
+  canvas.getContext('2d')?.drawImage(bitmap, 0, 0);
+  const blob = await new Promise<Blob | null>((resolve) => canvas.toBlob(resolve, 'image/jpeg', PROBE_JPEG_QUALITY));
+  if (!blob) {
+    setClipState('jury.state.unavailable');
+    img.clipRun.disabled = false;
+    return;
+  }
+  const pixels = await toClipPixels(blob);
+
+  const worker = getImageWorker();
+  if (!imageModelLoaded) {
+    setClipState('jury.state.loading');
+    const loadMessage: ImageWorkerRequest = { type: 'load', modelId: IMAGE_MODEL_URL };
+    worker.postMessage(loadMessage);
+  }
+  const request: ImageWorkerRequest = { type: 'probe', id: (imageRequestId += 1), pixels };
+  worker.postMessage(request, [pixels.buffer as ArrayBuffer]);
+}
+
+img.clipRun.addEventListener('click', () => {
+  if (!lastImageFile) return;
+  img.clipRun.disabled = true;
+  void runImageProbe(lastImageFile).catch(() => {
+    setClipState('jury.state.unavailable');
+    img.clipRun.disabled = false;
+  });
+});
+
 // Clear the current image without reloading the page.
 document.getElementById('img-reset')?.addEventListener('click', () => {
   lastImage = null;
+  lastImageFile = null;
+  resetClip();
   img.loaded.classList.add('hidden');
   img.footer.classList.add('hidden');
   img.footer.classList.remove('flex');

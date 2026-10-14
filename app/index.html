@@ -272,6 +272,22 @@
             <span class="metric-label" data-i18n="image.c2pa">C2PA / Content Credentials</span>
             <div id="img-c2pa" class="mt-2.5"></div>
           </div>
+          <div class="panel mt-3 p-4">
+            <div class="flex items-center justify-between">
+              <span class="metric-label" data-i18n="img.clip.title">Analyse visuelle · sonde entraînée</span>
+              <span id="img-clip-state" class="font-mono text-label text-zinc-400" data-i18n="img.clip.idle">inactif</span>
+            </div>
+            <p class="mt-2 text-[11px] leading-tight text-zinc-400" data-i18n="img.clip.note">Sonde logistique entraînée sur les caractéristiques CLIP ViT-L/14 (projet Rinne414/SynthID-detector, MIT), validée sur des générateurs qu'elle n'a jamais vus. Elle lit les pixels, pas une déclaration : c'est une probabilité, pas un jugement.</p>
+            <button id="img-clip-run" type="button" class="btn mt-2.5 w-full" data-i18n="img.clip.run">Ajouter la sonde visuelle (~293 Mo, une fois)</button>
+            <div id="img-clip-progress-wrap" class="mt-2 hidden">
+              <div class="bar"><div id="img-clip-progress" class="bar__fill"></div></div>
+              <p id="img-clip-progress-label" class="mt-1 font-mono text-[11px] text-zinc-400"></p>
+            </div>
+            <div id="img-clip-result" class="mt-2.5 hidden border-t pt-2.5 hairline">
+              <div class="flex items-baseline justify-between"><span class="text-label text-zinc-500" data-i18n="img.clip.scoreLabel">Probabilité IA</span><span id="img-clip-score" class="font-mono text-label font-semibold tabular-nums">—</span></div>
+              <div class="mt-1.5 flex items-baseline justify-between"><span class="text-label text-zinc-500" data-i18n="img.clip.latency">Latence</span><span id="img-clip-ms" class="font-mono text-label tabular-nums text-zinc-500">—</span></div>
+            </div>
+          </div>
 
           <div id="img-evidence-panel" class="panel mt-3 hidden p-4">
             <span class="metric-label" data-i18n="image.findings">Constats</span>
