@@ -6,7 +6,7 @@
   "description": "Detect AI-generated text locally. No server, no tracking, no ads.",
   "scripts": {
     "dev": "vite",
-    "build": "node scripts/check-locales.mjs && tsc --noEmit && vite build",
+    "build": "node scripts/check-locales.mjs && tsc --noEmit && vite build && node scripts/prerender.mjs",
     "preview": "vite preview --port 4173",
     "typecheck": "tsc --noEmit",
     "test": "tsx --test tests/*.test.ts",
