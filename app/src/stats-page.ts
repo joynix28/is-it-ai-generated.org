@@ -103,7 +103,8 @@ if (select) {
   initI18n(select);
   select.addEventListener('change', () => {
     setLocale(select.value);
-    translateDom(document);
+    // The cards are built with t() at load, so rebuild them in the new language.
+    void loadStats();
     syncOpt();
   });
 }

@@ -334,8 +334,7 @@ function render(res: AnalysisResult): void {
   renderOverlay(editor.value, res.sentences);
   if (res.stats.words >= 40) track('tool', { tool: 'text', verdict: res.band, lang: getLocale() });
   renderFaq();
-translateDom(document);
-initAnalytics();
+  initAnalytics();
 }
 
 /* --------------------------------------------------------------- analyse */
@@ -355,29 +354,38 @@ async function updateCompression(text: string): Promise<void> {
     : '—';
 }
 
+/** The resting state. Extracted so a language switch can repaint it translated. */
+function renderEmpty(): void {
+  result = null;
+  layer.replaceChildren();
+  ui.score.textContent = '0';
+  ui.reason.textContent = t('score.waiting');
+  paintGauge(0, 'human');
+  setBar(ui.barSyntax, ui.subSyntax, 0);
+  setBar(ui.barLexical, ui.subLexical, 0);
+  setBar(ui.barMarkers, ui.subMarkers, 0);
+  setBar(ui.barForensic, ui.subForensic, 0);
+  ui.forensicPanel.classList.add('hidden');
+  ui.markersPanel.classList.add('hidden');
+  ui.words.textContent = '0';
+  ui.chars.textContent = '0';
+  ui.sentences.textContent = '0';
+  ui.layer1Ms.textContent = '0';
+  ui.mesCompression.textContent = '—';
+  ui.componentsList.replaceChildren();
+  ui.juryList.replaceChildren();
+  ui.juryAgreement.textContent = '—';
+  ui.juryCaveats.textContent = '';
+  setJuryState('jury.state.idle');
+  compressionToken += 1;
+}
+
 function runAnalysis(): void {
   const text = editor.value;
   const started = performance.now();
 
   if (!text.trim()) {
-    result = null;
-    layer.replaceChildren();
-    ui.score.textContent = '0';
-    ui.reason.textContent = 'En attente de texte.';
-    paintGauge(0, 'human');
-    setBar(ui.barSyntax, ui.subSyntax, 0);
-    setBar(ui.barLexical, ui.subLexical, 0);
-    setBar(ui.barMarkers, ui.subMarkers, 0);
-    setBar(ui.barForensic, ui.subForensic, 0);
-    ui.forensicPanel.classList.add('hidden');
-    ui.markersPanel.classList.add('hidden');
-    ui.words.textContent = '0';
-    ui.chars.textContent = '0';
-    ui.sentences.textContent = '0';
-    ui.layer1Ms.textContent = '0';
-    ui.mesCompression.textContent = '—';
-    ui.componentsList.replaceChildren();
-    compressionToken += 1;
+    renderEmpty();
     return;
   }
 
@@ -608,7 +616,7 @@ el<HTMLButtonElement>('btn-paste').addEventListener('click', () => {
       runAnalysis();
     })
     .catch(() => {
-      ui.reason.textContent = 'Le presse-papiers est inaccessible. Utilisez Ctrl+V.';
+      ui.reason.textContent = t('editor.clipboardDenied');
     });
 });
 
@@ -954,11 +962,11 @@ let imageBusy = false;
 
 async function handleImageFile(file: File): Promise<void> {
   if (!file.type.startsWith('image/') || imageBusy) {
-    img.reason.textContent = 'Ce fichier n’est pas une image.';
+    img.reason.textContent = t('image.notImage');
     return;
   }
   imageBusy = true;
-  img.reason.textContent = 'Analyse en cours…';
+  img.reason.textContent = t('score.analysing');
   try {
     const res = await analyseImageFile(file);
     // The binary result stands on its own: a file we cannot decode (corrupt,
@@ -1105,11 +1113,14 @@ function renderFaq(): void {
 const localeSelect = el<HTMLSelectElement>('locale-select');
 initI18n(localeSelect);
 localeSelect.addEventListener('change', () => {
+  // setLocale already repaints the static text (applyTranslations + translateDom,
+  // now language-independent). Everything built in JavaScript with t() must be
+  // rebuilt here, or the page stays half-translated until a reload.
   setLocale(localeSelect.value);
   if (result) render(result);
+  else renderEmpty();
   if (lastImage) renderImage(lastImage);
   renderFaq();
-  translateDom(document);
   // The calibration anchors are language-specific, so a loaded model must be
   // re-calibrated for the new language.
   if (modelLoaded) scheduleNeural(editor.value);

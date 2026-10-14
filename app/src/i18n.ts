@@ -195,21 +195,31 @@ export function applyTranslations(root: ParentNode = document): void {
 }
 
 /**
- * Reverse index: exact French string -> key.
+ * Reverse index: any catalog string -> key.
  *
- * The templates were written in French, so instead of rewriting every one we
- * translate the DOM by matching its text nodes against the French catalog.
- * Ambiguous values (several keys sharing a French string) are dropped, so a
- * match is never guesswork. Anything unmatched is left as it is.
+ * The templates are written in French, so the first switch translated the DOM by
+ * matching it against the French catalog. Switching a second time then failed
+ * silently: the DOM was in English, the French index no longer matched, and the
+ * page stayed half-translated until a reload.
+ *
+ * Indexing every catalog makes the translation idempotent and independent of the
+ * language the DOM is currently showing, so English -> Spanish works as well as
+ * French -> English, and French -> English -> French returns home.
+ *
+ * Values shared by two different keys, in any language, are dropped, so a match is
+ * never guesswork. Anything unmatched is left as it is.
  */
-const FR_TO_KEY = (() => {
+const VALUE_TO_KEY = (() => {
   const index = new Map<string, string>();
   const ambiguous = new Set<string>();
-  for (const [key, value] of Object.entries(fr)) {
-    if (!value || value.includes('{')) continue;
+  const add = (value: string, key: string): void => {
+    if (!value || value.includes('{')) return;
     const existing = index.get(value);
     if (existing && existing !== key) ambiguous.add(value);
     else index.set(value, key);
+  };
+  for (const catalog of Object.values(CATALOGS)) {
+    for (const [key, value] of Object.entries(catalog)) add(value, key);
   }
   for (const value of ambiguous) index.delete(value);
   return index;
@@ -217,7 +227,6 @@ const FR_TO_KEY = (() => {
 
 /** Translate static text in place. Code, options and live regions are skipped. */
 export function translateDom(root: ParentNode = document): void {
-  if (current === SOURCE) return;
   const walker = document.createTreeWalker(root as Node, NodeFilter.SHOW_TEXT);
   const nodes: Text[] = [];
   let node = walker.nextNode();
@@ -230,10 +239,10 @@ export function translateDom(root: ParentNode = document): void {
     if (!parent) continue;
     const tag = parent.tagName;
     if (tag === 'SCRIPT' || tag === 'STYLE' || tag === 'TEXTAREA' || tag === 'CODE' || tag === 'OPTION') continue;
-    if (parent.closest('#editor, #tip, #highlight-layer, #components-list, #fingerprint-notes')) continue;
+    if (parent.closest('#editor, #tip, #highlight-layer, #components-list, #jury-list, #fingerprint-notes')) continue;
     const trimmed = textNode.nodeValue?.trim() ?? '';
     if (!trimmed) continue;
-    const key = FR_TO_KEY.get(trimmed);
+    const key = VALUE_TO_KEY.get(trimmed);
     if (!key) continue;
     const leading = textNode.nodeValue!.match(/^\s*/)?.[0] ?? '';
     const trailing = textNode.nodeValue!.match(/\s*$/)?.[0] ?? '';
