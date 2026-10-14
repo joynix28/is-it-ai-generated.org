@@ -38,7 +38,6 @@
       <div class="flex items-center gap-2.5">
         <span class="grid h-6 w-6 place-items-center rounded-[3px] bg-zinc-900 font-mono text-[11px] font-bold text-white dark:bg-zinc-100 dark:text-zinc-900">AT</span>
         <h1 class="text-ui font-semibold tracking-tight">Détecteur IA</h1>
-        <p class="mt-4 max-w-[68ch] text-body leading-relaxed text-zinc-600 dark:text-zinc-400" data-i18n="hero.answer">Réponse courte : personne ne peut affirmer avec certitude qui a écrit un texte. Cet outil mesure des habitudes d'écriture et affiche un indice de 0 à 100.</p>
         <span class="hidden items-center gap-1 rounded-[3px] border px-1.5 py-0.5 text-micro font-semibold uppercase tracking-[0.08em] hairline text-zinc-500 sm:inline-flex">
           <span class="h-1.5 w-1.5 rounded-full bg-sage-600"></span>
           100 % local
@@ -60,7 +59,7 @@
 
     <main class="min-h-[calc(100vh-5.5rem)] lg:h-[calc(100vh-5.5rem)]">
       <!-- ================================================== TEXT ========== -->
-      <div id="pane-text" role="tabpanel" aria-labelledby="tab-text" class="grid grid-cols-1 lg:h-full lg:grid-cols-[minmax(0,60fr)_minmax(0,40fr)]">
+      <div id="pane-text" role="tabpanel" aria-labelledby="tab-text" class="grid grid-cols-1 lg:h-full lg:grid-cols-[minmax(0,60fr)_minmax(0,40fr)] lg:grid-rows-[minmax(0,1fr)]">
         <section class="flex min-w-0 flex-col border-b lg:min-h-0 lg:border-b-0 lg:border-r hairline">
           <div class="flex shrink-0 flex-wrap items-center justify-between gap-2 border-b px-4 py-2.5 hairline">
             <span class="metric-label" data-i18n="editor.label">Éditeur</span>
@@ -211,7 +210,7 @@
       </div>
 
       <!-- ================================================= IMAGE ========== -->
-      <div id="pane-image" role="tabpanel" aria-labelledby="tab-image" class="hidden grid-cols-1 lg:h-full lg:grid-cols-[minmax(0,60fr)_minmax(0,40fr)]">
+      <div id="pane-image" role="tabpanel" aria-labelledby="tab-image" class="hidden grid-cols-1 lg:h-full lg:grid-cols-[minmax(0,60fr)_minmax(0,40fr)] lg:grid-rows-[minmax(0,1fr)]">
         <section class="flex min-w-0 flex-col border-b lg:min-h-0 lg:border-b-0 lg:border-r hairline">
           <div class="flex shrink-0 flex-wrap items-center justify-between gap-2 border-b px-4 py-2.5 hairline">
             <span class="metric-label" data-i18n="image.label">Image</span>
@@ -311,6 +310,9 @@
     </main>
 
     <footer class="border-t px-4 py-10 hairline">
+      <div class="mx-auto mb-6 max-w-3xl">
+        <p class="mt-4 max-w-[68ch] text-body leading-relaxed text-zinc-600 dark:text-zinc-400" data-i18n="hero.answer">Réponse courte : personne ne peut affirmer avec certitude qui a écrit un texte. Cet outil mesure des habitudes d'écriture et affiche un indice de 0 à 100.</p>
+      </div>
       <div class="mx-auto flex max-w-3xl flex-wrap items-center gap-3">
         <a href="/faq/" class="btn btn-primary h-10 gap-2 px-4"><span data-i18n="nav.faq">Questions fréquentes</span></a>
         <a href="https://github.com/joynix28/is-it-ai-generated.org" target="_blank" rel="noopener" class="btn h-10 gap-2 px-4">
